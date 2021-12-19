@@ -61,17 +61,22 @@
 <style>
 @font-face {
   font-family: 'Spartan';
-  src: url('./assets/font/Spartan/static/Spartan-ExtraBold.ttf');
+  src: url('./assets/font/Spartan/static/Spartan-ExtraBold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'News Cycle';
-  src: url('./assets/font/news cycle/NewsCycle-Regular.ttf');
+  src: url('./assets/font/news cycle/NewsCycle-Regular.ttf') format('truetype')
+}
+
+@font-face {
+  font-family: 'News Cycle-Bold';
+  src: url('./assets/font/news cycle/NewsCycle-Bold.ttf') format('truetype');
 }
 
 @font-face {
   font-family: 'Meow_Script';
-  src: url('./assets/font/Meow_Script/MeowScript-Regular.ttf');
+  src: url('./assets/font/Meow_Script/MeowScript-Regular.ttf') format('truetype');
 }
 
 :root {
@@ -82,7 +87,8 @@
   --cor4: #CDF0E5;
   --font0: 'Spartan';
   --font1: 'News Cycle';
-  --font2: 'Meow_Script';
+  --font2: 'News Cycle-Bold';
+  --font3: 'Meow_Script';
 }
 
 * {
@@ -91,7 +97,6 @@
 }
 
 #app {
-  height: 100vh;
   background-color: #010402;
   color: white;
 }
@@ -123,5 +128,6 @@
   background-color: var(--cor3);
   border-radius: 10px;
   width: 75px;
+  font-family: var(--font1);
 }
 </style>

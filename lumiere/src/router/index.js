@@ -35,12 +35,14 @@ const routes = [
     path: '/jogos',
     name: 'jogos',
     component: Jogos,
+    //só pode aceder a esta pagina se tiver logado
   },
   {
     // Pagina com o jogo
     path: '/jogos/:jogo',
     name: 'jogo',
     component: Jogo,
+    //só pode aceder a esta pagina se tiver logado
   },
   {
     // Pagina com a classificacao dos jogadores
