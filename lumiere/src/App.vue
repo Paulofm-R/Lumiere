@@ -97,6 +97,7 @@
 }
 
 #app {
+  min-height: 100vh;
   background-color: #010402;
   color: white;
 }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-contain>
+        <b-container fluid>
             <h2>JOGOS</h2>
             <b-row align-h="between">
                 <b-col cols=4 id="filtro">
@@ -10,12 +10,13 @@
                 </b-col>
                 <b-col cols=4 id="adminAcoes">
                     <button @click="acaoAdmin = true" v-if="!acaoAdmin">Editar</button>
-                    <button v-b-modal="'modalAdicionar'" v-else>Adcionar</button>
+                    <button v-b-modal.adicionarModal v-else>Adcionar</button>
                 </b-col>
             </b-row>
             <b-row id="catalogoJogos">
                 <b-col cols=3 class="catalogoJogo" v-for="(jogo, index) in getJogos" :key="index">
                     <div class="card jogo">
+                        <button v-if="acaoAdmin" class="remover">X</button>
                         <img :src="jogo.img">
                         <h4>{{jogo.nome}}</h4>
                         <input type="image" src="" alt="">
@@ -23,12 +24,43 @@
                 </b-col>
             </b-row>
 
-
             <!-- Modais -->
-            <b-modal id="modalAdicionar" centered title="Adcionar">
-                <p class="my-4">Hello from modal!</p>
+            <b-modal id="adicionarModal" centered>
+                <template>
+                    <h5>Adcionar</h5>
+                </template>
+
+                <template #default="{ hide }">
+                <p>Modal Body with button</p>
+                <b-button @click="hide()">Hide Modal</b-button>
+                </template>
+
+                <template #modal-footer="{ ok, cancel, hide }">
+                <b>Custom Footer</b>
+                <!-- Emulate built in modal footer ok and cancel button actions -->
+                <b-button size="sm" variant="success" @click="ok()">
+                    OK
+                </b-button>
+                <b-button size="sm" variant="danger" @click="cancel()">
+                    Cancel
+                </b-button>
+                <!-- Button with custom close trigger value -->
+                <b-button size="sm" variant="outline-secondary" @click="hide('forget')">
+                    Forget it
+                </b-button>
+                </template>
             </b-modal>
-        </b-contain> 
+
+            <!-- <dialog :open="modalAdcionar">
+                <div id="modalCabecalho">
+                    ADICIONAR
+                    <button>X</button>
+                </div>
+                <div id="modalCorpo">
+                    
+                </div>   
+            </dialog> -->
+        </b-container> 
     </div>
 </template>
 
@@ -41,7 +73,7 @@
         data() {
             return {
                 acaoAdmin: false,
-                modalAdcionar: false,
+                // modalAdcionar: false,
             }
         },
 
@@ -50,12 +82,20 @@
         },
 
         methods: {
-
+            // abrirModal(){
+            //     this.modalAdcionar = true;
+            // }
         },
     }
 </script>
 
 <style scoped>
+/* dialog{
+    position: absolute;
+    top: 45%;
+    left: 45%;
+} */
+
 h2{
     margin-top: 20px;
     text-align: center;
@@ -101,10 +141,27 @@ h2{
     font-family: var(--font2);
 }
 
+.catalogoJogo > .jogo > button{
+    width: 18%;
+    height: 12%;
+    background-color: var(--cor2);
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    border-radius: 25px;
+    border-color: rgba(0, 0, 0, 0.884);
+}
+
+.catalogoJogo > .jogo > button:active{
+    box-shadow: inset 5px 5px 13px 0px rgba(0, 0, 0, 0.479);
+}
+
 .catalogoJogo > .jogo > img{
     padding:0px;
     width: 100%;
     height: 85%;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
 }
 
 .catalogoJogo > .jogo > h4{
@@ -112,7 +169,15 @@ h2{
     text-align: center;
 }
 
-#modalAdicionar{
-    text-align: center;
+.modal-header {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+    border-top-left-radius: calc(0.3rem - 1px);
+    border-top-right-radius: calc(0.3rem - 1px);
+    margin: auto;
 }
 </style>
