@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-contain fluid>
+        <b-container fluid>
             <div id="txtEntrada">
                 <b-col cols="12">
                     <h1>És amante da sétima arte?</h1>
@@ -36,7 +36,7 @@
 
             </div>
 
-        </b-contain>
+        </b-container>
         
     </div>
 </template>

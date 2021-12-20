@@ -33,26 +33,13 @@ export default new Vuex.Store({
     },{
       nome: 'Quantos herois conheces?',
       img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },
+    }
   ],
+    tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista']
   },
   getters: {
     getJogos: (state) => state.jogos,
+    getTipoJogo: (state) => state.tipoJogo,
   },
   mutations: {
     SET_NOVO_JOGO(state, payload) {

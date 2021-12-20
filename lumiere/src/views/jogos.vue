@@ -10,7 +10,7 @@
                 </b-col>
                 <b-col cols=4 id="adminAcoes">
                     <button @click="acaoAdmin = true" v-if="!acaoAdmin">Editar</button>
-                    <button v-b-modal.adicionarModal v-else>Adcionar</button>
+                    <button v-b-modal = "'adicionarModal'" v-else>Adcionar</button>
                 </b-col>
             </b-row>
             <b-row id="catalogoJogos">
@@ -25,41 +25,58 @@
             </b-row>
 
             <!-- Modais -->
-            <b-modal id="adicionarModal" centered>
+            <b-modal id="adicionarModal" centered
+                header-bg-variant="primary"
+                header-text-variant="light"
+                body-bg-variant="info"
+                footer-bg-variant="info">
+                <template #modal-header="{close}">
+                    <b-col cols=11 style="text-align: center; padding-left: 30px">
+                        <h4>Adicionar Jogo</h4>
+                    </b-col>
+                    <b-col style="text-align: right">
+                        <b-button @click="close" variant="primary" style="font-size: 2em; position: relative; top: -15px;" >x</b-button>
+                    </b-col>
+                </template>
                 <template>
-                    <h5>Adcionar</h5>
+                    <b-row>
+                        <b-col cols="4">
+                            <b-button variant="light" style="height: 65%; width:75%; margin-top: 15%;">Foto Jogo <br>X</b-button>
+                        </b-col>
+                        <b-col cols="8">
+                            <b-form @submit.prevent="addJogo">
+                                <div class="form-group">
+                                  <label for="txtNome">Nome</label>
+                                  <input type="text"
+                                    class="form-control" name="txtNome" id="txtNome" placeholder="Nome do Jogo">
+                                </div>
+                                <div class="form-group">
+                                  <label for="selectTipoJogo">Tipo de Jogo</label>
+                                  <select class="form-control" name="" id="">
+                                    <option disabled>--Selecione o tipo de jogo--</option>
+                                    <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{tipo}}</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="txtNome">Questões</label>
+                                  <input type="text"
+                                    class="form-control" name="txtNome" id="txtNome" placeholder="Separadas por virgula">
+                                </div>
+                                <div class="form-group">
+                                  <label for="txtNome">Anexos</label>
+                                  <input type="url"
+                                    class="form-control" name="txtNome" id="txtNome" placeholder="Separadas por virgula">
+                                </div>
+                            </b-form>
+                        </b-col>
+                    </b-row>
                 </template>
-
-                <template #default="{ hide }">
-                <p>Modal Body with button</p>
-                <b-button @click="hide()">Hide Modal</b-button>
+                <template #modal-footer>
+                    <div style="margin: auto">
+                        <b-button variant="primary" @click="addJogo()">ADICIONAR</b-button>
+                    </div>
                 </template>
-
-                <template #modal-footer="{ ok, cancel, hide }">
-                <b>Custom Footer</b>
-                <!-- Emulate built in modal footer ok and cancel button actions -->
-                <b-button size="sm" variant="success" @click="ok()">
-                    OK
-                </b-button>
-                <b-button size="sm" variant="danger" @click="cancel()">
-                    Cancel
-                </b-button>
-                <!-- Button with custom close trigger value -->
-                <b-button size="sm" variant="outline-secondary" @click="hide('forget')">
-                    Forget it
-                </b-button>
-                </template>
-            </b-modal>
-
-            <!-- <dialog :open="modalAdcionar">
-                <div id="modalCabecalho">
-                    ADICIONAR
-                    <button>X</button>
-                </div>
-                <div id="modalCorpo">
-                    
-                </div>   
-            </dialog> -->
+            </b-modal> 
         </b-container> 
     </div>
 </template>
@@ -73,29 +90,22 @@
         data() {
             return {
                 acaoAdmin: false,
-                // modalAdcionar: false,
             }
         },
 
         computed: {
-            ...mapGetters(['getJogos']),
+            ...mapGetters(['getJogos', 'getTipoJogo']),
         },
 
         methods: {
-            // abrirModal(){
-            //     this.modalAdcionar = true;
-            // }
+            addJogo(){
+                
+            }
         },
     }
 </script>
 
-<style scoped>
-/* dialog{
-    position: absolute;
-    top: 45%;
-    left: 45%;
-} */
-
+<style>
 h2{
     margin-top: 20px;
     text-align: center;
@@ -169,15 +179,7 @@ h2{
     text-align: center;
 }
 
-.modal-header {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem;
-    border-bottom: 1px solid #dee2e6;
-    border-top-left-radius: calc(0.3rem - 1px);
-    border-top-right-radius: calc(0.3rem - 1px);
-    margin: auto;
+#adicionarModal > #modalCabecalho{
+    margin-top:auto;
 }
 </style>
