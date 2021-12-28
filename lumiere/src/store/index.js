@@ -33,22 +33,7 @@ export default new Vuex.Store({
     },{
       nome: 'Quantos herois conheces?',
       img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },
+    }
   ],
     utilizadores: localStorage.utilizadores? JSON.parse(localStorage.utilizadores) : [
         {
@@ -67,6 +52,7 @@ export default new Vuex.Store({
         },
       ],
       loggedUser: null,
+    tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista']
   },
 
   getters: {
@@ -74,6 +60,7 @@ export default new Vuex.Store({
     isUser: (state) => (username, password) => state.utilizadores.some((user) => user.username === username && user.password === password),
     isUsernameAvailable: (state) => (username) => state.utilizadores.every((user) => user.username !== username),
     getLoggedUser: (state) => state.loggedUser,
+    getTipoJogo: (state) => state.tipoJogo,
   },
   mutations: {
     SET_NOVO_JOGO(state, payload) {
