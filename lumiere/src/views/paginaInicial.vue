@@ -115,7 +115,7 @@
     }
 
     #infoCatalogo{
-        align: right;
+        text-align: right;
     }
 
     #imgCatalogo{
@@ -174,7 +174,7 @@
         background-color: var(--cor3);
         margin-left: 30px;
         margin-right: 30px;
-        align: center;
+        text-align: center;
         background-image: url('../assets/img/sobreNos.svg');
 
     }
