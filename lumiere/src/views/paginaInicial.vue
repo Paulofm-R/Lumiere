@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-contain fluid>
+        <b-container fluid>
             <div id="txtEntrada">
                 <b-col cols="12">
                     <h1>És amante da sétima arte?</h1>
@@ -36,7 +36,7 @@
 
             </div>
 
-        </b-contain>
+        </b-container>
         
     </div>
 </template>
@@ -59,9 +59,9 @@
     h3{
         margin-left: 12vw;
         margin-right: 12vw;
-        padding-top: 5vw;
-        font-family: var(--font1);
-        font-size: 72pt;
+        padding-top: 3vw;
+        font-family: var(--font2);
+        font-size: 700pt;
     }
 
     p{
@@ -101,8 +101,8 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 400px;
-        margin-right: 15px;
+        margin-left: 300px;
+        margin-right: 30px;
         align-content: center;
         background-image: url('../assets/img/catalogo.svg');
 
@@ -121,7 +121,7 @@
     #imgCatalogo{
         position: relative;
         top: -20vh;
-        left: 50%;
+        left: 49.5%;
         width: 15vw;
         height: 15vh;
     }
@@ -139,9 +139,8 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 15px;
-        margin-right: 15px;
-        align: center;
+        margin-left: 30px;
+        margin-right: 30px;
         background-image: url('../assets/img/jogos.svg');
 
     }
@@ -173,8 +172,8 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 15px;
-        margin-right: 15px;
+        margin-left: 30px;
+        margin-right: 30px;
         align: center;
         background-image: url('../assets/img/sobreNos.svg');
 

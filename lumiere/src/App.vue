@@ -9,8 +9,62 @@
           <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
           <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-          <button id="entrar">ENTRAR</button>
+          <b-button v-if='loggedUser == null' v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
+          <router-link v-else class="link" :to="{name: 'perfil'}">
+            nome
+            <img src="" alt="">
+          </router-link>
+          
         </b-col>
+        <b-modal id="adicionarModal" centered
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light">
+                <template #modal-header="">
+                    LOGIN
+                </template>
+                <template>
+                  <form submit.prevent = "login">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" v-model="username">
+                    <br>
+                    <label for="password">Password :  </label>
+                    <input type="password" id="password" v-model="password">
+                    <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
+                  </form>
+                </template>
+                <template #modal-footer>
+                    <b-button id='login' @click='login()'>Login</b-button>
+                </template>
+          </b-modal>
+          <b-modal id="registarModal" centered
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light">
+                <template #modal-header="">
+                    REGISTAR
+                </template>
+                <template>
+                  <form submit.prevent="regitar">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" v-model="username">
+                    <br>
+                    <label for="password">Password :  </label>
+                    <input type="password" id="password" v-model="password">
+                    <br>
+                    <label for="cPassword">Confirmar Password:  </label>
+                    <input type="password" id="cPassword" v-model="cPassword">
+                    <br>
+                    <label for="dataNasc">Data Nascimento:  </label>
+                    <input type="date" id="dataNasc" v-model="dataNasc">
+                  </form> 
+                </template>
+                <template #modal-footer>
+                    <b-button id='registar' @click='registar()'>Registar</b-button>
+                </template>
+          </b-modal>
         <router-view/>
       </b-row>
     </b-container>
@@ -18,11 +72,16 @@
 </template>
 
 <script>
+    import {mapGetters, mapMutations} from 'vuex';
     export default {
         name: 'App',
         data() {
             return {
-                utilizadores: localStorage.getItem('utilizadores') ? JSON.parse(localStorage.getItem('utilizadores')) : [],
+              username: '',
+              password: '',
+              cPassword: '',
+              dataNasc: '',
+              utilizadores: localStorage.getItem('utilizadores') ? JSON.parse(localStorage.getItem('utilizadores')) : [],
                 
             }
         },
@@ -45,6 +104,30 @@
               },
               ];
           }
+        },
+
+        computed: {
+          ...mapGetters(['isUser']),
+          ...mapGetters(['isUsernameAvailable']),
+        },
+
+        methods: {
+          login(){
+            if(this.isUser(this.username, this.password)){
+              this.SET_LOGGED_USER(this.username);
+            }else{
+              alert('User Not Found')
+            }
+          },
+          ...mapMutations(['SET_LOGGED_USER']),
+          registar(){
+            if(this.isUsernameAvailable(this.username)) {
+              this.SET_NEW_USER(this.username);
+            }else{
+              alert('User Already Exists')
+            }
+          },
+          ...mapMutations(['SET_NEW_USER'])
         },
 
         watch: {
@@ -129,5 +212,10 @@
   border-radius: 10px;
   width: 75px;
   font-family: var(--font1);
+}
+
+#txtRegisto{
+  font-family: var(--font1);
+  font-size: 12px;
 }
 </style>
