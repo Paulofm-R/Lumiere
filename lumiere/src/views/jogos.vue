@@ -284,6 +284,7 @@ h2{
     cursor: pointer;
     height: 285px; 
     width: 185px;
+    font-size: 105%;
 }
 
 .catalogoJogo > .jogo > button{
@@ -315,8 +316,6 @@ h2{
     height: 15%;
     text-align: center;
 }
-
-
 
 .catalogoJogo > .jogo > .nomeJogo > h4{
     font-size: 110%;

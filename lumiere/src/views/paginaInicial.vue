@@ -115,13 +115,13 @@
     }
 
     #infoCatalogo{
-        text-align: right;
+        /* text-align: right; */
     }
 
     #imgCatalogo{
         position: relative;
         top: -20vh;
-        left: 69.5%;
+        left: 49.5%;
         width: 15vw;
         height: 15vh;
     }
@@ -174,7 +174,7 @@
         background-color: var(--cor3);
         margin-left: 30px;
         margin-right: 30px;
-        text-align: center;
+        /* text-align: center; */
         background-image: url('../assets/img/sobreNos.svg');
 
     }

@@ -11,12 +11,12 @@
                     </b-row>
                     <b-row align-h="around">
                         <b-col class="alternativas" cols='4' v-for="(alternativa, ind) in jogo.alternativas" :key="ind">
-                            <button :class="selecionada == alternativa ? 'selecionada': 'naoSelecionada'" @click='selecionar(alternativa, index)'>{{alternativa}}</button>
+                            <b-button variant="outline-dark" class='botao' :class="selecionada[index] == alternativa ? 'selecionada': 'naoSelecionada'" @click='selecionar(alternativa, index)'>{{alternativa}}</b-button>
                         </b-col>
                     </b-row>
                 </div>
                 <b-row>
-                    <button id="terminarQuizz" @click="terminar(jogo.nome)">TERMINAR QUIZZ</button>
+                    <b-button class="botao" id="terminarQuizz" @click="terminar(jogo.nome)">TERMINAR QUIZZ</b-button>
                 </b-row>
             </div>
         </b-container>
@@ -53,8 +53,9 @@
             this.jogo = JSON.parse(localStorage.getItem('jogos')).find((jogo) => jogo.nome == this.$route.params.jogoNome);
         },
         computed: {
-            perguntas() {
-                return this.jogo.perguntas;
+            selecionada() {
+                console.log(this.selecionadasQuizz);
+                return this.selecionadasQuizz;
             }
         },
     }
@@ -67,10 +68,11 @@ h2{
     font-size: 2.5em;
 }
 
-button{
+.botao{
     border-color: var(--cor1);
     font-family: var(--font1);
     font-size: 1.25em;
+    color: black;
 }
 
 .pergunta{
@@ -93,10 +95,13 @@ button{
     text-align: center;
 }
 
-.alternativas > .naoSelecionada{
-    background-color: var(--cor4);
+.alternativas > .botao{
     height:100%;
     width: 100%;
+}
+
+.alternativas > .naoSelecionada{
+    background-color: var(--cor4);
 }
 
 .alternativas > .naoSelecionada:hover{
@@ -105,8 +110,6 @@ button{
 
 .alternativas > .selecionada{
     background-color: var(--cor3);
-    height:100%;
-    width: 100%;
 }
 
 .alternativas > button:active{

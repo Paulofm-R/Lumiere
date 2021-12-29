@@ -9,9 +9,9 @@
           <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
           <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-          <b-button v-if="loggedUser != ''" v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
+          <b-button v-if="getLoggedUser == ''" v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{name: 'perfil'}">
-            <p>{{this.nome}}</p>
+            <p>{{getLoggedUser.nome}}</p>
             <img src="" alt="">
           </router-link>
           
@@ -83,41 +83,18 @@
               data_nascimento: '',
               tipo: 'utilizador',
               utilizadores: localStorage.getItem('utilizadores') ? JSON.parse(localStorage.getItem('utilizadores')) : [],
-                
-            }
-        },
-        created () {
-          if (this.utilizadores.length == 0) {
-            this.utilizadores = [
-              {
-                nome: "Paulo Rodrigues",
-                palavra_passe: 'nao sei',
-                data_nascimento: '2000-09-16',
-                foto: '',
-                tipo: 'admin',
-              },
-              {
-                nome: "Sofia Freitas",
-                palavra_passe: 'nao sei',
-                data_nascimento: '2001-11-07',
-                foto: '',
-                tipo: 'admin',
-              },
-              ];
           }
         },
 
         computed: {
-          ...mapGetters(['isUser'],['isUsernameAvailable']),
-
+          ...mapGetters(['isUser','isUsernameAvailable', 'getLoggedUser']),
         },
 
         methods: {
+          ...mapMutations(['SET_NEW_USER', 'SET_LOGGED_USER']),
+
           login(){
-            console.log(this.nome)
-            console.log(this.palavra_passe)
             if(this.isUser(this.nome, this.palavra_passe)){
-              console.log("DEU?")
               this.SET_LOGGED_USER(this.nome);
               this.loggedUser = this.nome;
               console.log(this.loggedUser)
@@ -125,7 +102,6 @@
               alert('User Not Found')
             }
           },
-          ...mapMutations(['SET_LOGGED_USER']),
 
           registar(){
             if(this.utilizadores.nome != this.nome) {
@@ -148,7 +124,6 @@
               alert('User Already Exists')
             }
           },
-          ...mapMutations(['SET_NEW_USER'])
         },
 
         watch: {
