@@ -87,7 +87,7 @@ export default new Vuex.Store({
           tipo: 'admin',
         },
       ],
-      loggedUser: null,
+      loggedUser: '',
     tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista']
   },
 
@@ -95,8 +95,8 @@ export default new Vuex.Store({
     getJogos: (state) => state.jogos,
     getTipoJogo: (state) => state.tipoJogo,
     isNomeJogoAvalido: (state) => (nome) => state.jogos.every((jogo) => jogo.nome !== nome),
-    isUser: (state) => (username, password) => state.utilizadores.some((user) => user.username === username && user.password === password),
-    isUsernameAvailable: (state) => (username) => state.utilizadores.every((user) => user.username !== username),
+    isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.password === palavra_passe),
+    isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
     getLoggedUser: (state) => state.loggedUser,
   },
   mutations: {
@@ -109,12 +109,13 @@ export default new Vuex.Store({
       localStorage.jogos = JSON.stringify(state.jogos);
     },
     SET_LOGGED_USER(state, payload){
-      state.loggedUser = state.utilizadores.find((user) => user.username === payload);
+      state.loggedUser = state.utilizadores.find((user) => user.nome === payload);
       localStorage.loggedUser = JSON.stringify(state.loggedUser);
     },
     SET_NEW_USER(state, payload){
       state.utilizadores.push(payload);
-      // localStotage.utilizadores = JSON.stringify(state.utilizadores);
+      state.loggedUser = state.utilizadores.find((user) => user.nome === payload);
+      localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
     SET_LOGOUT(state){
       state.loggedUser = null;

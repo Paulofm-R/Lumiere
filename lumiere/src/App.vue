@@ -9,7 +9,7 @@
           <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
           <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-          <b-button v-if='loggedUser == null' v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
+          <b-button v-if="loggedUser != ''" v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{name: 'perfil'}">
             nome
             <img src="" alt="">
@@ -27,10 +27,10 @@
                 <template>
                   <form submit.prevent = "login">
                     <label for="username">Username: </label>
-                    <input type="text" id="username" v-model="username">
+                    <input type="text" id="username" v-model="nome">
                     <br>
                     <label for="password">Password :  </label>
-                    <input type="password" id="password" v-model="password">
+                    <input type="password" id="password" v-model="palavra_passe">
                     <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
                   </form>
                 </template>
@@ -49,16 +49,16 @@
                 <template>
                   <form submit.prevent="regitar">
                     <label for="username">Username: </label>
-                    <input type="text" id="username" v-model="username">
+                    <input type="text" id="username" v-model="nome">
                     <br>
                     <label for="password">Password :  </label>
-                    <input type="password" id="password" v-model="password">
+                    <input type="password" id="password" v-model="palavra_passe">
                     <br>
                     <label for="cPassword">Confirmar Password:  </label>
-                    <input type="password" id="cPassword" v-model="cPassword">
+                    <input type="password" id="cPassword" v-model="cpalavra_passe">
                     <br>
                     <label for="dataNasc">Data Nascimento:  </label>
-                    <input type="date" id="dataNasc" v-model="dataNasc">
+                    <input type="date" id="dataNasc" v-model="data_nascimento">
                   </form> 
                 </template>
                 <template #modal-footer>
@@ -77,10 +77,11 @@
         name: 'App',
         data() {
             return {
-              username: '',
-              password: '',
-              cPassword: '',
-              dataNasc: '',
+              nome: '',
+              palavra_passe: '',
+              cpalavra_passe: '',
+              data_nascimento: '',
+              tipo: 'utilizador',
               utilizadores: localStorage.getItem('utilizadores') ? JSON.parse(localStorage.getItem('utilizadores')) : [],
                 
             }
@@ -107,22 +108,37 @@
         },
 
         computed: {
-          ...mapGetters(['isUser']),
-          ...mapGetters(['isUsernameAvailable']),
+          ...mapGetters(['isUser'],['isUsernameAvailable']),
         },
 
         methods: {
           login(){
-            if(this.isUser(this.username, this.password)){
-              this.SET_LOGGED_USER(this.username);
+            console.log(this.nome)
+            console.log(this.palavra_passe)
+            if(this.isUser(this.nome, this.palavra_passe)){
+              console.log("DEU?")
+              this.SET_LOGGED_USER(this.nome);
             }else{
               alert('User Not Found')
             }
           },
           ...mapMutations(['SET_LOGGED_USER']),
+
           registar(){
-            if(this.isUsernameAvailable(this.username)) {
-              this.SET_NEW_USER(this.username);
+            if(this.utilizadores.nome != this.nome) {
+              let novoUser = {
+                nome: this.nome,
+                palavra_passe: this.palavra_passe,
+                data_nascimento: this.data_nascimento,
+                foto: '',
+                tipo: 'utilizador',
+              }
+              if(this.palavra_passe == this.cpalavra_passe){
+                this.SET_NEW_USER(this.utilizadores.push(novoUser));
+              }else{
+                alert('ERROR')
+              }
+              
             }else{
               alert('User Already Exists')
             }

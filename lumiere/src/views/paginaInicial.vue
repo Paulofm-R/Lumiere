@@ -121,7 +121,7 @@
     #imgCatalogo{
         position: relative;
         top: -20vh;
-        left: 49.5%;
+        left: 69.5%;
         width: 15vw;
         height: 15vh;
     }
