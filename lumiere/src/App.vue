@@ -11,7 +11,7 @@
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
           <b-button v-if="loggedUser != ''" v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{name: 'perfil'}">
-            nome
+            <p>{{this.nome}}</p>
             <img src="" alt="">
           </router-link>
           
@@ -109,6 +109,7 @@
 
         computed: {
           ...mapGetters(['isUser'],['isUsernameAvailable']),
+
         },
 
         methods: {
@@ -118,6 +119,8 @@
             if(this.isUser(this.nome, this.palavra_passe)){
               console.log("DEU?")
               this.SET_LOGGED_USER(this.nome);
+              this.loggedUser = this.nome;
+              console.log(this.loggedUser)
             }else{
               alert('User Not Found')
             }
@@ -135,6 +138,8 @@
               }
               if(this.palavra_passe == this.cpalavra_passe){
                 this.SET_NEW_USER(this.utilizadores.push(novoUser));
+                this.loggedUser = novoUser
+                console.log(this.loggedUser)
               }else{
                 alert('ERROR')
               }

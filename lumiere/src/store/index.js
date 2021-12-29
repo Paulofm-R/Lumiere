@@ -95,7 +95,7 @@ export default new Vuex.Store({
     getJogos: (state) => state.jogos,
     getTipoJogo: (state) => state.tipoJogo,
     isNomeJogoAvalido: (state) => (nome) => state.jogos.every((jogo) => jogo.nome !== nome),
-    isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.password === palavra_passe),
+    isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.palavra_passe === palavra_passe),
     isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
     getLoggedUser: (state) => state.loggedUser,
   },
@@ -118,7 +118,7 @@ export default new Vuex.Store({
       localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
     SET_LOGOUT(state){
-      state.loggedUser = null;
+      state.loggedUser = '';
       localStorage.removeItem('loggedUser');
     }
   },
