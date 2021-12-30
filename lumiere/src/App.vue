@@ -11,7 +11,7 @@
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
           <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{name: 'perfil'}">
-            <p>{{getLoggedUser.nome}}</p>
+            <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
             <img src="../src/assets/img/User.svg" id="imgPerfil">
           </router-link>
           
@@ -113,7 +113,7 @@
                 tipo: 'utilizador',
               }
               if(this.palavra_passe == this.cpalavra_passe){
-                this.SET_NEW_USER(this.utilizadores.push(novoUser));
+                this.SET_NEW_USER(novoUser);
                 this.SET_LOGGED_USER(this.nome);
                 this.loggedUser = novoUser
                 console.log(this.loggedUser)
@@ -210,6 +210,10 @@
   border-radius: 10px;
   width: 75px;
   font-family: var(--font1);
+}
+
+#nomeUtilizador{
+  padding-right: 10px;
 }
 
 #txtRegisto{

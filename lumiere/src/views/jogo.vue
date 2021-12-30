@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-container>
-            <h2>{{jogo.nome}}</h2>
+            <h1>{{jogo.nome}}</h1>
             <div v-if="jogo.tipo == 'Quizz'">
                 <div id="jogo" v-for="(jogo, index) in jogo.perguntas" :key="index">
                     <b-row align-h="center" >
@@ -62,7 +62,7 @@
 </script>
 
 <style scoped>
-h2{
+h1{
     margin-top: 5vh;
     font-family: var(--font2);
     font-size: 2.5em;

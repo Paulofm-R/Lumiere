@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-container fluid>
-            <h2>JOGOS</h2>
+            <h1>JOGOS</h1>
             <b-row align-h="between">
                 <b-col cols=4 id="filtro">
                     <select name="filtroJogos" id="filtroJogos">
@@ -234,8 +234,8 @@
     }
 </script>
 
-<style>
-h2{
+<style scoped>
+h1{
     margin-top: 20px;
     text-align: center;
     font-family: var(--font2);

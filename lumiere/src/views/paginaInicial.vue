@@ -47,7 +47,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     h1{
         text-align: center;
         padding-top: 500 px;
