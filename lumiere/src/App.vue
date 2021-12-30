@@ -9,14 +9,14 @@
           <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
           <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
           <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-          <b-button v-if="getLoggedUser == ''" v-b-modal.adicionarModal id="entrar">ENTRAR</b-button>
+          <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{name: 'perfil'}">
             <p>{{getLoggedUser.nome}}</p>
-            <img src="" alt="">
+            <img src="../src/assets/img/User.svg" id="imgPerfil">
           </router-link>
           
         </b-col>
-        <b-modal id="adicionarModal" centered
+        <b-modal id="loginModal" centered
                 header-bg-variant="info"
                 header-text-variant="light"
                 body-bg-variant="light"
@@ -104,7 +104,7 @@
           },
 
           registar(){
-            if(this.utilizadores.nome != this.nome) {
+            if(this.isUsernameAvailable(this.nome)) {
               let novoUser = {
                 nome: this.nome,
                 palavra_passe: this.palavra_passe,
@@ -114,6 +114,7 @@
               }
               if(this.palavra_passe == this.cpalavra_passe){
                 this.SET_NEW_USER(this.utilizadores.push(novoUser));
+                this.SET_LOGGED_USER(this.nome);
                 this.loggedUser = novoUser
                 console.log(this.loggedUser)
               }else{
@@ -214,5 +215,12 @@
 #txtRegisto{
   font-family: var(--font1);
   font-size: 12px;
+}
+
+#imgPerfil{
+  width: 50px;
+  height: 50px;
+  border-radius: 90%;
+  
 }
 </style>

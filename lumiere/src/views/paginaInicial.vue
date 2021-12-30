@@ -23,7 +23,7 @@
             </div>
             <div id="infoJogos">
                 <h3 align="right">JOGOS</h3>
-                <p align="right">Encontra diversos jogos sobre os teus filmes e <br> séries favoritas. Compete contra outros cinéfilos <br> como tu e prova quem é o verdadeiro conhecedor <br> da sétima arte. Entra para jogar!</p>
+                <p style="text-align: right">Encontra diversos jogos sobre os teus filmes e <br> séries favoritas. Compete contra outros cinéfilos <br> como tu e prova quem é o verdadeiro conhecedor <br> da sétima arte. Entra para jogar!</p>
                 <img src="../assets/img/vetor.svg" id="vetor2">
                 <img src="../assets/img/jogosImg.svg" id="imgJogo">
 
