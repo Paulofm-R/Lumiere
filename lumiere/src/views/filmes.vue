@@ -2,6 +2,8 @@
     <div>
         <b-container fluid>
             <h1>CATÁLOGO</h1>
+
+            <router-link :to="{name: 'filme'}">Para a Sofia ter acesso a pagina de Filme</router-link>
             
             <b-row id="melhorAvaliados">
                 <h2>Filmes Melhor Avaliados</h2>
