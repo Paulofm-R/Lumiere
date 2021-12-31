@@ -1,17 +1,18 @@
 <template>
     <div>
         <b-container fluid>
-            <h1>CATÁLOGO</h1>
-
             <router-link :to="{name: 'filme'}">Para a Sofia ter acesso a pagina de Filme</router-link>
+            <h1>CATÁLOGO</h1>
             
-            <b-row id="melhorAvaliados">
+            <b-row id="melhorAvaliados" align-h="center">
                 <h2>Filmes Melhor Avaliados</h2>
-                <div class="card" v-for="(filme, index) in getFilmes" :key="index">
-                    <img :src="filme.imagem" alt="Poster">
-                    <span>{{filme.nome}}</span><br>
-                    <span>{{filme.avaliacao}}</span>
-                </div>
+                <b-col cols="2" class="catalogoMelhorAvaliados" v-for="(filme, index) in getFilmes" :key="index">
+                    <div class="card" @click="escolherFilme(filme.nome)">
+                        <img :src="filme.imagem" alt="Poster">
+                        <span>{{filme.nome}}</span>
+                        <span>{{filme.avaliacao}} <b-icon icon="star-fill"></b-icon></span>
+                    </div>
+                </b-col>
             </b-row>
             
         </b-container>
@@ -31,6 +32,12 @@
 
         computed: {
             ...mapGetters(['getFilmes'])
+        },
+
+        methods: {
+            escolherFilme(nome) {
+                this.$router.push({ name: "filme", params:{ filmeNome: nome }});
+            }
         },
     }
 </script>
@@ -52,15 +59,33 @@ h2{
     margin-top: 10vh;
 }
 
-.card{
-    height: 400px;
+.catalogoMelhorAvaliados{
+    margin-left: 10px;
+    margin-top: 3vh;
+    height: 395px;
     width: 235px;
-    margin: auto;
+    opacity: 90%;
+}
+
+.catalogoMelhorAvaliados:hover{
+    cursor: pointer;
+    opacity: 100%;
+}
+
+.catalogoMelhorAvaliados:nth-child(3) {
+    margin-top: 1vh;
+    height: 425px;
+    width: 245px;
+}
+
+.catalogoMelhorAvaliados > .card{
+    height: 100%;
+    width: 100%;
     background-color: var(--cor0);
 }
 
 .card > img{
-    height: 365px;
+    height: 91.25%;
     width: 100%;
 }
 </style>

@@ -25,20 +25,6 @@
                     </div>
                 </b-col>
             </b-row>
-            <!-- <b-row id="catalogoJogos">
-                <b-col cols=3 class="catalogoJogo" v-for="(jogo, index) in getJogos" :key="index">
-                    <b-card
-                        :title="jogo.nome"
-                        :img-src="jogo.img"
-                        img-alt="Image"
-                        img-top
-                        tag="article"
-                        style="max-width: 20rem;"
-                        class="mb-2 card jogo"
-                    >
-                    </b-card>
-                </b-col>
-            </b-row> -->
 
             <!-- Modais -->
             <!-- Modal para criar um jogo novo -->
