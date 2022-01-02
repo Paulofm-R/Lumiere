@@ -23,6 +23,7 @@ export default new Vuex.Store({
       },
     ],
     loggedUser: '',
+
     // Jogos
     jogos: localStorage.jogos ? JSON.parse(localStorage.jogos) : [{
       nome: 'Marvel Quizz',
@@ -91,23 +92,54 @@ export default new Vuex.Store({
     }
   ], 
     tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista'],
+
     // Filmes
     filmes: localStorage.filmes ? JSON.parse(localStorage.filmes) : [{ 
-      nome: 'Ant-Man and theWasp (2019)',
+      nome: 'Ant-Man and the Wasp (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg',
       trailer: '',
       avaliacao: 3.5,
+      tipo: 'Filme',
+      categoria: ['Ação', 'Aventura', 'Comédia'],
     },{ 
       nome: 'Avengers - EndGame (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
       trailer: '',
       avaliacao: 4.2,
+      tipo: 'Filme',
+      categoria: ['Ação', 'Aventura', 'Drama'],
     },{ 
       nome: 'Guardians of the Galaxy (2014)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_.jpg',
       trailer: '',
       avaliacao: 4.0,
+      tipo: 'Filme',
+      categoria: ['Ação', 'Aventura', 'Comédia'],
+    },
+    { 
+      nome: 'How I met your Mother',
+      imagem: 'https://br.web.img3.acsta.net/pictures/18/01/19/01/04/5560874.jpg',
+      trailer: '',
+      avaliacao: 4.2,
+      tipo: 'Serie',
+      categoria: ['Comédia', 'Romance'],
+    },{ 
+      nome: 'Friends',
+      imagem: 'https://br.web.img3.acsta.net/r_1280_720/pictures/21/05/14/08/25/4008276.jpg',
+      trailer: '',
+      avaliacao: 4.4,
+      tipo: 'Serie',
+      categoria: ['Comédia', 'Romance'],
+    },{ 
+      nome: 'Modern Family',
+      imagem: 'https://i.pinimg.com/originals/f0/f3/41/f0f34178d91a5b283e1ec39e982dc4b7.jpg',
+      trailer: '',
+      avaliacao: 4.2,
+      tipo: 'Serie',
+      categoria: ['Comédia', 'Drama', 'Romance'],
     },],
+
+    categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance']
   },
 
   getters: {
@@ -115,13 +147,17 @@ export default new Vuex.Store({
     isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.palavra_passe === palavra_passe),
     isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
     getLoggedUser: (state) => state.loggedUser,
+
      // Jogos
     getJogos: (state) => state.jogos,
     isNomeJogoAvalido: (state) => (nome) => state.jogos.every((jogo) => jogo.nome !== nome),
     getTipoJogo: (state) => state.tipoJogo,
+
     // Filmes
     getFilmes: (state) => state.filmes,
+    getCategoria: (state) => state.categoria,
   },
+
   mutations: {
     // Utilizador
     SET_LOGGED_USER(state, payload){
@@ -137,6 +173,7 @@ export default new Vuex.Store({
       state.loggedUser = '';
       localStorage.removeItem('loggedUser');
     },
+
     // Jogos
     SET_NOVO_JOGO(state, payload) {
       state.jogos.push(payload);
@@ -146,6 +183,7 @@ export default new Vuex.Store({
       state.jogos = state.jogos.filter((jogo) => jogo.nome != payload)
       localStorage.jogos = JSON.stringify(state.jogos);
     },
+    
     // Filmes
     SET_NOVO_FILME(state, payload) {
       state.filmes.push(payload);
