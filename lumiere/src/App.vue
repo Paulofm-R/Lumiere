@@ -1,140 +1,15 @@
 <template>
   <div id="app">
-    <b-container fluid>
-      <b-row id="nav">
-        <b-col cols="4"> 
-          <router-link to="/" id="nome">Lumière</router-link>
-        </b-col>
-        <b-col cols="8" id="links">
-          <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
-          <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
-          <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-          <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
-          <router-link v-else class="link" :to="{name: 'perfil'}">
-            <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
-            <img src="../src/assets/img/User.svg" id="imgPerfil">
-          </router-link>
-          
-        </b-col>
-        <b-modal id="loginModal" centered
-                header-bg-variant="info"
-                header-text-variant="light"
-                body-bg-variant="light"
-                footer-bg-variant="light">
-                <template #modal-header="">
-                    LOGIN
-                </template>
-                <template>
-                  <form submit.prevent = "login">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" v-model="nome">
-                    <br>
-                    <label for="password">Password :  </label>
-                    <input type="password" id="password" v-model="palavra_passe">
-                    <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
-                  </form>
-                </template>
-                <template #modal-footer>
-                    <b-button id='login' @click='login()'>Login</b-button>
-                </template>
-          </b-modal>
-          <b-modal id="registarModal" centered
-                header-bg-variant="info"
-                header-text-variant="light"
-                body-bg-variant="light"
-                footer-bg-variant="light">
-                <template #modal-header="">
-                    REGISTAR
-                </template>
-                <template>
-                  <form submit.prevent="regitar">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" v-model="nome">
-                    <br>
-                    <label for="password">Password :  </label>
-                    <input type="password" id="password" v-model="palavra_passe">
-                    <br>
-                    <label for="cPassword">Confirmar Password:  </label>
-                    <input type="password" id="cPassword" v-model="cpalavra_passe">
-                    <br>
-                    <label for="dataNasc">Data Nascimento:  </label>
-                    <input type="date" id="dataNasc" v-model="data_nascimento">
-                  </form> 
-                </template>
-                <template #modal-footer>
-                    <b-button id='registar' @click='registar()'>Registar</b-button>
-                </template>
-          </b-modal>
-        <router-view/>
-      </b-row>
-    </b-container>
+    <NavBar />
   </div>
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from 'vuex';
+    import NavBar from '@/components/NavBar.vue';
     export default {
-        name: 'App',
-        data() {
-            return {
-              nome: '',
-              palavra_passe: '',
-              cpalavra_passe: '',
-              data_nascimento: '',
-              tipo: 'utilizador',
-              utilizadores: localStorage.getItem('utilizadores') ? JSON.parse(localStorage.getItem('utilizadores')) : [],
-          }
-        },
-
-        computed: {
-          ...mapGetters(['isUser','isUsernameAvailable', 'getLoggedUser']),
-        },
-
-        methods: {
-          ...mapMutations(['SET_NEW_USER', 'SET_LOGGED_USER']),
-
-          login(){
-            if(this.isUser(this.nome, this.palavra_passe)){
-              this.SET_LOGGED_USER(this.nome);
-              this.loggedUser = this.nome;
-              console.log(this.loggedUser)
-            }else{
-              alert('User Not Found')
-            }
-          },
-
-          registar(){
-            if(this.isUsernameAvailable(this.nome)) {
-              let novoUser = {
-                nome: this.nome,
-                palavra_passe: this.palavra_passe,
-                data_nascimento: this.data_nascimento,
-                foto: '',
-                tipo: 'utilizador',
-              }
-              if(this.palavra_passe == this.cpalavra_passe){
-                this.SET_NEW_USER(novoUser);
-                this.SET_LOGGED_USER(this.nome);
-                this.loggedUser = novoUser
-                console.log(this.loggedUser)
-              }else{
-                alert('ERROR')
-              }
-              
-            }else{
-              alert('User Already Exists')
-            }
-          },
-        },
-
-        watch: {
-          utilizadores: {
-            deep: true,
-            handler() {
-              localStorage.setItem('utilizadores', JSON.stringify(this.utilizadores));
-            }
-          }
-        },
+      components: {
+        NavBar,
+      },
     }
 </script>
 
@@ -180,51 +55,5 @@
   min-height: 100vh;
   background-color: #010402;
   color: white;
-}
-
-#nav{
-  padding: 15px;
-}
-
-#nome{
-  text-decoration: none;
-  font-family: var(--font0);
-  font-size: 2em;
-  color: var(--cor3);
-}
-
-#links{
-  text-align: right;
-  padding-top: 10px;
-}
-
-.link{
-  padding: 10px;
-  text-decoration: none;
-  color: white;
-  font-family: var(--font1);
-}
-
-#entrar{
-  background-color: var(--cor3);
-  border-radius: 10px;
-  width: 75px;
-  font-family: var(--font1);
-}
-
-#nomeUtilizador{
-  padding-right: 10px;
-}
-
-#txtRegisto{
-  font-family: var(--font1);
-  font-size: 12px;
-}
-
-#imgPerfil{
-  width: 50px;
-  height: 50px;
-  border-radius: 90%;
-  
 }
 </style>
