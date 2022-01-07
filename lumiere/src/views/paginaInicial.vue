@@ -5,14 +5,20 @@
                 <b-col cols="12">
                     <h1>És amante da sétima arte?</h1>
                     <p id="entrada">Mostra-nos os teus conhecimentos ou conhece <br> novos filmes e  séries no catálogo, podes <br> encontrar o que os nossos  cinéfilos pensam sobre <br> eles.</p>
-                    <!-- <img src="../assets/img/Logo.svg"> -->
                 </b-col>
             </div> 
             <div id="links">
                 <b-row align="center center">
-                    <div id="catalogo"></div>
-                    <div id="jogos"></div>
-                    <div id="sobreNos"></div>
+                    <router-link class="link" :to="{name: 'filmes'}">
+                        <div id="catalogo"></div>
+                    </router-link>
+                    <router-link class="link" :to="{name: 'jogos'}">
+                        <div id="jogos"></div>
+                    </router-link>
+                    <router-link class="link" :to="{name: 'sobreNos'}">
+                        <div id="sobreNos"></div>
+                    </router-link>
+                    
                 </b-row>
             </div>
             <div id="infoCatalogo">
@@ -59,9 +65,9 @@
     h3{
         margin-left: 12vw;
         margin-right: 12vw;
-        padding-top: 3vw;
+        padding-top: 15vh;
         font-family: var(--font2);
-        font-size: 700pt;
+        font-size: 60px;
     }
 
     p{
@@ -69,7 +75,12 @@
         margin-right: 12vw;
         padding-top: 3vw;
         font-family: var(--font1);
-        font-size: 24pt;
+        font-size: 25px;
+    }
+
+    .link {
+        width: 15vw;
+        height: 30vh;
     }
 
     #entrada{
@@ -81,9 +92,10 @@
     }
 
     #txtEntrada{
-        background-image: url("../assets/img/Logo.svg");
+        background-image: url("../assets/img/LogoEntrada.svg");
         background-repeat: no-repeat;
         background-position: center center;
+        background-size: 30%;
     }
 
     /* img{
@@ -101,7 +113,7 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 300px;
+        margin-left: 320px;
         margin-right: 30px;
         align-content: center;
         background-image: url('../assets/img/catalogo.svg');
@@ -110,7 +122,9 @@
 
     #catalogo:hover{
         background-color: var(--cor2);
-        background-image: url('../assets/img/catalogo.svg');
+        background-image: url('../assets/img/catalogo_hoover.svg');
+        background-position: center;
+        background-size: 98%;
 
     }
 
@@ -139,7 +153,7 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 30px;
+        margin-left: 23.5vw;
         margin-right: 30px;
         background-image: url('../assets/img/jogos.svg');
 
@@ -147,7 +161,9 @@
 
     #jogos:hover{
         background-color: var(--cor2);
-        background-image: url('../assets/img/jogos.svg');
+        background-image: url('../assets/img/jogos_hoover.svg');
+        background-position: center;
+        background-size: 98%;
 
     }
 
@@ -172,7 +188,7 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 30px;
+        margin-left: 26.1vw;
         margin-right: 30px;
         /* text-align: center; */
         background-image: url('../assets/img/sobreNos.svg');
@@ -181,7 +197,9 @@
 
     #sobreNos:hover{
         background-color: var(--cor2);
-        background-image: url('../assets/img/sobreNos.svg');
+        background-image: url('../assets/img/sobreNos_hoover.svg');
+        background-position: center;
+        background-size: 98%;
 
     }
 
