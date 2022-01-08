@@ -8,7 +8,7 @@
                         <option value="" default disabled>Filtrar por...</option>
                     </select>
                 </b-col>
-                <b-col cols=4 id="adminAcoes">
+                <b-col v-if="getLoggedUser.tipo == 'admin'" cols=4 id="adminAcoes">
                     <button v-if="!acaoAdmin" @click="acaoAdmin = true">Editar</button>
                     <button v-else v-b-modal="'adicionarModal'">Adicionar</button>
                 </b-col>
@@ -125,7 +125,7 @@
                     </b-col>
                 </template>
                 <template>
-                    <b-form>
+                    <b-form v-if="form.tipo == 'quizz'">
                         <div class="mb-3" v-for="(questao, index) in form.questoes" :key="index">
                             <b-form-group :label="`${index+1}ª Pergunta:`" label-for="pergunta">
                                 <b-form-input class="pergunta" placeholder="Pergunta" v-model="questao.pergunta" required></b-form-input>
@@ -176,7 +176,7 @@
         },
 
         computed: {
-            ...mapGetters(['getJogos', 'getTipoJogo', 'isNomeJogoAvalido']),
+            ...mapGetters(['getJogos', 'getTipoJogo', 'isNomeJogoAvalido', 'getLoggedUser']),
         },
 
         methods: {

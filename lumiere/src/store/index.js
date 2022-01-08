@@ -22,7 +22,7 @@ export default new Vuex.Store({
         tipo: 'admin',
       },
     ],
-    loggedUser: '',
+    loggedUser: localStorage.loggedUser ? JSON.parse(localStorage.loggedUser) : '',
 
     // Jogos
     jogos: localStorage.jogos ? JSON.parse(localStorage.jogos) : [{
@@ -45,7 +45,26 @@ export default new Vuex.Store({
         pergunta: 'Como se chamava o meia/o irmã/ão do Wolverine?',
         alternativas: ['Ororo Munroe', 'Scott Summers', 'Jean Grey', 'Victor Creed'],
         resposta: 'Victor Creed',
-      }]
+      }],
+      classificacao: [{
+        utilizador: 'Joaquim Almeida',
+        pontuacao: 75,
+      },{
+        utilizador: 'Paulo Rodrigues',
+        pontuacao: 95
+      },{
+        utilizador: 'Carlos Fernandes',
+        pontuacao: 90
+      },{
+        utilizador: 'Sofia Freitas',
+        pontuacao: 90
+      },{
+        utilizador: 'Sofia Santos',
+        pontuacao: 95
+      },{
+        utilizador: 'Mario Peneda',
+        pontuacao: 100
+      },]
     },{
       nome: 'Quantos herois conheces?',
       img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
@@ -97,21 +116,21 @@ export default new Vuex.Store({
     filmes: localStorage.filmes ? JSON.parse(localStorage.filmes) : [{ 
       nome: 'Ant-Man and the Wasp (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg',
-      trailer: 'https://www.youtube.com/watch?v=UUkn-enk2RU',
+      trailer: 'https://www.youtube.com/embed/UUkn-enk2RU',
       avaliacao: 3.5,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
     },{ 
       nome: 'Avengers - EndGame (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/embed/TcMBFSGVi1c',
       avaliacao: 4.2,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Drama'],
     },{ 
       nome: 'Guardians of the Galaxy (2014)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/embed/d96cjJhvlMA',
       avaliacao: 4.0,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
@@ -119,24 +138,31 @@ export default new Vuex.Store({
     { 
       nome: 'How I met your Mother',
       imagem: 'https://br.web.img3.acsta.net/pictures/18/01/19/01/04/5560874.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/embed/aJtVL2_fA5w',
       avaliacao: 4.2,
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
     },{ 
       nome: 'Friends',
       imagem: 'https://br.web.img3.acsta.net/r_1280_720/pictures/21/05/14/08/25/4008276.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/embed/nnn02NDIEiE',
       avaliacao: 4.4,
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
     },{ 
       nome: 'Modern Family',
       imagem: 'https://i.pinimg.com/originals/f0/f3/41/f0f34178d91a5b283e1ec39e982dc4b7.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/embed/X0lRjbrH-L8',
       avaliacao: 4.2,
       tipo: 'Serie',
       categoria: ['Comédia', 'Drama', 'Romance'],
+    },{ 
+      nome: 'Mamma Mia',
+      imagem: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
+      trailer: 'https://www.youtube.com/embed/lkN-A00WLYE',
+      avaliacao: 3.8,
+      tipo: 'Filme',
+      categoria: ['Comédia', 'Musical', 'Romance'],
     },],
 
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance']

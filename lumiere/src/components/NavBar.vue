@@ -38,6 +38,7 @@
                             <b-button id='login' @click='login()'>Login</b-button>
                         </template>
                 </b-modal>
+
                 <b-modal id="registarModal" centered
                         header-bg-variant="info"
                         header-text-variant="light"
@@ -47,18 +48,18 @@
                             REGISTAR
                         </template>
                         <template>
-                        <form submit.prevent="regitar">
+                        <form @submit.prevent="regitar">
                             <label for="username">Username: </label>
-                            <input type="text" id="username" v-model="nome">
+                            <input type="text" id="username" v-model="nome" required>
                             <br>
                             <label for="password">Password :  </label>
-                            <input type="password" id="password" v-model="palavra_passe">
+                            <input type="password" id="password" v-model="palavra_passe" required>
                             <br>
                             <label for="cPassword">Confirmar Password:  </label>
-                            <input type="password" id="cPassword" v-model="cpalavra_passe">
+                            <input type="password" id="cPassword" v-model="cpalavra_passe" required>
                             <br>
                             <label for="dataNasc">Data Nascimento:  </label>
-                            <input type="date" id="dataNasc" v-model="data_nascimento">
+                            <input type="date" id="dataNasc" v-model="data_nascimento" required>
                         </form> 
                         </template>
                         <template #modal-footer>
@@ -97,33 +98,34 @@
             if(this.isUser(this.nome, this.palavra_passe)){
               this.SET_LOGGED_USER(this.nome);
               this.loggedUser = this.nome;
-              console.log(this.loggedUser)
             }else{
               alert('User Not Found')
             }
           },
 
           registar(){
-            if(this.isUsernameAvailable(this.nome)) {
-              let novoUser = {
-                nome: this.nome,
-                palavra_passe: this.palavra_passe,
-                data_nascimento: this.data_nascimento,
-                foto: '',
-                tipo: 'utilizador',
-              }
-              if(this.palavra_passe == this.cpalavra_passe){
-                this.SET_NEW_USER(novoUser);
-                this.SET_LOGGED_USER(this.nome);
-                this.loggedUser = novoUser
-                console.log(this.loggedUser)
+            if(this.nome != '', this.palavra_passe != '',this.data_nascimento != ''){
+              if(this.isUsernameAvailable(this.nome)) {
+                let novoUser = {
+                  nome: this.nome,
+                  palavra_passe: this.palavra_passe,
+                  data_nascimento: this.data_nascimento,
+                  foto: '',
+                  tipo: 'utilizador',
+                }
+                if(this.palavra_passe == this.cpalavra_passe){
+                  this.SET_NEW_USER(novoUser);
+                  this.SET_LOGGED_USER(this.nome);
+                  this.loggedUser = novoUser
+                  console.log(this.loggedUser)
+                }else{
+                  alert('ERROR')
+                }
+                
               }else{
-                alert('ERROR')
+                alert('User Already Exists')
               }
-              
-            }else{
-              alert('User Already Exists')
-            }
+            }    
           },
         },
 
@@ -160,6 +162,10 @@
   text-decoration: none;
   color: white;
   font-family: var(--font1);
+}
+
+.link:hover{
+  font-family: var(--font2);
 }
 
 #entrar{

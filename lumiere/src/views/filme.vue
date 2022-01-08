@@ -3,12 +3,12 @@
         <b-container fluid>
             <h2>{{filme.nome}}</h2>
             <img :src="filme.imagem" id="imgFilme">
-            <video width="560" height="315" controls id="trailer">
+            <!-- <video width="560" height="315" controls id="trailer">
                 <source :src="filme.trailer" type="video/.mp4">
-            </video>
+            </video> -->
             <!-- <span id="trailer">{{filme.trailer}}</span> -->
-            <!-- {{<iframe width="560" height="315" src="https://www.youtube.com/embed/lkN-A00WLYE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            <br>}} -->
+            <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <br>
             <b-col cols="6">
                 <div>
                     <a id="rate"><span>{{filme.avaliacao}}</span>/5.0</a>

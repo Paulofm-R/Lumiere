@@ -45,7 +45,7 @@
                         this.certas++
                     }
                 }
-                this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas }} );
+                this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas: this.jogo.perguntas.length }} );
             }
         },
 

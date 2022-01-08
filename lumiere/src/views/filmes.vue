@@ -26,26 +26,15 @@
             </b-row>
 
             <div>
-                <b-row id="filmesCategorias" v-for="(categoria, index) in categoriasOrdenadas" :key="index">
-                    <h2>{{categoria}}</h2>
-                    <b-carousel 
-                        class="carouselFilmes"
-                        controls
-                        @sliding-start="iniciarSlide"
-                        @sliding-end="finalizarSlide">
-                        <b-carousel-slide v-for="(filme, index) in filmesCatalogo" :key="index" class="filmeCarousel">
-                            <template #img>
-                                <img
-                                    class="d-block img-fluid w-100"
-                                    width="1024"
-                                    height="250"
-                                    :src="filme.imagem"
-                                    alt="image slot"
-                                >
-                                </template>
-                            <h1>{{filme.nome}}</h1>
-                        </b-carousel-slide>
-                    </b-carousel>
+                <b-row class="filmesCategorias" v-for="(categoria, index) in categoriasOrdenadas" :key="index" v-model="catalogoSlider[index]">
+                    <h2>{{categoria}}</h2> 
+                    <div class="carouselFilmes" ref="carousel">
+                        <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria)" :key="index">
+                            <b-img :src="filme.imagem" alt="Poster" class="poster" @click="escolherFilme(filme.nome)"></b-img>
+                        </b-col>
+                    </div>
+                    <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_esquerda" @click="andarEsquerda(index)"><b-icon icon="arrow-left-square"></b-icon></b-button>
+                    <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_direita" @click="andarDireita(index)"><b-icon icon="arrow-right-square"></b-icon></b-button>
                 </b-row>
             </div>
         </b-container>
@@ -59,8 +48,7 @@
         name: 'Filmes',
         data() {
             return {
-                sliding: null,
-                slide: 0,
+                catalogoSlider: [],
             }
         },
 
@@ -72,9 +60,9 @@
 
                 // Selecionar os 3 
                 let filmesMelhoresAvaliados = []
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length - 3])
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length - 1])
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length -2])
+                filmesMelhoresAvaliados.push(filmesOrdenados[2])
+                filmesMelhoresAvaliados.push(filmesOrdenados[0])
+                filmesMelhoresAvaliados.push(filmesOrdenados[1])
 
                 return filmesMelhoresAvaliados;
             },
@@ -83,19 +71,15 @@
                 const filmesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie').slice(0).sort(this.compararAvaliacoes);
 
                 let filmesMelhoresAvaliados = []
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length - 3])
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length - 1])
-                filmesMelhoresAvaliados.push(filmesOrdenados[filmesOrdenados.length -2])
+                filmesMelhoresAvaliados.push(filmesOrdenados[2])
+                filmesMelhoresAvaliados.push(filmesOrdenados[0])
+                filmesMelhoresAvaliados.push(filmesOrdenados[1])
 
                 return filmesMelhoresAvaliados;
             },
 
-            filmesCatalogo(){
-                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == 'Aventura')).sort(this.compararAvaliacoes);
-            },
-
             categoriasOrdenadas(){
-                return this.getCategoria.slice(0).sort(this.ordenarAlfabetica);
+                return this.getCategoria.slice(0).sort(this.ordenarAlfabeticaCategoria);
             },
         },
 
@@ -105,24 +89,35 @@
             },
 
             compararAvaliacoes(filmeA, filmeB){
-                if (filmeA.avaliacao < filmeB.avaliacao) return -1;
-                else if (filmeA.avaliacao > filmeB.avaliacao) return 1;
+                if (filmeA.avaliacao < filmeB.avaliacao) return 1;
+                else if (filmeA.avaliacao > filmeB.avaliacao) return -1;
                 else return 0;
             },
 
-            ordenarAlfabetica(itemA, itemB){
-                if (itemA < itemB) return -1;
-                else if (itemA > itemB) return 1;
+            ordenarAlfabeticaCategoria(categoriaA, categoriaB){
+                if (categoriaA < categoriaB) return -1;
+                else if (categoriaA > categoriaB) return 1;
                 else return 0;
             },
 
-            iniciarSlide(){
-                this.sliding = true
+            ordenarAlfabeticaFilmes(filmeA, filmeB){
+                if (filmeA.nome < filmeB.nome) return -1;
+                else if (filmeA.nome > filmeB.nome) return 1;
+                else return 0;
             },
 
-            finalizarSlide() {
-                this.sliding = false
-            }
+            filmesCatalogo(cat){
+                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat)).sort(this.ordenarAlfabeticaFilmes);
+            },
+
+            andarEsquerda(index){
+                this.$refs.carousel[index].scrollBy(-100, 0)
+            },
+
+            andarDireita(index){
+                this.$refs.carousel[index].scrollBy(100, 0)
+            },
+
         },
     }
 </script>
@@ -174,15 +169,59 @@ h2{
     width: 100%;
 }
 
-#filmesCategorias{
-    margin-top: 5vh;
+.filmesCategorias{
+    margin-top: 10vh;
+    max-width: 100vw;
+    height: 445px;
+    position: relative;
 }
 
 .carouselFilmes{
     margin: auto;
+    padding: 5px;
+    height: 90%;
+    display: flex;
+    overflow-x: hidden;
 }
 
-.filmeCarousel{
-    width: 25vw;
+.setas{
+    width: 45px;
+    height: 50px;
+    background-color: rgba(211, 211, 211, 0.350);
+    border-color: transparent;
+}
+
+.setas:hover{
+    background-color: rgba(211, 211, 211, 0.650); 
+}
+
+.seta_esquerda{
+    position: absolute;
+    top: 45%;
+}
+
+.seta_direita{
+    position: absolute;
+    top: 45%;
+    right: 0;
+}
+
+.carouselFilmes > .card{
+    width: 225px;
+    height: 95%;
+    margin: 10px;
+    padding: 0px;
+    background-color: var(--cor1);
+    border: 1px solid var(--cor1);
+    opacity: 90%;
+}
+
+.carouselFilmes > .card:hover{
+    opacity: 100%;
+}
+
+.carouselFilmes > .card > .poster{
+    width: 100%;
+    height: 100%
 }
 </style>

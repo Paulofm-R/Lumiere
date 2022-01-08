@@ -9,6 +9,8 @@ import Classificacao from '../views/classificacao.vue'
 import Perfil from '../views/perfil.vue'
 import SobreNos from '../views/sobreNos.vue'
 
+import store from "../store/index.js";
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -35,14 +37,18 @@ const routes = [
     path: '/jogos',
     name: 'jogos',
     component: Jogos,
-    //só pode aceder a esta pagina se tiver logado
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     // Pagina com o jogo
     path: '/jogos/:jogo',
     name: 'jogo',
     component: Jogo,
-    //só pode aceder a esta pagina se tiver logado
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     // Pagina com a classificacao dos jogadores
@@ -75,5 +81,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !store.getters.getLoggedUser) {
+    alert('ola')
+  } else {
+    next();
+  }
+});
 
 export default router

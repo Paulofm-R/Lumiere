@@ -6,6 +6,7 @@
 
 <script>
     import NavBar from '@/components/NavBar.vue';
+    
     export default {
       components: {
         NavBar,
@@ -17,21 +18,25 @@
 @font-face {
   font-family: 'Spartan';
   src: url('./assets/font/Spartan/static/Spartan-ExtraBold.ttf') format('truetype');
+  font-weight: normal;
 }
 
 @font-face {
   font-family: 'News Cycle';
-  src: url('./assets/font/news cycle/NewsCycle-Regular.ttf') format('truetype')
+  src: url('./assets/font/news cycle/NewsCycle-Regular.ttf') format('truetype');
+  font-weight: normal;
 }
 
 @font-face {
   font-family: 'News Cycle-Bold';
   src: url('./assets/font/news cycle/NewsCycle-Bold.ttf') format('truetype');
+  font-weight: bold;
 }
 
 @font-face {
   font-family: 'Meow_Script';
   src: url('./assets/font/Meow_Script/MeowScript-Regular.ttf') format('truetype');
+  font-weight: normal;
 }
 
 :root {
