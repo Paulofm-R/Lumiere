@@ -97,7 +97,7 @@ export default new Vuex.Store({
     filmes: localStorage.filmes ? JSON.parse(localStorage.filmes) : [{ 
       nome: 'Ant-Man and the Wasp (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg',
-      trailer: '',
+      trailer: 'https://www.youtube.com/watch?v=UUkn-enk2RU',
       avaliacao: 3.5,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],

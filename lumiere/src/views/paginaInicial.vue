@@ -67,7 +67,7 @@
         margin-right: 12vw;
         padding-top: 15vh;
         font-family: var(--font2);
-        font-size: 60px;
+        font-size: 50px;
     }
 
     p{
@@ -75,7 +75,7 @@
         margin-right: 12vw;
         padding-top: 3vw;
         font-family: var(--font1);
-        font-size: 25px;
+        font-size: 20px;
     }
 
     .link {
@@ -113,7 +113,7 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 320px;
+        margin-left: 285px;
         margin-right: 30px;
         align-content: center;
         background-image: url('../assets/img/catalogo.svg');
@@ -153,7 +153,7 @@
         width: 15vw;
         height: 30vh;
         background-color: var(--cor3);
-        margin-left: 23.5vw;
+        margin-left: 22.4vw;
         margin-right: 30px;
         background-image: url('../assets/img/jogos.svg');
 
