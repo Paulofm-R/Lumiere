@@ -7,7 +7,7 @@
                 <source :src="filme.trailer" type="video/.mp4">
             </video> -->
             <!-- <span id="trailer">{{filme.trailer}}</span> -->
-            <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
             <br>
             <b-col cols="6">
                 <div>
@@ -17,11 +17,11 @@
                     <b-button @click="lista()" variant="info" id="lista">A minha lista</b-button>
                 </div>
                 <div>
-                    <p><span>Sinopse: </span>Donna, a proprietária de um hotel nas ilhas gregas, está preparando o casamento de sua filha com a ajuda de duas amigas. Enquanto isso, a noiva Sophie convida três ex-namorados de sua mãe na esperança de conhecer seu verdadeiro pai.</p>
-                    <p><span>Ano: </span>2008</p>
-                    <p><span>Realizador: </span>Phyllida Lloyd</p>
-                    <p><span>Produtora: </span>Universal Studios</p>
-                    <p><span>Elenco: </span>Meryl Streep, Amanda Seyfried, Pierce Brosnan, Colin Firth, Chistine Baranski,, Dominic Cooper, Stellan Skarsgard, Julie Walters</p>
+                    <p><span>Sinopse: </span>{{filme.sinopse}}</p>
+                    <p><span>Ano: </span>{{filme.ano}}</p>
+                    <p><span>Realizador: </span>{{filme.realizador}}</p>
+                    <p><span>Produtora: </span>{{filme.produtora}}</p>
+                    <p><span>Elenco: </span><a v-for="(elemento, index) in filme.elenco" :key="index">{{elemento}} </a></p>
                     <p><span>Género: </span><a v-for="(categoria, index) in filme.categoria" :key="index">{{categoria}} </a></p>
                 </div>    
             </b-col>
@@ -46,7 +46,7 @@
                     AVALIAR
                 </template>
                 <template>
-                  <form submit.prevent = "login">                   
+                  <form @submit.prevent = "avaliar">                   
                     <div>
                         <b-form-rating v-model="avaliacao"></b-form-rating>
                         <p class="mt-2">Value: {{ avaliacao }}</p>
@@ -87,7 +87,23 @@
         created () {
         this.filme = this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
         },
-        
+
+        methods:{
+            avaliar() {
+                if(this.filme.avaliacao <= 5){
+                    this.filme.avaliacao *= this.filme.nAvaliacoes
+                    this.filme.avaliacao += this.avaliacao
+                    this.filme.nAvaliacoes += 1
+                    this.filme.avaliacao /= (this.filme.nAvaliacoes)
+                    this.filme.avaliacao = this.filme.avaliacao.toFixed(1)
+                }
+                
+            },
+
+            
+
+            
+        }
     }
 
     

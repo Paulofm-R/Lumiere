@@ -120,6 +120,7 @@ export default new Vuex.Store({
       avaliacao: 3.5,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
+      nAvaliacoes: 6,
     },{ 
       nome: 'Avengers - EndGame (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
@@ -127,6 +128,7 @@ export default new Vuex.Store({
       avaliacao: 4.2,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Drama'],
+      nAvaliacoes: 6,
     },{ 
       nome: 'Guardians of the Galaxy (2014)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_.jpg',
@@ -134,6 +136,7 @@ export default new Vuex.Store({
       avaliacao: 4.0,
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
+      nAvaliacoes: 6,
     },
     { 
       nome: 'How I met your Mother',
@@ -142,6 +145,7 @@ export default new Vuex.Store({
       avaliacao: 4.2,
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
+      nAvaliacoes: 6,
     },{ 
       nome: 'Friends',
       imagem: 'https://br.web.img3.acsta.net/r_1280_720/pictures/21/05/14/08/25/4008276.jpg',
@@ -149,6 +153,7 @@ export default new Vuex.Store({
       avaliacao: 4.4,
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
+      nAvaliacoes: 6,
     },{ 
       nome: 'Modern Family',
       imagem: 'https://i.pinimg.com/originals/f0/f3/41/f0f34178d91a5b283e1ec39e982dc4b7.jpg',
@@ -156,6 +161,7 @@ export default new Vuex.Store({
       avaliacao: 4.2,
       tipo: 'Serie',
       categoria: ['Comédia', 'Drama', 'Romance'],
+      nAvaliacoes: 6,
     },{ 
       nome: 'Mamma Mia',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
@@ -163,6 +169,7 @@ export default new Vuex.Store({
       avaliacao: 3.8,
       tipo: 'Filme',
       categoria: ['Comédia', 'Musical', 'Romance'],
+      nAvaliacoes: 6,
     },],
 
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance']

@@ -14,6 +14,7 @@
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
                     <img src="../../src/assets/img/User.svg" id="imgPerfil">
                 </router-link>
+                <b-button v-if="getLoggedUser != ''" variant="outline-light" @click="logout()"><b-icon icon="door-open"></b-icon></b-button>
                 
                 </b-col>
                 <b-modal id="loginModal" centered
@@ -92,7 +93,7 @@
         },
 
         methods: {
-          ...mapMutations(['SET_NEW_USER', 'SET_LOGGED_USER']),
+          ...mapMutations(['SET_NEW_USER', 'SET_LOGGED_USER', 'SET_LOGOUT']),
 
           login(){
             if(this.isUser(this.nome, this.palavra_passe)){
@@ -127,6 +128,10 @@
               }
             }    
           },
+
+          logout() {
+            this.SET_LOGOUT(this.loggedUser)
+          }
         },
 
         watch: {
