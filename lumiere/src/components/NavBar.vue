@@ -6,11 +6,11 @@
                 <router-link to="/" id="nome">Lumière</router-link>
                 </b-col>
                 <b-col cols="8" id="links">
-                <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
-                <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
-                <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
+                <router-link class="link" :class="this.$router.history.current.name == 'filmes' ? 'atual' : ''" :to="{name: 'filmes'}">Catálogo</router-link>
+                <router-link class="link" :class="this.$router.history.current.name == 'jogos' ? 'atual' : ''" :to="{name: 'jogos'}">Jogos</router-link>
+                <router-link class="link" :class="this.$router.history.current.name == 'sobreNos' ? 'atual' : ''" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
                 <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
-                <router-link v-else class="link" :to="{name: 'perfil'}">
+                <router-link v-else class="link" :class="this.$router.history.current.name == 'perfil' ? 'atual' : ''" :to="{name: 'perfil'}">
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
                     <img src="../../src/assets/img/User.svg" id="imgPerfil">
                 </router-link>
@@ -26,7 +26,7 @@
                             LOGIN
                         </template>
                         <template>
-                        <form submit.prevent = "login">
+                        <form @submit.prevent="login">
                             <label for="username">Username: </label>
                             <input type="text" id="username" v-model="nome">
                             <br>
@@ -171,6 +171,11 @@
 
 .link:hover{
   font-family: var(--font2);
+}
+
+.atual{
+  font-family: var(--font2);
+  font-size: 1.2em;
 }
 
 #entrar{

@@ -3,6 +3,18 @@
         <b-container fluid>
             <h1>CATÁLOGO</h1>
             
+            <b-row align-h="center" id="filtro">
+                <b-col cols='3'>
+                    <b-form-input v-model="txtNomeFilme" placeholder="Enter your name"></b-form-input>
+                </b-col>
+                <b-col cols='2'>
+                    <select name="selectFiltro" id="selectFiltro" v-model="filtroCategoria">
+                        <option value="" selected>Todos</option>
+                        <option v-for="(categoria, index) in getCategoria" :key="index" :value="categoria">{{categoria}}</option>
+                    </select>
+                </b-col>
+            </b-row>
+
             <b-row class="melhorAvaliados" align-h="center">
                 <h2>Melhor Avaliados Filmes</h2>
                 <b-col cols="2" class="catalogoMelhorAvaliados" v-for="(filme, index) in melhorFilmesAvaliadosOrdenados" :key="index">
@@ -12,6 +24,7 @@
                         <span>{{filme.avaliacao}} <b-icon icon="star-fill"></b-icon></span>
                     </div>
                 </b-col>
+                <p v-if="melhorFilmesAvaliadosOrdenados.length == 0">Não temos Filmes desta categoria</p>
             </b-row>
 
             <b-row class="melhorAvaliados" align-h="center">
@@ -23,18 +36,21 @@
                         <span>{{serie.avaliacao}} <b-icon icon="star-fill"></b-icon></span>
                     </div>
                 </b-col>
+                <p v-if="melhorSeriesAvaliadosOrdenados.length == 0">Não temos Series desta categoria</p>
             </b-row>
 
             <div>
-                <b-row class="filmesCategorias" v-for="(categoria, index) in categoriasOrdenadas" :key="index" v-model="catalogoSlider[index]">
-                    <h2>{{categoria}}</h2> 
-                    <div class="carouselFilmes" ref="carousel">
-                        <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria)" :key="index">
-                            <b-img :src="filme.imagem" alt="Poster" class="poster" @click="escolherFilme(filme.nome)"></b-img>
-                        </b-col>
+                <b-row class="filmesCategorias" v-for="(categoria, index) in categoriasOrdenadas" :key="index">
+                    <div v-if="filmesCatalogo(categoria).length > 0">
+                        <h2>{{categoria}}</h2>
+                        <div class="carouselFilmes" ref="carousel">
+                            <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria)" :key="index">
+                                <b-img :src="filme.imagem" alt="Poster" class="poster" @click="escolherFilme(filme.nome)"></b-img>
+                            </b-col>
+                        </div>
+                        <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_esquerda" @click="andarEsquerda(index)"><b-icon icon="arrow-left-square"></b-icon></b-button>
+                        <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_direita" @click="andarDireita(index)"><b-icon icon="arrow-right-square"></b-icon></b-button>
                     </div>
-                    <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_esquerda" @click="andarEsquerda(index)"><b-icon icon="arrow-left-square"></b-icon></b-button>
-                    <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_direita" @click="andarDireita(index)"><b-icon icon="arrow-right-square"></b-icon></b-button>
                 </b-row>
             </div>
         </b-container>
@@ -48,7 +64,8 @@
         name: 'Filmes',
         data() {
             return {
-                catalogoSlider: [],
+                txtNomeFilme: '',
+                filtroCategoria: '',
             }
         },
 
@@ -56,30 +73,47 @@
             ...mapGetters(['getFilmes', 'getCategoria']),
 
             melhorFilmesAvaliadosOrdenados(){
-                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme').slice(0).sort(this.compararAvaliacoes);
+                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && filme.nome.includes(this.txtNomeFilme) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
-                // Selecionar os 3 
+                // Selecionar os 3 mais avaliados
                 let filmesMelhoresAvaliados = []
-                filmesMelhoresAvaliados.push(filmesOrdenados[2])
-                filmesMelhoresAvaliados.push(filmesOrdenados[0])
-                filmesMelhoresAvaliados.push(filmesOrdenados[1])
+                if (filmesOrdenados.length > 2){
+                    filmesMelhoresAvaliados.push(filmesOrdenados[2])
+                    filmesMelhoresAvaliados.push(filmesOrdenados[0])
+                    filmesMelhoresAvaliados.push(filmesOrdenados[1])
+                }
+                else{
+                    for(let i of filmesOrdenados){
+                        filmesMelhoresAvaliados.push(i)
+                    }
+                }
 
+                console.log(filmesMelhoresAvaliados.length);
                 return filmesMelhoresAvaliados;
             },
 
             melhorSeriesAvaliadosOrdenados(){
-                const filmesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie').slice(0).sort(this.compararAvaliacoes);
+                const seriesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie' && serie.nome.includes(this.txtNomeFilme) && (serie.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
-                let filmesMelhoresAvaliados = []
-                filmesMelhoresAvaliados.push(filmesOrdenados[2])
-                filmesMelhoresAvaliados.push(filmesOrdenados[0])
-                filmesMelhoresAvaliados.push(filmesOrdenados[1])
+                // Selecionar os 3 mais avaliados
+                let seriesMelhoresAvaliados = []
+                if(seriesOrdenados.length > 2){
+                    seriesMelhoresAvaliados.push(seriesOrdenados[2])
+                    seriesMelhoresAvaliados.push(seriesOrdenados[0])
+                    seriesMelhoresAvaliados.push(seriesOrdenados[1])
+                }
+                else{
+                    for(let i of seriesOrdenados){
+                        seriesMelhoresAvaliados.push(i)
+                    }
+                }
 
-                return filmesMelhoresAvaliados;
+                console.log(seriesMelhoresAvaliados.length);
+                return seriesMelhoresAvaliados;
             },
 
             categoriasOrdenadas(){
-                return this.getCategoria.slice(0).sort(this.ordenarAlfabeticaCategoria);
+                return this.getCategoria.filter((categorias) => categorias == this.filtroCategoria || this.filtroCategoria == '').slice(0).sort(this.ordenarAlfabeticaCategoria);
             },
         },
 
@@ -107,7 +141,7 @@
             },
 
             filmesCatalogo(cat){
-                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat)).sort(this.ordenarAlfabeticaFilmes);
+                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat) && filme.nome.includes(this.txtNomeFilme)).sort(this.ordenarAlfabeticaFilmes);
             },
 
             andarEsquerda(index){
@@ -129,6 +163,12 @@ h1{
     font-family: var(--font2);
 }
 
+#selectFiltro{
+    width: 75%;
+    height: 100%;
+    border-radius: 0.25em;
+}
+
 h2{
     text-align: center;
     font-family: var(--font2);
@@ -137,6 +177,13 @@ h2{
 .melhorAvaliados{
     margin: auto;
     margin-top: 10vh;
+    text-align: center;
+}
+
+.melhorAvaliados > p{
+    font-family: var(--font1);
+    font-size: 1.25em;
+    padding-top: 25px;
 }
 
 .catalogoMelhorAvaliados{
@@ -172,14 +219,13 @@ h2{
 .filmesCategorias{
     margin-top: 10vh;
     max-width: 100vw;
-    height: 445px;
     position: relative;
 }
 
 .carouselFilmes{
     margin: auto;
     padding: 5px;
-    height: 90%;
+    height: 400.5px;
     display: flex;
     overflow-x: hidden;
 }

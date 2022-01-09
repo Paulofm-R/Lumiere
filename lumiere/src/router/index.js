@@ -38,7 +38,7 @@ const routes = [
     name: 'jogos',
     component: Jogos,
     meta: {
-      requiresAuth: true,
+      requerAutenticacao: true,
     },
   },
   {
@@ -47,7 +47,7 @@ const routes = [
     name: 'jogo',
     component: Jogo,
     meta: {
-      requiresAuth: true,
+      requerAutenticacao: true,
     },
   },
   {
@@ -83,8 +83,8 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth && !store.getters.getLoggedUser) {
-    alert('ola')
+  if (to.meta.requerAutenticacao && !store.getters.getLoggedUser) {
+    alert('Necessario Login primeiro')
   } else {
     next();
   }
