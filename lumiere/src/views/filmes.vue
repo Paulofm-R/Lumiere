@@ -15,6 +15,10 @@
                 </b-col>
             </b-row>
 
+            <b-row v-if="getLoggedUser.tipo == 'admin'" id="adicionar">
+                <b-button id="botaoAdicionar" v-b-modal="'adicionarFilme'">ADICIONAR</b-button>
+            </b-row>
+
             <b-row class="melhorAvaliados" align-h="center">
                 <h2>Melhor Avaliados Filmes</h2>
                 <b-col cols="2" class="catalogoMelhorAvaliados" v-for="(filme, index) in melhorFilmesAvaliadosOrdenados" :key="index">
@@ -53,6 +57,104 @@
                     </div>
                 </b-row>
             </div>
+
+            <!-- Modais -->
+            <b-modal id="adicionarFilme" centered
+                header-bg-variant="info"
+                body-bg-variant="light"
+                footer-bg-variant="light"
+                size="lg" 
+                ok-only>
+                <template #modal-header="{close}">
+                    <h4 class="modalTitulo">Adicionar Filme/Série</h4>
+                    <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                </template>
+                <template>
+                    <form @submit.prevent="adicionarFilme">
+                        <b-row>
+                            <b-col cols="4">
+                                <div id="ficheiros">
+                                    <b-button variant="outline-secondary" id="adicionarFicheiros">+</b-button>
+                                    <br>
+                                    <label for="ficheiros">Adicionar Ficheiros</label>
+                                </div>
+                                <div id="sinopse">
+                                    <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5"></b-form-textarea>
+                                    <label for="textareaSinopse">Sinopse</label>
+                                </div>
+                            </b-col>
+                            <b-col>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Nome:
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-input v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Ano:
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-input type="number" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Realizador:
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-input v-model="form.realizador" placeholder="Realizador"></b-form-input>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Produtora:
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-input v-model="form.produtora" placeholder="Produtora"></b-form-input>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Elenco:
+                                    </b-col>
+                                    <b-col>
+                                        <b-form-input v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
+                                    </b-col>
+                                </b-row>
+                                <b-row class="mb-2">
+                                    <b-col cols="2">
+                                        Género:
+                                    </b-col>
+                                    <b-col>
+                                        <select v-model="form.genero" name="selGenero" id="selGenero">
+                                            <option value="" selected disabled>Género Filme</option>
+                                            <option v-for="(genero, index) in getCategoria" :key="index" :value="genero">{{genero}}</option>
+                                        </select>
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col cols="2">
+                                        Tipo:
+                                    </b-col>
+                                    <b-col>
+                                        <select v-model="form.tipo" name="selTipo" id="selTipo">
+                                            <option value="" selected disabled>Tipo Filme</option>
+                                            <option value="Filme">Filme</option>
+                                            <option value="Serie">Serie</option>
+                                        </select>
+                                    </b-col>
+                                </b-row>
+                            </b-col>
+                        </b-row>
+                    </form>
+                </template>
+                <template #modal-footer="{}">
+                    <b-button variant="primary" @click='adicionarFilme'>Adicionar</b-button>
+                </template>
+            </b-modal> 
         </b-container>
     </div>
 </template>
@@ -64,13 +166,24 @@
         name: 'Filmes',
         data() {
             return {
+                form: {
+                    nome: '',
+                    ano: 0,
+                    realizador: '',
+                    produtora: '',
+                    elenco: '',
+                    genero: '',
+                    tipo: '',
+                    ficheiros: '',
+                    sinopse: ''
+                },
                 txtNomeFilme: '',
                 filtroCategoria: '',
             }
         },
 
         computed: {
-            ...mapGetters(['getFilmes', 'getCategoria']),
+            ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser']),
 
             melhorFilmesAvaliadosOrdenados(){
                 const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && filme.nome.includes(this.txtNomeFilme) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
@@ -88,7 +201,6 @@
                     }
                 }
 
-                console.log(filmesMelhoresAvaliados.length);
                 return filmesMelhoresAvaliados;
             },
 
@@ -108,7 +220,6 @@
                     }
                 }
 
-                console.log(seriesMelhoresAvaliados.length);
                 return seriesMelhoresAvaliados;
             },
 
@@ -118,6 +229,10 @@
         },
 
         methods: {
+            adicionarFilme(){
+
+            },
+
             escolherFilme(nome) {
                 this.$router.push({ name: "filme", params:{ filmeNome: nome }});
             },
@@ -167,6 +282,28 @@ h1{
     width: 75%;
     height: 100%;
     border-radius: 0.25em;
+}
+
+#adicionar{
+    margin: auto;
+    margin-top: 5vh;
+    width: 175px;
+    height: 43px;
+}
+
+#botaoAdicionar{
+    border-radius: 10px;
+    background-color: var(--cor2);
+    opacity: 90%;
+    color: black;
+}
+
+#botaoAdicionar:hover{
+    opacity: 100%;
+}
+
+#botaoAdicionar:active{
+    box-shadow: inset 5px 5px 13px 0px rgba(0, 0, 0, 0.479);
 }
 
 h2{
@@ -269,5 +406,42 @@ h2{
 .carouselFilmes > .card > .poster{
     width: 100%;
     height: 100%
+}
+
+.modalTitulo{
+  margin: auto;
+  font-family: var(--font2);
+  color: white;
+}
+
+.fecharModal{
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  color: white;
+}
+
+#ficheiros,
+#sinopse{
+    text-align: center;
+    font-family: var(--font1);
+}
+
+#adicionarFicheiros{
+    width: 187px;
+    height: 135px;
+    font-size: 2em;
+}
+
+#sinopse{
+    margin-top: 5%;
+}
+
+#selGenero,
+#selTipo {
+    width: 100%;
+    height: 38px;
+    border-color: lightgray;
+    border-radius: 0.25em;
 }
 </style>

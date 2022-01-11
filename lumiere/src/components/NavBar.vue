@@ -2,72 +2,78 @@
     <div>
         <b-container fluid>
             <b-row id="nav">
-                <b-col cols="4"> 
+              <b-col cols="4"> 
                 <router-link to="/" id="nome">Lumière</router-link>
-                </b-col>
-                <b-col cols="8" id="links">
+              </b-col>
+              <b-col cols="8" id="links">
                 <router-link class="link" :class="this.$router.history.current.name == 'filmes' ? 'atual' : ''" :to="{name: 'filmes'}">Catálogo</router-link>
                 <router-link class="link" :class="this.$router.history.current.name == 'jogos' ? 'atual' : ''" :to="{name: 'jogos'}">Jogos</router-link>
                 <router-link class="link" :class="this.$router.history.current.name == 'sobreNos' ? 'atual' : ''" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
                 <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
                 <router-link v-else class="link" :class="this.$router.history.current.name == 'perfil' ? 'atual' : ''" :to="{name: 'perfil'}">
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
-                    <img src="../../src/assets/img/User.svg" id="imgPerfil">
+                    <img :src="getLoggedUser.foto" id="imgPerfil">
                 </router-link>
                 <b-button v-if="getLoggedUser != ''" variant="outline-light" @click="logout()"><b-icon icon="door-open"></b-icon></b-button>
-                
-                </b-col>
-                <b-modal id="loginModal" centered
-                        header-bg-variant="info"
-                        header-text-variant="light"
-                        body-bg-variant="light"
-                        footer-bg-variant="light">
-                        <template #modal-header="">
-                            LOGIN
-                        </template>
-                        <template>
-                        <form @submit.prevent="login">
-                            <label for="username">Username: </label>
-                            <input type="text" id="username" v-model="nome">
-                            <br>
-                            <label for="password">Password :  </label>
-                            <input type="password" id="password" v-model="palavra_passe">
-                            <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
-                        </form>
-                        </template>
-                        <template #modal-footer>
-                            <b-button id='login' @click='login()'>Login</b-button>
-                        </template>
-                </b-modal>
+              </b-col>
 
-                <b-modal id="registarModal" centered
-                        header-bg-variant="info"
-                        header-text-variant="light"
-                        body-bg-variant="light"
-                        footer-bg-variant="light">
-                        <template #modal-header="">
-                            REGISTAR
-                        </template>
-                        <template>
-                        <form @submit.prevent="regitar">
-                            <label for="username">Username: </label>
-                            <input type="text" id="username" v-model="nome" required>
-                            <br>
-                            <label for="password">Password :  </label>
-                            <input type="password" id="password" v-model="palavra_passe" required>
-                            <br>
-                            <label for="cPassword">Confirmar Password:  </label>
-                            <input type="password" id="cPassword" v-model="cpalavra_passe" required>
-                            <br>
-                            <label for="dataNasc">Data Nascimento:  </label>
-                            <input type="date" id="dataNasc" v-model="data_nascimento" required>
-                        </form> 
-                        </template>
-                        <template #modal-footer>
-                            <b-button id='registar' @click='registar()'>Registar</b-button>
-                        </template>
-                </b-modal>
-                <router-view/>
+              <!-- Modais -->
+              <!-- Login -->
+              <b-modal id="loginModal" centered
+                      header-bg-variant="info"
+                      header-text-variant="light"
+                      body-bg-variant="light"
+                      footer-bg-variant="light"
+                      no-stacking>
+                <template #modal-header="{close}">
+                    <h4 class="modalTitulo">LOGIN</h4>
+                    <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                </template>
+                <template>
+                  <form @submit.prevent="login">
+                    <label for="username">Username: </label>
+                    <input type="text" id="username" v-model="nome">
+                    <br>
+                    <label for="password">Password :  </label>
+                    <input type="password" id="password" v-model="palavra_passe">
+                    <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
+                  </form>
+                </template>
+                <template #modal-footer>
+                    <b-button class="modalFooter" id='login' @click='login()'>Login</b-button>
+                </template>
+              </b-modal>
+
+              <!-- Registar -->
+              <b-modal id="registarModal" centered
+                      header-bg-variant="info"
+                      header-text-variant="light"
+                      body-bg-variant="light"
+                      footer-bg-variant="light">
+                  <template #modal-header="{close}">
+                      <h4 class="modalTitulo">REGISTAR</h4>
+                      <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                  </template>
+                  <template>
+                    <form @submit.prevent="regitar">
+                      <label for="username">Username: </label>
+                      <input type="text" id="username" v-model="nome" required>
+                      <br>
+                      <label for="password">Password :  </label>
+                      <input type="password" id="password" v-model="palavra_passe" required>
+                      <br>
+                      <label for="cPassword">Confirmar Password:  </label>
+                      <input type="password" id="cPassword" v-model="cpalavra_passe" required>
+                      <br>
+                      <label for="dataNasc">Data Nascimento:  </label>
+                      <input type="date" id="dataNasc" v-model="data_nascimento" required>
+                    </form> 
+                  </template>
+                  <template #modal-footer>
+                      <b-button class="modalFooter" id='registar' @click='registar()'>Registar</b-button>
+                  </template>
+              </b-modal>
+              <router-view/>
             </b-row>
         </b-container>
     </div>
@@ -111,7 +117,7 @@
                   nome: this.nome,
                   palavra_passe: this.palavra_passe,
                   data_nascimento: this.data_nascimento,
-                  foto: '',
+                  foto: '../../src/assets/img/User.svg',
                   tipo: 'utilizador',
                 }
                 if(this.palavra_passe == this.cpalavra_passe){
@@ -198,5 +204,20 @@
   width: 50px;
   height: 50px;
   border-radius: 90%;
+}
+
+.modalTitulo{
+  margin: auto;
+}
+
+.modalFooter{
+  margin: auto;
+}
+
+.fecharModal{
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  color: white;
 }
 </style>

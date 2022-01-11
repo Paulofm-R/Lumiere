@@ -10,7 +10,7 @@
                 </b-col>
                 <b-col v-if="getLoggedUser.tipo == 'admin'" cols=4 id="adminAcoes">
                     <button v-if="!acaoAdmin" @click="acaoAdmin = true">Editar</button>
-                    <button v-else v-b-modal="'adicionarModal'">Adicionar</button>
+                    <button v-else v-b-modal="'adicionarJogo'">Adicionar</button>
                 </b-col>
             </b-row>
             <b-row id="catalogoJogos">
@@ -28,7 +28,7 @@
 
             <!-- Modais -->
             <!-- Modal para criar um jogo novo -->
-            <b-modal id="adicionarModal" centered
+            <b-modal id="adicionarJogo" centered
                 header-bg-variant="info"
                 body-bg-variant="light"
                 footer-bg-variant="light">
@@ -125,7 +125,7 @@
                     </b-col>
                 </template>
                 <template>
-                    <b-form v-if="form.tipo == 'quizz'">
+                    <b-form v-if="form.tipo == 'Quizz'">
                         <div class="mb-3" v-for="(questao, index) in form.questoes" :key="index">
                             <b-form-group :label="`${index+1}ª Pergunta:`" label-for="pergunta">
                                 <b-form-input class="pergunta" placeholder="Pergunta" v-model="questao.pergunta" required></b-form-input>
