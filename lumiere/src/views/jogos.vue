@@ -21,7 +21,6 @@
                         <div class="nomeJogo">
                             <h4>{{jogo.nome}}</h4>
                         </div>
-                        <!-- <input type="image" src="" alt=""> -->
                     </div>
                 </b-col>
             </b-row>

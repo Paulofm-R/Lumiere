@@ -79,68 +79,71 @@
                                     <label for="ficheiros">Adicionar Ficheiros</label>
                                 </div>
                                 <div id="sinopse">
-                                    <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5"></b-form-textarea>
+                                    <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5" v-model="form.sinopse"></b-form-textarea>
                                     <label for="textareaSinopse">Sinopse</label>
                                 </div>
                             </b-col>
                             <b-col>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Nome:
+                                        <label for="nomeFilme">Nome:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
+                                        <b-form-input id="nomeFilme" v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Ano:
+                                        <label for="anoFilme">Ano:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input type="number" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input>
+                                        <b-form-input id="anoFilme" type="number" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Realizador:
+                                        <label for="realizadorFilme">Realizador:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.realizador" placeholder="Realizador"></b-form-input>
+                                        <b-form-input id="realizadorFilme" v-model="form.realizador" placeholder="Realizador"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Produtora:
+                                        <label for="produtoraFilme">Produtora:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.produtora" placeholder="Produtora"></b-form-input>
+                                        <b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Elenco:
+                                        <label for="elencoFilme">Elenco:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
+                                        <b-form-input id="elencoFilme" v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Género:
+                                        <label for="selGeneroFilme">Género:</label>
                                     </b-col>
-                                    <b-col>
-                                        <select v-model="form.genero" name="selGenero" id="selGenero">
+                                    <b-col v-for="(genero, index) in form.generos" :key="index">
+                                        <select v-model="form.generos[index]" name="selGeneroFilme" id="selGeneroFilme">
                                             <option value="" selected disabled>Género Filme</option>
                                             <option v-for="(genero, index) in getCategoria" :key="index" :value="genero">{{genero}}</option>
                                         </select>
                                     </b-col>
+                                    <b-col cols="1">
+                                        <b-button @click="form.generos.push('')">+</b-button>
+                                    </b-col>
                                 </b-row>
                                 <b-row>
                                     <b-col cols="2">
-                                        Tipo:
+                                        <label for="selTipoFilme">Tipo:</label>
                                     </b-col>
                                     <b-col>
-                                        <select v-model="form.tipo" name="selTipo" id="selTipo">
+                                        <select v-model="form.tipo" name="selTipoFilme" id="selTipoFilme">
                                             <option value="" selected disabled>Tipo Filme</option>
                                             <option value="Filme">Filme</option>
                                             <option value="Serie">Serie</option>
@@ -172,7 +175,7 @@
                     realizador: '',
                     produtora: '',
                     elenco: '',
-                    genero: '',
+                    generos: [''],
                     tipo: '',
                     ficheiros: '',
                     sinopse: ''
@@ -183,7 +186,7 @@
         },
 
         computed: {
-            ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser']),
+            ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido']),
 
             melhorFilmesAvaliadosOrdenados(){
                 const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && filme.nome.includes(this.txtNomeFilme) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
@@ -230,7 +233,21 @@
 
         methods: {
             adicionarFilme(){
+                if(this.isNomeFilmeAvalido(this.form.nome)){
+                    let novoFilme = {
+                        nome: this.form.nome,
+                        ano: this.form.ano,
+                        realizador: this.form.realizador,
+                        produtora: this.form.produtora,
+                        elenco: this.form.elenco,
+                        genero: this.form.genero,
+                        tipo: this.form.tipo,
+                        ficheiros: this.form.ficheiros,
+                        sinopse: this.form.sinopse,
+                    };
 
+                    console.log(novoFilme);
+                }
             },
 
             escolherFilme(nome) {
@@ -437,8 +454,8 @@ h2{
     margin-top: 5%;
 }
 
-#selGenero,
-#selTipo {
+#selGeneroFilme,
+#selTipoFilme {
     width: 100%;
     height: 38px;
     border-color: lightgray;

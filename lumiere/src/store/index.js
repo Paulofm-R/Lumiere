@@ -11,14 +11,14 @@ export default new Vuex.Store({
         nome: "Paulo Rodrigues",
         palavra_passe: 'nao sei',
         data_nascimento: '2000-09-16',
-        foto: '../assets/img/User.svg',
+        foto: '../src/assets/img/User.svg',
         tipo: 'admin',
       },
       {
         nome: "Sofia Freitas",
         palavra_passe: 'nao sei',
         data_nascimento: '2001-11-07',
-        foto: '../../src/assets/img/User.svg',
+        foto: '../../src/assets/img/User.svg',    
         tipo: 'admin',
       },
     ],
@@ -188,6 +188,7 @@ export default new Vuex.Store({
 
     // Filmes
     getFilmes: (state) => state.filmes,
+    isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
     getCategoria: (state) => state.categoria,
   },
 
