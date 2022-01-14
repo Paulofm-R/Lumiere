@@ -128,14 +128,14 @@
                                     <b-col cols="2">
                                         <label for="selGeneroFilme">Género:</label>
                                     </b-col>
-                                    <b-col v-for="(genero, index) in form.generos" :key="index">
+                                    <b-col v-for="(genero, index) in form.generos" :key="index" class="generoFilme">
                                         <select v-model="form.generos[index]" name="selGeneroFilme" id="selGeneroFilme">
                                             <option value="" selected disabled>Género Filme</option>
                                             <option v-for="(genero, index) in getCategoria" :key="index" :value="genero">{{genero}}</option>
                                         </select>
                                     </b-col>
-                                    <b-col cols="1">
-                                        <b-button @click="form.generos.push('')">+</b-button>
+                                    <b-col cols="1" v-if="form.generos.length < 3" id="maisGenero">
+                                        <b-button @click="addGenero" >+</b-button>
                                     </b-col>
                                 </b-row>
                                 <b-row>
@@ -177,8 +177,9 @@
                     elenco: '',
                     generos: [''],
                     tipo: '',
-                    ficheiros: '',
-                    sinopse: ''
+                    imagem: '',
+                    trailer: '',
+                    sinopse: '',
                 },
                 txtNomeFilme: '',
                 filtroCategoria: '',
@@ -232,18 +233,25 @@
         },
 
         methods: {
+            addGenero(){
+                this.form.generos.push('')
+            },
+
             adicionarFilme(){
                 if(this.isNomeFilmeAvalido(this.form.nome)){
                     let novoFilme = {
                         nome: this.form.nome,
+                        imagem: this.form.imagem,
+                        trailer: this.form.trailer,
+                        tipo: this.form.tipo,
+                        categoria: this.form.generos,
                         ano: this.form.ano,
                         realizador: this.form.realizador,
                         produtora: this.form.produtora,
                         elenco: this.form.elenco,
-                        genero: this.form.genero,
-                        tipo: this.form.tipo,
-                        ficheiros: this.form.ficheiros,
                         sinopse: this.form.sinopse,
+                        avaliacao: 0,
+                        nAvaliacoes: 0,
                     };
 
                     console.log(novoFilme);
@@ -452,6 +460,16 @@ h2{
 
 #sinopse{
     margin-top: 5%;
+}
+
+.generoFilme{
+    padding: 0;
+    padding-left:12px;
+}
+
+#maisGenero{
+    padding: 0;
+    padding-left: 5px
 }
 
 #selGeneroFilme,
