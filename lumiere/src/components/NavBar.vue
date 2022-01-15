@@ -19,7 +19,7 @@
 
               <!-- Modais -->
               <!-- Login -->
-              <b-modal id="loginModal" centered
+              <b-modal ref="loginModal" id="loginModal" centered
                       header-bg-variant="info"
                       header-text-variant="light"
                       body-bg-variant="light"
@@ -45,7 +45,7 @@
               </b-modal>
 
               <!-- Registar -->
-              <b-modal id="registarModal" centered
+              <b-modal ref="registarModal" id="registarModal" centered
                       header-bg-variant="info"
                       header-text-variant="light"
                       body-bg-variant="light"
@@ -104,8 +104,8 @@
           login(){
             if(this.isUser(this.nome, this.palavra_passe)){
               this.SET_LOGGED_USER(this.nome);
-              this.loggedUser = this.nome;
-            }else{
+              this.$refs['loginModal'].hide()
+            }else{    	
               alert('User Not Found')
             }
           },
@@ -124,7 +124,7 @@
                   this.SET_NEW_USER(novoUser);
                   this.SET_LOGGED_USER(this.nome);
                   this.loggedUser = novoUser
-                  console.log(this.loggedUser)
+                  this.$refs['registarModal'].hide()
                 }else{
                   alert('ERROR')
                 }

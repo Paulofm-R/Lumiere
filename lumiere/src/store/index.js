@@ -120,12 +120,13 @@ export default new Vuex.Store({
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
       ano: 2019,
-      realizador: '',
-      produtora: '',
-      elenco: '',
-      sinopse: '',
+      realizador: ['Peyton Reed'],
+      produtora: 'Marvel Studios',
+      elenco: ['Paul Rudd', 'Evangeline Lilly', 'Michael Peña'],
+      sinopse: 'Enquanto Scott Lang equilibra ser um super-herói e um pai, Hope van Dyne e Dr. Hank Pym apresentam uma nova missão urgente que encontra o Homem-Formiga lutando ao lado da Vespa para descobrir segredos de seu passado.',
       avaliacao: 3.5,
       nAvaliacoes: 6,
+      comentarios: [],
     },{ 
       nome: 'Avengers - EndGame (2019)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTc5MDE2ODcwNV5BMl5BanBnXkFtZTgwMzI2NzQ2NzM@._V1_.jpg',
@@ -133,12 +134,13 @@ export default new Vuex.Store({
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Drama'],
       ano: 2019,
-      realizador: '',
-      produtora: '',
-      elenco: '',
-      sinopse: '',
+      realizador: ['Anthony Russo', 'Joe Russo'],
+      produtora: 'Marvel Studios',
+      elenco: ['Robert Downey Jr.', 'Chris Evans', 'Mark Ruffalo'],
+      sinopse: 'Após os eventos devastadores de Vingadores: Guerra Infinita (2018), o universo está em ruínas. Com a ajuda dos aliados restantes, os Vingadores se reúnem mais uma vez para reverter as ações de Thanos e restaurar o equilíbrio do universo.',
       avaliacao: 4.2,
       nAvaliacoes: 6,
+      comentarios: [],
     },{ 
       nome: 'Guardians of the Galaxy (2014)',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTAwMjU5OTgxNjZeQTJeQWpwZ15BbWU4MDUxNDYxODEx._V1_.jpg',
@@ -146,12 +148,13 @@ export default new Vuex.Store({
       tipo: 'Filme',
       categoria: ['Ação', 'Aventura', 'Comédia'],
       ano: 2014,
-      realizador: '',
-      produtora: '',
-      elenco: '',
-      sinopse: '',
+      realizador: ['James Gunn'],
+      produtora: 'Marvel Studios',
+      elenco: ['Chris Pratt', 'Vin Diesel', 'Bradley Cooper'],
+      sinopse: 'Um grupo de criminosos intergalácticos deve se unir para parar um guerreiro fanático com planos de purgar o universo.',
       avaliacao: 4.0,
       nAvaliacoes: 6,
+      comentarios: [],
     },
     { 
       nome: 'How I met your Mother',
@@ -159,13 +162,14 @@ export default new Vuex.Store({
       trailer: 'https://www.youtube.com/embed/aJtVL2_fA5w',
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
-      ano: 0,
-      realizador: '',
-      produtora: '',
-      elenco: '',
-      sinopse: '',
+      ano: 2005,
+      realizador: ['Carter Bays', 'Craig Thomas'],
+      produtora: 'Bays/Thomas Productions',
+      elenco: ['Josh Radnor', 'Jason Segel', 'Cobie Smulders'],
+      sinopse: 'Um pai conta a seus filhos - através de uma série de flashbacks - a jornada que ele e seus quatro melhores amigos fizeram até ele conhecer sua mãe.',
       avaliacao: 4.2,
       nAvaliacoes: 6,
+      comentarios: [],
     },{ 
       nome: 'Friends',
       imagem: 'https://br.web.img3.acsta.net/r_1280_720/pictures/21/05/14/08/25/4008276.jpg',
@@ -179,6 +183,7 @@ export default new Vuex.Store({
       sinopse: '',
       avaliacao: 4.4,
       nAvaliacoes: 6,
+      comentarios: [],
     },{ 
       nome: 'Modern Family',
       imagem: 'https://i.pinimg.com/originals/f0/f3/41/f0f34178d91a5b283e1ec39e982dc4b7.jpg',
@@ -192,6 +197,7 @@ export default new Vuex.Store({
       sinopse: '',
       avaliacao: 4.2,
       nAvaliacoes: 6,
+      comentarios: [],
     },{ 
       nome: 'Mamma Mia',
       imagem: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
@@ -205,6 +211,7 @@ export default new Vuex.Store({
       sinopse: '',
       avaliacao: 3.8,
       nAvaliacoes: 6,
+      comentarios: [],
     },],
 
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance']
@@ -225,6 +232,7 @@ export default new Vuex.Store({
     getFilmes: (state) => state.filmes,
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
     getCategoria: (state) => state.categoria,
+    isCategoriaAvailable: (state) => (cat) => state.categoria.every((categoria) => categoria !== cat),
   },
 
   mutations: {
@@ -259,9 +267,13 @@ export default new Vuex.Store({
       localStorage.filmes = JSON.stringify(state.filmes);
     },
     SET_REMOVER_FILME(state, payload) {
-      state.filmes = state.filmes.filter((filme) => filme.nome != payload)
+      state.filmes = state.filmes.filter((filme) => filme.nome != payload);
       localStorage.filmes = JSON.stringify(state.filmes);
     },
+    SET_NOVA_CATEGORIA(state, payload) {
+      state.categoria.push(payload);
+      localStorage.categoria = JSON.stringify(state.categoria);
+    }
   },
   actions: {
   },

@@ -10,7 +10,7 @@
                 </b-col>
                 <b-col v-if="getLoggedUser.tipo == 'admin'" cols=4 id="adminAcoes">
                     <button v-if="!acaoAdmin" @click="acaoAdmin = true">Editar</button>
-                    <button v-else v-b-modal="'adicionarJogo'">Adicionar</button>
+                    <button v-else v-b-modal="'adicionarJogoModal'">Adicionar</button>
                 </b-col>
             </b-row>
             <b-row id="catalogoJogos">
@@ -27,7 +27,7 @@
 
             <!-- Modais -->
             <!-- Modal para criar um jogo novo -->
-            <b-modal id="adicionarJogo" centered
+            <b-modal ref="adicionarJogoModal" id="adicionarJogoModal" centered
                 header-bg-variant="info"
                 body-bg-variant="light"
                 footer-bg-variant="light">
@@ -35,14 +35,14 @@
                     <b-col cols=11 class="modalTitulo" >
                         <h4>Adicionar Jogo</h4>
                     </b-col>
-                    <b-col style="text-align: right">
+                    <b-col>
                         <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                     </b-col>
                 </template>
                 <template>
                     <b-row>
                         <b-col cols="4">
-                            <b-button v-if="form.imagem.length == 0" variant="outline-secondary" id="novoFoto" v-b-modal="'fotoModal'" >Foto Jogo <br>+</b-button>
+                            <b-button v-if="!imagemFilme" variant="outline-secondary" id="novoFoto" v-b-modal="'fotoModal'" >Foto Jogo <br>+</b-button>
                             <input v-else type="image" :src="form.imagem" alt="Foto do Jogo" v-b-modal="'fotoModal'" width="100%">
                         </b-col>
                         <b-col cols="8">
@@ -85,7 +85,7 @@
             </b-modal> 
 
             <!-- Modal para adicionar uma imagem -->
-            <b-modal id="fotoModal" centered
+            <b-modal ref="fotoModal" id="fotoModal" centered
                 header-bg-variant="info"
                 body-bg-variant="light"
                 footer-bg-variant="light" 
@@ -103,8 +103,8 @@
                     <b-form-input v-model="form.imagem" id="urlFotoJogo" type="url"></b-form-input>
                     <!-- <b-form-file v-modal="form.imagem" class="mt-3" plain></b-form-file> -->
                 </template>
-                <template #modal-footer="{close}">
-                    <b-button variant="primary" @click="close">Guardar</b-button>
+                <template #modal-footer>
+                    <b-button variant="primary" @click="addImagem">Guardar</b-button>
                 </template>
             </b-modal> 
 
@@ -171,6 +171,7 @@
                     }],
                     anexos: '',
                 },
+                imagemFilme: false,
             }
         },
 
@@ -214,6 +215,13 @@
                             alternativas: ['', '', '', ''],
                             resposta: '',
                             });
+            },
+
+            addImagem(){
+                if(this.form.imagem.length > 0){
+                    this.imagemFilme = true;
+                    this.$refs['fotoModal'].hide()
+                }
             }
         },
     }
