@@ -134,6 +134,7 @@
                                             <option v-for="(categoria, index) in categoriasOrdenadas" :key="index" :value="categoria">{{categoria}}</option>
                                             <option value="Outros">Outros</option>
                                         </select>
+                                        <b-button variant="outline" @click="form.categorias.pop()" v-if="form.categorias.length > 1 && form.categorias.length == index + 1" class="menosCategoria">x</b-button>
                                     </b-col>
                                     <b-col cols="1" v-if="form.categorias.length < 3" id="maisCategoria">
                                         <b-button @click="addCategoria" >+</b-button>
@@ -300,12 +301,14 @@
             },
 
             NovaCategoria(){
-                if(this.isCategoriaAvailable(this.novaCategoria)){
-                    this.SET_NOVA_CATEGORIA(this.novaCategoria)
-                    this.$refs['novaCategoriaModal'].hide()
-                }
-                else{
-                    alert('Esse categoria já existe')
+                if(this.novaCategoria.length === 0){
+                    if(this.isCategoriaAvailable(this.novaCategoria)){
+                        this.SET_NOVA_CATEGORIA(this.novaCategoria)
+                        this.$refs['novaCategoriaModal'].hide()
+                    }
+                    else{
+                        alert('Esse categoria já existe')
+                    }
                 }
             },
 
@@ -400,6 +403,7 @@
 <style scoped>
 h1{
     margin-top: 20px;
+    margin-bottom: 5vh;
     text-align: center;
     font-family: var(--font2);
 }
@@ -565,8 +569,21 @@ h2{
 }
 
 .categoriaFilme{
+    position: relative;
     padding: 0;
     padding-left:12px;
+}
+
+.categoriaFilme > .menosCategoria{
+    position: absolute;
+    top: -13px;
+    right: -8.5px;
+    width: 20px;
+    height: 20px;
+    color: black;
+    padding: 0px;
+    /* padding-bottom: 20px;  */
+    font-family: var(--font2);
 }
 
 #maisCategoria{

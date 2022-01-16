@@ -4,19 +4,20 @@
             <h1>JOGOS</h1>
             <b-row align-h="between">
                 <b-col cols=4 id="filtro">
-                    <select name="filtroJogos" id="filtroJogos">
+                    <select name="filtroJogos" id="filtroJogos" v-model="filtroTipo">
                         <option value="" default disabled>Filtrar por...</option>
+                        <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{tipo}}</option>
                     </select>
                 </b-col>
-                <b-col v-if="getLoggedUser.tipo == 'admin'" cols=4 id="adminAcoes">
+                <b-col v-if="getLoggedUser.tipo == 'admin'" cols="4" id="adminAcoes">
                     <button v-if="!acaoAdmin" @click="acaoAdmin = true">Editar</button>
                     <button v-else v-b-modal="'adicionarJogoModal'">Adicionar</button>
                 </b-col>
             </b-row>
             <b-row id="catalogoJogos">
-                <b-col cols=3 class="catalogoJogo" v-for="(jogo, index) in getJogos" :key="index">
+                <b-col cols="3" class="catalogoJogo" v-for="(jogo, index) in filtroTipoJogo" :key="index">
                     <div class="card jogo" @click='selecionarJogo(jogo.nome)'>
-                        <button @click="removerJogo(jogo.nome)" v-if="acaoAdmin" class="remover" :id="jogo.nome">X</button>
+                        <b-button @click="removerJogo(jogo.nome)" v-if="acaoAdmin" class="remover" :id="jogo.nome">X</b-button>
                         <img :src="jogo.img">
                         <div class="nomeJogo">
                             <h4>{{jogo.nome}}</h4>
@@ -138,15 +139,15 @@
                                 </b-col>
                             </b-row>
                             <hr v-if="index + 1 < form.questoes.length"> <!-- Colocar uma linha cada vez que tenha uma questão a seguir -->
-                        </div>   
+                        </div>
                     </b-form>
                 </template>
                 <template #modal-footer="{close}">
                     <b-button variant="primary" @click="addQuestao()">+</b-button>
                     <b-button variant="primary" @click="close">Guardar</b-button>
                 </template>
-            </b-modal> 
-        </b-container> 
+            </b-modal>
+        </b-container>
     </div>
 </template>
 
@@ -172,11 +173,16 @@
                     anexos: '',
                 },
                 imagemFilme: false,
+                filtroTipo: '',
             }
         },
 
         computed: {
             ...mapGetters(['getJogos', 'getTipoJogo', 'isNomeJogoAvalido', 'getLoggedUser']),
+
+            filtroTipoJogo(){
+                return this.getJogos.filter((jogo) => jogo.tipo == this.filtroTipo || this.filtroTipo == '')
+            },
         },
 
         methods: {
@@ -280,7 +286,7 @@ h1{
     font-size: 105%;
 }
 
-.catalogoJogo > .jogo > button{
+.catalogoJogo > .jogo > .remover{
     width: 18%;
     height: 12%;
     background-color: var(--cor2);
@@ -289,9 +295,15 @@ h1{
     top: -15px;
     border-radius: 25px;
     border-color: rgba(0, 0, 0, 0.884);
+    color: black;
+    padding: 0;
 }
 
-.catalogoJogo > .jogo > button:active{
+.catalogoJogo > .jogo > .remover:hover{
+    opacity: 90%;
+}
+
+.catalogoJogo > .jogo > .remover:active{
     box-shadow: inset 5px 5px 13px 0px rgba(0, 0, 0, 0.479);
 }
 

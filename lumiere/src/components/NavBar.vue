@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div id="navBar">
         <b-container fluid>
             <b-row id="nav">
               <b-col cols="4"> 
-                <router-link to="/" id="nome">Lumière</router-link>
+                <router-link to="/" class="nome">Lumière</router-link>
               </b-col>
-              <b-col cols="8" id="links">
+              <b-col cols="8" class="links">
                 <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
                 <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
                 <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
@@ -156,14 +156,14 @@
   padding: 15px;
 }
 
-#nome{
+.nome{
   text-decoration: none;
   font-family: var(--font0);
   font-size: 2em;
   color: var(--cor3);
 }
 
-#links{
+.links{
   text-align: right;
   padding-top: 10px;
 }
