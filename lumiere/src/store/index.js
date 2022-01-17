@@ -13,6 +13,8 @@ export default new Vuex.Store({
         data_nascimento: '2000-09-16',
         foto: '../assets/img/User.svg',
         tipo: 'admin',
+        favoritos: [],
+        lista: [],
       },
       {
         nome: "Sofia Freitas",
@@ -20,6 +22,8 @@ export default new Vuex.Store({
         data_nascimento: '2001-11-07',
         foto: '../../src/assets/img/User.svg',
         tipo: 'admin',
+        favoritos: [],
+        lista: [],
       },
     ],
     loggedUser: localStorage.loggedUser ? JSON.parse(localStorage.loggedUser) : '',
@@ -205,6 +209,10 @@ export default new Vuex.Store({
     SET_LOGOUT(state){
       state.loggedUser = '';
       localStorage.removeItem('loggedUser');
+    },
+    SET_NEW_PASSWORD(state, payload){
+      state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
+      localStorage.loggedUser = JSON.stringify(state.loggedUser);
     },
 
     // Jogos

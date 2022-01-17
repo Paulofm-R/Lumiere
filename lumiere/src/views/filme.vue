@@ -11,7 +11,7 @@
             <br>
             <b-col cols="6">
                 <div>
-                    <a id="rate"><span>{{filme.avaliacao}}</span>/5.0</a>
+                    <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
                     <b-button v-b-modal.avaliarModal id="avaliar" variant="info">Avaliar</b-button>
                     <b-button @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
                     <b-button @click="lista()" variant="info" id="lista">A minha lista</b-button>
@@ -80,7 +80,7 @@
         },
 
         computed: {
-            ...mapGetters(['getFilmes']),
+            ...mapGetters(['getFilmes', 'getLoggedUser']),
         },
 
         
@@ -99,10 +99,11 @@
                 }
                 
             },
+            favoritos() {
+                console.log('tou ca bro')
+                this.getLoggedUser.favoritos.push(this.filme)
+            }
 
-            
-
-            
         }
     }
 
@@ -133,6 +134,7 @@
     }
     span{
         font-family: var(--font2);
+        font-size: 20px;
     }
 
     input{
