@@ -1,16 +1,16 @@
 <template>
-    <div>
+    <div id="navBar">
         <b-container fluid>
             <b-row id="nav">
               <b-col cols="4"> 
-                <router-link to="/" id="nome">Lumière</router-link>
+                <router-link to="/" class="nome">Lumière</router-link>
               </b-col>
-              <b-col cols="8" id="links">
-                <router-link class="link" :class="this.$router.history.current.name == 'filmes' ? 'atual' : ''" :to="{name: 'filmes'}">Catálogo</router-link>
-                <router-link class="link" :class="this.$router.history.current.name == 'jogos' ? 'atual' : ''" :to="{name: 'jogos'}">Jogos</router-link>
-                <router-link class="link" :class="this.$router.history.current.name == 'sobreNos' ? 'atual' : ''" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
+              <b-col cols="8" class="links">
+                <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
+                <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
+                <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
                 <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
-                <router-link v-else class="link" :class="this.$router.history.current.name == 'perfil' ? 'atual' : ''" :to="{name: 'perfil'}">
+                <router-link v-else class="link" :to="{name: 'perfil'}">
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
                     <img :src="getLoggedUser.foto" id="imgPerfil">
                 </router-link>
@@ -19,7 +19,7 @@
 
               <!-- Modais -->
               <!-- Login -->
-              <b-modal id="loginModal" centered
+              <b-modal ref="loginModal" id="loginModal" centered
                       header-bg-variant="info"
                       header-text-variant="light"
                       body-bg-variant="light"
@@ -45,7 +45,7 @@
               </b-modal>
 
               <!-- Registar -->
-              <b-modal id="registarModal" centered
+              <b-modal ref="registarModal" id="registarModal" centered
                       header-bg-variant="info"
                       header-text-variant="light"
                       body-bg-variant="light"
@@ -104,8 +104,8 @@
           login(){
             if(this.isUser(this.nome, this.palavra_passe)){
               this.SET_LOGGED_USER(this.nome);
-              this.loggedUser = this.nome;
-            }else{
+              this.$refs['loginModal'].hide()
+            }else{    	
               alert('User Not Found')
             }
           },
@@ -124,7 +124,7 @@
                   this.SET_NEW_USER(novoUser);
                   this.SET_LOGGED_USER(this.nome);
                   this.loggedUser = novoUser
-                  console.log(this.loggedUser)
+                  this.$refs['registarModal'].hide()
                 }else{
                   alert('ERROR')
                 }
@@ -156,14 +156,14 @@
   padding: 15px;
 }
 
-#nome{
+.nome{
   text-decoration: none;
   font-family: var(--font0);
   font-size: 2em;
   color: var(--cor3);
 }
 
-#links{
+.links{
   text-align: right;
   padding-top: 10px;
 }
@@ -179,7 +179,8 @@
   font-family: var(--font2);
 }
 
-.atual{
+.link.router-link-exact-active {
+  color: #42b983;
   font-family: var(--font2);
   font-size: 1.2em;
 }

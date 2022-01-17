@@ -74,73 +74,78 @@
                         <b-row>
                             <b-col cols="4">
                                 <div id="ficheiros">
-                                    <b-button variant="outline-secondary" id="adicionarFicheiros">+</b-button>
+                                    <b-button variant="outline-secondary" id="adicionarFicheiros" v-b-modal="'ficheirosModal'">+</b-button>
                                     <br>
                                     <label for="ficheiros">Adicionar Ficheiros</label>
                                 </div>
                                 <div id="sinopse">
-                                    <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5"></b-form-textarea>
+                                    <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5" v-model="form.sinopse"></b-form-textarea>
                                     <label for="textareaSinopse">Sinopse</label>
                                 </div>
                             </b-col>
                             <b-col>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Nome:
+                                        <label for="nomeFilme">Nome:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
+                                        <b-form-input id="nomeFilme" v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Ano:
+                                        <label for="anoFilme">Ano:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input type="number" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input>
+                                        <b-form-input id="anoFilme" type="number" min="1895" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Realizador:
+                                        <label for="realizadorFilme">Realizador:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.realizador" placeholder="Realizador"></b-form-input>
+                                        <b-form-input id="realizadorFilme" v-model="form.realizador" placeholder="Realizador"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Produtora:
+                                        <label for="produtoraFilme">Produtora:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.produtora" placeholder="Produtora"></b-form-input>
+                                        <b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora (serapados pos virgula)"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Elenco:
+                                        <label for="elencoFilme">Elenco:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
+                                        <b-form-input id="elencoFilme" v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
                                     <b-col cols="2">
-                                        Género:
+                                        <label for="selCategoriaFilme">Género:</label>
                                     </b-col>
-                                    <b-col>
-                                        <select v-model="form.genero" name="selGenero" id="selGenero">
+                                    <b-col v-for="(categoria, index) in form.categorias" :key="index" class="categoriaFilme">
+                                        <select v-model="form.categorias[index]" name="selCategoriaFilme" id="selCategoriaFilme" @change="novaCategoriaModal">
                                             <option value="" selected disabled>Género Filme</option>
-                                            <option v-for="(genero, index) in getCategoria" :key="index" :value="genero">{{genero}}</option>
+                                            <option v-for="(categoria, index) in categoriasOrdenadas" :key="index" :value="categoria">{{categoria}}</option>
+                                            <option value="Outros">Outros</option>
                                         </select>
+                                        <b-button variant="outline" @click="form.categorias.pop()" v-if="form.categorias.length > 1 && form.categorias.length == index + 1" class="menosCategoria">x</b-button>
+                                    </b-col>
+                                    <b-col cols="1" v-if="form.categorias.length < 3" id="maisCategoria">
+                                        <b-button @click="addCategoria" >+</b-button>
                                     </b-col>
                                 </b-row>
                                 <b-row>
                                     <b-col cols="2">
-                                        Tipo:
+                                        <label for="selTipoFilme">Tipo:</label>
                                     </b-col>
                                     <b-col>
-                                        <select v-model="form.tipo" name="selTipo" id="selTipo">
+                                        <select v-model="form.tipo" name="selTipoFilme" id="selTipoFilme">
                                             <option value="" selected disabled>Tipo Filme</option>
                                             <option value="Filme">Filme</option>
                                             <option value="Serie">Serie</option>
@@ -151,8 +156,60 @@
                         </b-row>
                     </form>
                 </template>
-                <template #modal-footer="{}">
+                <template #modal-footer>
                     <b-button variant="primary" @click='adicionarFilme'>Adicionar</b-button>
+                </template>
+            </b-modal>
+
+             <!--Modal para adicionar ficheiros-->
+             <b-modal id="ficheirosModal" centered
+                header-bg-variant="info"
+                body-bg-variant="light"
+                footer-bg-variant="light" 
+                ok-only>
+                <template #modal-header="{close}">
+                    <b-col cols=11 class="modalTitulo" >
+                        <h4>Ficheiros do filme</h4>
+                    </b-col>
+                    <b-col style="text-align: right">
+                        <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                    </b-col>
+                </template>
+                <template>
+                    <div>
+                        <label for="urlImagemFilme">URL da imagem</label>
+                        <b-form-input v-model="form.imagem" id="urlImagemFilme" type="url" class="mb-2"></b-form-input>
+                    </div>
+                    <div>
+                        <label for="urlTrailerFilme">URL do trailer</label>
+                        <b-form-input v-model="form.trailer" id="urlTrailerFilme" type="url"></b-form-input>
+                    </div>
+                </template>
+                <template #modal-footer="{close}">
+                    <b-button variant="primary" @click="close">Guardar</b-button>
+                </template>
+            </b-modal>
+
+            <!--Modal para adicionar nova categoria-->
+             <b-modal ref="novaCategoriaModal" id="novaCategoriaModal" size="sm"
+                header-bg-variant="info"
+                body-bg-variant="light"
+                footer-bg-variant="light" 
+                ok-only>
+                <template #modal-header="{close}">
+                    <b-col cols=11 class="modalTitulo" >
+                        <h4>Nova Categoria</h4>
+                    </b-col>
+                    <b-col style="text-align: right">
+                        <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                    </b-col>
+                </template>
+                <template>
+                    <label for="novaCategoria">Nova Categoria</label>
+                    <b-form-input v-model="novaCategoria" id="novaCategoria" type="text"></b-form-input>
+                </template>
+                <template #modal-footer>
+                    <b-button variant="primary" @click="NovaCategoria">Guardar</b-button>
                 </template>
             </b-modal> 
         </b-container>
@@ -160,7 +217,7 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapMutations} from "vuex";
 
     export default {
         name: 'Filmes',
@@ -168,25 +225,27 @@
             return {
                 form: {
                     nome: '',
-                    ano: 0,
+                    ano: 1895,
                     realizador: '',
                     produtora: '',
                     elenco: '',
-                    genero: '',
+                    categorias: [''],
                     tipo: '',
-                    ficheiros: '',
-                    sinopse: ''
+                    imagem: '',
+                    trailer: '',
+                    sinopse: '',
                 },
                 txtNomeFilme: '',
                 filtroCategoria: '',
+                novaCategoria: '',
             }
         },
 
         computed: {
-            ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser']),
+            ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
 
             melhorFilmesAvaliadosOrdenados(){
-                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && filme.nome.includes(this.txtNomeFilme) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
+                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
                 // Selecionar os 3 mais avaliados
                 let filmesMelhoresAvaliados = []
@@ -229,8 +288,78 @@
         },
 
         methods: {
-            adicionarFilme(){
+            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA']),
 
+            addCategoria(){
+                this.form.categorias.push('')
+            },
+
+            novaCategoriaModal(){
+                if(this.form.categorias.find((categoria) => categoria == 'Outros')){
+                    this.$refs['novaCategoriaModal'].show()
+                }
+            },
+
+            NovaCategoria(){
+                if(this.novaCategoria.length === 0){
+                    if(this.isCategoriaAvailable(this.novaCategoria)){
+                        this.SET_NOVA_CATEGORIA(this.novaCategoria)
+                        this.$refs['novaCategoriaModal'].hide()
+                    }
+                    else{
+                        alert('Esse categoria já existe')
+                    }
+                }
+            },
+
+            adicionarFilme(){
+                let confimarNovoFilme = true
+
+                for (let i in this.form) {
+                    if(this.form[i].length === 0){
+                        confimarNovoFilme = false;
+                        break;
+                    }
+                }
+                for (let i of this.form.categorias){
+                    if(i.length === 0 || i == 'Outros'){
+                        confimarNovoFilme = false;
+                        break;
+                    }
+                }
+
+                if(confimarNovoFilme){
+                    if(this.isNomeFilmeAvalido(this.form.nome)){
+                        let realizador = this.form.realizador.split(',');
+                        let elenco = this.form.elenco.split(',');
+                        let trailer = this.form.trailer.replace('watch?v=', 'embed/');
+    
+                        let novoFilme = {
+                            nome: this.form.nome,
+                            imagem: this.form.imagem,
+                            trailer: trailer,
+                            tipo: this.form.tipo,
+                            categoria: this.form.categorias,
+                            ano: this.form.ano,
+                            realizador: realizador,
+                            produtora: this.form.produtora,
+                            elenco: elenco,
+                            sinopse: this.form.sinopse,
+                            avaliacao: 0,
+                            nAvaliacoes: 0,
+                            comentarios: [],
+                        };
+    
+                        this.SET_NOVO_FILME(novoFilme);
+                        this.escolherFilme(this.form.nome)
+                    }
+                    else{
+                        alert('Já existe um filme com esse nome')
+                    }
+                }
+                else{
+                    alert('Informação em falta ou invalida!')
+                }
             },
 
             escolherFilme(nome) {
@@ -260,11 +389,11 @@
             },
 
             andarEsquerda(index){
-                this.$refs.carousel[index].scrollBy(-100, 0)
+                this.$refs.carousel[index].scrollBy(-300, 0)
             },
 
             andarDireita(index){
-                this.$refs.carousel[index].scrollBy(100, 0)
+                this.$refs.carousel[index].scrollBy(300, 0)
             },
 
         },
@@ -274,6 +403,7 @@
 <style scoped>
 h1{
     margin-top: 20px;
+    margin-bottom: 5vh;
     text-align: center;
     font-family: var(--font2);
 }
@@ -400,6 +530,7 @@ h2{
 }
 
 .carouselFilmes > .card:hover{
+    cursor: pointer;
     opacity: 100%;
 }
 
@@ -437,8 +568,31 @@ h2{
     margin-top: 5%;
 }
 
-#selGenero,
-#selTipo {
+.categoriaFilme{
+    position: relative;
+    padding: 0;
+    padding-left:12px;
+}
+
+.categoriaFilme > .menosCategoria{
+    position: absolute;
+    top: -13px;
+    right: -8.5px;
+    width: 20px;
+    height: 20px;
+    color: black;
+    padding: 0px;
+    /* padding-bottom: 20px;  */
+    font-family: var(--font2);
+}
+
+#maisCategoria{
+    padding: 0;
+    padding-left: 5px
+}
+
+#selCategoriaFilme,
+#selTipoFilme {
     width: 100%;
     height: 38px;
     border-color: lightgray;
