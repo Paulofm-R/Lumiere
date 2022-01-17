@@ -1,7 +1,7 @@
 <template>
     <div>
         <b-row>
-            <img src="../assets/img/User.svg" id="imgPerfil">
+            <img :src='getLoggedUser.foto' id="imgPerfil">
         </b-row>
         <b-col id="utilizador" cols="4">
             <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
@@ -37,8 +37,9 @@
                 <template>
                   <form @submit.prevent = "editarPerfil">                   
                     <div>
-                        <label for="urlFotoJogo">URL da imagem</label>
-                        <input id="urlFotoPerfil" type="file" accept="image/jpeg, image/png" @change="fotoPerfil()">
+                        <label for="urlFotoJogo">Nova Foto</label>
+                        <input type="url" width="30vw" height="30vh" v-model="form.imagemNova">
+                        <!-- <input id="urlFotoPerfil" type="image" :src='getLoggedUser.foto' width="30vw" height="30vh" v-model ="form.imagemNova"> -->
                         <label for="novaPalavraPasse">Nova Palavra Passe: </label>
                         <input type="password" id="novaPalavraPasse" v-model="form.novaPalavraPasse">
                     </div>               
@@ -70,14 +71,17 @@
         },
         methods: {
             editarPerfil(){
-                this.getLoggedUser.palavra_passe = this.form.novaPalavraPasse;
-                console.log(this.getLoggedUser.palavra_passe)
-            },
-            fotoPerfil(){
-                this.getLoggedUser.foto = this.form.imagemNova
-                console.log(this.form.imagemNova)
+                if(this.form.novaPalavraPasse != ''){
+                    this.getLoggedUser.palavra_passe = this.form.novaPalavraPasse;
+                    localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
+                    console.log(this.getLoggedUser.palavra_passe)
+                }
+                
 
-            }
+                this.getLoggedUser.foto = this.form.imagemNova
+                localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
+                console.log(this.form.imagemNova)
+            },
         }
     };
     

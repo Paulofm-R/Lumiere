@@ -61,7 +61,8 @@
 
 #app {
   min-height: 100vh;
-  background-color: #010402;
+  background-image: linear-gradient(to bottom,var(--cor0), #317e75);
+  /* background-color: #010402; */
   color: white;
 }
 </style>
