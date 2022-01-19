@@ -1,7 +1,7 @@
 <template>
     <div>
-        <b-row>
-            <img :src='getLoggedUser.foto' id="imgPerfil">
+        <b-row>mnbnhv
+            <img :src="getLoggedUser.foto" id="imgPerfil" />
         </b-row>
         <b-col id="utilizador" cols="4">
             <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
@@ -82,7 +82,10 @@
                 localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
                 console.log(this.form.imagemNova)
             },
-        }
+        },
+        created () {
+            console.log(this.getLoggedUser.foto);
+        },
     };
     
 </script>

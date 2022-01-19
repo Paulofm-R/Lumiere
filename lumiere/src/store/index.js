@@ -11,7 +11,7 @@ export default new Vuex.Store({
         nome: "Paulo Rodrigues",
         palavra_passe: 'nao sei',
         data_nascimento: '2000-09-16',
-        foto: '../src/assets/img/User.svg',
+        foto: '@/assets/img/User.svg',
         tipo: 'admin',
         favoritos: [],
         lista: [],
@@ -20,7 +20,7 @@ export default new Vuex.Store({
         nome: "Sofia Freitas",
         palavra_passe: 'nao sei',
         data_nascimento: '2001-11-07',
-        foto: '../../src/assets/img/User.svg',    
+        foto: '@/assets/img/User.svg',    
         tipo: 'admin',
         favoritos: [],
         lista: [],
@@ -218,7 +218,10 @@ export default new Vuex.Store({
       comentarios: [],
     },],
 
-    categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance']
+    categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
+
+    desafios:[{nome: 'Joga 5 quizzes',
+               nEtapas: '5'}]
   },
 
   getters: {
@@ -237,6 +240,8 @@ export default new Vuex.Store({
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
     getCategoria: (state) => state.categoria,
     isCategoriaAvailable: (state) => (cat) => state.categoria.every((categoria) => categoria !== cat),
+
+    //Desafios
   },
 
   mutations: {

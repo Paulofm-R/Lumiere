@@ -61,6 +61,9 @@ const routes = [
     path: '/perfil',
     name: 'perfil',
     component: Perfil,
+    meta: {
+      requerAutenticacao: true,
+    },
   },
   {
     // Pagina que fala sobre o site
@@ -89,5 +92,7 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+
 
 export default router
