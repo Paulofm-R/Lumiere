@@ -5,7 +5,7 @@
             
             <b-row align-h="center" id="filtro">
                 <b-col cols='3'>
-                    <b-form-input v-model="txtNomeFilme" placeholder="Enter your name"></b-form-input>
+                    <b-form-input v-model="txtNomeFilme" placeholder="Pesquisa..."></b-form-input>
                 </b-col>
                 <b-col cols='2'>
                     <select name="selectFiltro" id="selectFiltro" v-model="filtroCategoria">
@@ -245,7 +245,7 @@
             ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
 
             melhorFilmesAvaliadosOrdenados(){
-                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
+                const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
                 // Selecionar os 3 mais avaliados
                 let filmesMelhoresAvaliados = []
@@ -264,7 +264,7 @@
             },
 
             melhorSeriesAvaliadosOrdenados(){
-                const seriesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie' && serie.nome.includes(this.txtNomeFilme) && (serie.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
+                const seriesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie' && (serie.nome.includes(this.txtNomeFilme) || serie.elenco.find((ator) => ator === this.txtNomeFilme)) && (serie.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
                 // Selecionar os 3 mais avaliados
                 let seriesMelhoresAvaliados = []
@@ -385,7 +385,7 @@
             },
 
             filmesCatalogo(cat){
-                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat) && filme.nome.includes(this.txtNomeFilme)).sort(this.ordenarAlfabeticaFilmes);
+                return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat) && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme))).sort(this.ordenarAlfabeticaFilmes);
             },
 
             andarEsquerda(index){
@@ -479,7 +479,7 @@ h2{
 }
 
 .card > img{
-    height: 91.25%;
+    height: 91%;
     width: 100%;
 }
 
@@ -524,7 +524,6 @@ h2{
     height: 95%;
     margin: 10px;
     padding: 0px;
-    background-color: var(--cor1);
     border: 1px solid var(--cor1);
     opacity: 90%;
 }

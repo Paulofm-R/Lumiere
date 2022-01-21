@@ -2,21 +2,24 @@
     <div>
         <h1>{{jogo.nome}}</h1>
         <h2>{{certas}} respostas certas em {{numPerguntas}} </h2>
-        <h2>Top 5 - classificação</h2>
 
+        <h3>Tabela de Classificação</h3>
         <table>
             <thead>
                 <tr>
-                    <th class="utilizador">Utilizadores</th>
-                    <th class="pontuacao">Pontuação</th>
+                    <th>POSIÇÃO</th>
+                    <th class="nome">NOME</th>
+                    <th>PONTUAÇÃO</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(utilizador, index) in classificacao" :key="index">
-                    <td class="utilizador">{{utilizador.utilizador}}</td>
+                    <td class="posicao">{{index + 1}}</td>
+                    <td class="nome"><img src="../assets/img/User.svg" class='img'> {{utilizador.utilizador}}</td>
                     <td class="pontuacao">{{utilizador.pontuacao}}pts</td>
                 </tr>
             </tbody>
+            <tfoot></tfoot>
         </table>
     </div>
 </template>
@@ -41,8 +44,8 @@
 
         computed: {
             classificacao() {
-                console.log(this.jogo);
-                return this.jogo.classificacao.slice(0, 5).sort(this.ordenarClassificacao)
+                let top5 = this.jogo.classificacao.slice(0).sort(this.ordenarClassificacao);
+                return top5.slice(0, 5);
             }
         },
 
@@ -58,7 +61,8 @@
 
 <style scoped>
 h1,
-h2{
+h2,
+h3{
     margin-top: 5vh;
     text-align: center;
     font-family: var(--font2);
@@ -66,46 +70,54 @@ h2{
 
 table {
     margin: auto;
-    margin-top: 55px;
     height: 45vh;
     width: 45vw;
-    background-color: var(--cor3);
-    color: black;
+    color: white;
     border-collapse: collapse;
     font-family: var(--font1);
 }
 
-.utilizador{
-    border-right: 1px solid black;
-}
-
 thead > tr > th {
-    width: 65%;
-    border-bottom: 1px solid black;
     text-align: center;
     font-size: 1.75em;
+    font-family: var(--font2);
+    color: var(--cor3);
 }
 
-tbody > tr{
-    opacity: 85%;
-}
-
-tbody > tr:hover {
-    opacity: 100%;
-}
-
-
-tbody > tr:nth-child(2n) {
-    background-color: var(--cor4);
+thead > tr > th.nome {
+    padding-left: 25px;
 }
 
 tbody > tr > td {
     padding: 10px;
     padding-left: 25px;
+    text-align: center;
 }
 
-tbody > tr > td.utilizador {
+tbody > tr > td.posicao {
     font-family: var(--font2);
     font-size: 1.5em;
+}
+
+tbody > tr > td.nome {
+    font-family: var(--font2);
+    font-size: 1.25em;
+}
+
+tbody > tr > td.nome > .img{
+  width: 50px;
+  height: 50px;
+  border-radius: 90%;
+}
+
+.nome{
+    text-align: left;
+}
+
+caption{
+    font-size:1.5em;
+    font-weight: bold;
+    padding: 10px;
+    background-color: lightgray;
 }
 </style>

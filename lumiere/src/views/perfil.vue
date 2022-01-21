@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-row>mnbnhv
+        <b-row>
             <img :src="getLoggedUser.foto" id="imgPerfil" />
         </b-row>
         <b-col id="utilizador" cols="4">

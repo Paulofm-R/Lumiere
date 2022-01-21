@@ -36,6 +36,7 @@
 
 <style scoped>
 #footer{
+    margin-top: 5vh;
     padding-left: 15px;
     padding-right: 15px;
 }

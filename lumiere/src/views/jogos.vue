@@ -47,7 +47,7 @@
                             <input v-else type="image" :src="form.imagem" alt="Foto do Jogo" v-b-modal="'fotoModal'" width="100%">
                         </b-col>
                         <b-col cols="8">
-                            <b-form @submit.prevent="addJogo">   
+                            <b-form @submit.prevent="adicionaJogo">   
                                 <div class="form-group">
                                     <label for="txtNome">Nome</label>
                                     <input type="text"
@@ -62,12 +62,12 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="txtNome">Questões</label>
-                                    <input type="button" class="form-control" name="numQuestao" id="numQuestao" value="Inserir as questoes" v-b-modal="'questoesJogo'">
+                                    <input type="button" class="form-control" name="numQuestao" id="numQuestao" value="Inserir as questoes" @click="questoesJogo">
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label for="txtAnexos">Anexos</label>
-                                    <input type="url" class="form-control" name="txtAnexos" id="txtAnexos" placeholder="Separadas por virgula" v-model="form.anexos">
-                                </div>
+                                    <input type="url" class="form-control" name="txtAnexos" id="txtAnexos" placeholder="Separadas por virgula">
+                                </div> -->
                             </b-form>
                         </b-col>
                         
@@ -80,7 +80,7 @@
                 </template>
                 <template #modal-footer>
                     <div id="botaoAdicionar">
-                        <b-button variant="primary" @click="addJogo()">ADICIONAR</b-button>
+                        <b-button variant="primary" @click="adicionaJogo()">ADICIONAR</b-button>
                     </div>
                 </template>
             </b-modal> 
@@ -110,7 +110,7 @@
             </b-modal> 
 
             <!-- Modal para inserir as perguntas -->
-            <b-modal id="questoesJogo" centered
+            <b-modal ref="questoesJogo" id="questoesJogo" centered
                 header-bg-variant="info"
                 body-bg-variant="light"
                 footer-bg-variant="light"
@@ -125,7 +125,7 @@
                     </b-col>
                 </template>
                 <template>
-                    <b-form v-if="form.tipo == 'Quizz'">
+                    <b-form v-if="form.tipo == 'Quizz'" class="quizz">
                         <div class="mb-3" v-for="(questao, index) in form.questoes" :key="index">
                             <b-form-group :label="`${index+1}ª Pergunta:`" label-for="pergunta">
                                 <b-form-input class="pergunta" placeholder="Pergunta" v-model="questao.pergunta" required></b-form-input>
@@ -141,6 +141,34 @@
                             <hr v-if="index + 1 < form.questoes.length"> <!-- Colocar uma linha cada vez que tenha uma questão a seguir -->
                         </div>
                     </b-form>
+
+                    <b-form v-else-if="form.tipo == 'Preencher'" class="preencher">
+                        <div class="mb-3" v-for="(questao, index) in form.questoes" :key="index">
+                            <b-form-group :label="`${index+1}ª Pergunta:`" label-for="pergunta">
+                                <b-form-input class="pergunta" placeholder="Pergunta" v-model="questao.pergunta" required></b-form-input>
+                            </b-form-group>
+                            <b-row>
+                                <b-col>
+                                    <b-form-group label="Anexo:" label-for="anexo">
+                                        <b-form-input class="anexo" placeholder="Anexo" type="url" v-model="questao.anexo" required></b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                                <b-col>
+                                    <select name="tipoAnexo" class="tipoAnexo" v-model="questao.tipoAnexo" required>
+                                        <option value="" disabled>--Selecione um Tipo--</option>
+                                        <option value="Imagem">Imagem</option>
+                                        <option value="Video">Video</option>
+                                    </select>
+                                </b-col>
+                            </b-row>
+                            <b-form-group label="Resposta:" label-for="pergunta">
+                                <b-form-input class="resposta" placeholder="Resposta" v-model="questao.resposta" required></b-form-input>
+                            </b-form-group>
+                            <hr v-if="index + 1 < form.questoes.length"> <!-- Colocar uma linha cada vez que tenha uma questão a seguir -->
+                        </div>
+                    </b-form>
+                    
+                    <h5 v-else>SELECIONE UM TIPO DE QUESTÃO PRIMEIRO!</h5>
                 </template>
                 <template #modal-footer="{close}">
                     <b-button variant="primary" @click="addQuestao()">+</b-button>
@@ -165,12 +193,7 @@
                     nome: '',
                     imagem: '',
                     tipo: '',
-                    questoes: [{
-                        pergunta: '',
-                        alternativas: ['', '', '', ''],
-                        resposta: '',
-                    }],
-                    anexos: '',
+                    questoes: [],
                 },
                 imagemFilme: false,
                 filtroTipo: '',
@@ -194,20 +217,42 @@
                 }
             },
 
-            addJogo(){
-                if(this.isNomeJogoAvalido(this.form.nome)){
-                    let novoJogo = {
-                        nome: this.form.nome,
-                        img: this.form.imagem,
-                        tipo: this.form.tipo,
-                        perguntas: this.form.questoes,
+            adicionaJogo(){
+                let confirmarNovoJogo = true;
+                
+                for (let i in this.form){
+                    if(this.form[i].length === 0){
+                        confirmarNovoJogo = false;
+                        break;
                     }
-                    
-                    this.SET_NOVO_JOGO(novoJogo);
-                    this.$router.push({ name: "jogo", params:{ jogoNome: this.form.nome }} );
-}
+                }
+                
+                if(confirmarNovoJogo){
+                    if(this.isNomeJogoAvalido(this.form.nome)){
+                        if(this.form.tipo == 'Preencher'){
+                            for (let i = 0; i < this.form.questoes.length; i++){
+                                if (this.form.questoes[i].tipoAnexo == "Video"){
+                                    this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
+                                }
+                            }
+                        }
+                        let novoJogo = {
+                            nome: this.form.nome,
+                            img: this.form.imagem,
+                            tipo: this.form.tipo,
+                            perguntas: this.form.questoes,
+                            classificacao: [],
+                        }
+                        
+                        this.SET_NOVO_JOGO(novoJogo);
+                        this.$router.push({ name: "jogo", params:{ jogoNome: this.form.nome }} );
+    }
+                    else{
+                        this.jogoExiste = true;
+                    }
+                }
                 else{
-                    this.jogoExiste = true;
+                    alert('Informação em falta ou invalida!')
                 }
             },
 
@@ -215,20 +260,39 @@
                 this.$router.push({ name: "jogo", params:{ jogoNome: nome }} );
             },
 
-            addQuestao(){
-                this.form.questoes.push({
-                            pergunta: '',
-                            alternativas: ['', '', '', ''],
-                            resposta: '',
-                            });
-            },
-
             addImagem(){
                 if(this.form.imagem.length > 0){
                     this.imagemFilme = true;
                     this.$refs['fotoModal'].hide()
                 }
-            }
+            },
+
+            questoesJogo(){
+                if(this.form.questoes.length === 0){
+                    this.addQuestao();
+                }
+
+                this.$refs['questoesJogo'].show();
+            },
+
+            addQuestao(){
+                if(this.form.tipo == 'Quizz'){
+                    this.form.questoes.push({
+                            pergunta: '',
+                            alternativas: ['', '', '', ''],
+                            resposta: '',
+                            });
+                }
+                else if (this.form.tipo == 'Preencher'){
+                    this.form.questoes.push({
+                        pergunta: '',
+                        anexo: '',
+                        tipoAnexo: '',
+                        resposta: '',
+                    })
+                }
+                
+            },
         },
     }
 </script>
@@ -338,7 +402,7 @@ h1{
 }
 
 #novoFoto{
-    height: 65%;
+    height: 85%;
     width:75%;
     margin-top: 15%;
 }
@@ -360,5 +424,18 @@ h1{
     position: absolute;
     right: 9px;
     top: 15px;
+}
+
+.anexo{
+    width: 125%;
+}
+
+.tipoAnexo{
+    margin-top: 24px;
+    margin-left: 20%;
+    height: 36px;
+    width: 80%;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
 }
 </style>

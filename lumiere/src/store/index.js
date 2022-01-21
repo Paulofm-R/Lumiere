@@ -180,10 +180,10 @@ export default new Vuex.Store({
       trailer: 'https://www.youtube.com/embed/nnn02NDIEiE',
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
-      ano: 0,
+      ano: 1994,
       realizador: '',
       produtora: '',
-      elenco: '',
+      elenco: ['Jennifer Ani', 'Courteney Cox', 'Lisa Kudrow'],
       sinopse: '',
       avaliacao: 4.4,
       nAvaliacoes: 6,
@@ -194,10 +194,10 @@ export default new Vuex.Store({
       trailer: 'https://www.youtube.com/embed/X0lRjbrH-L8',
       tipo: 'Serie',
       categoria: ['Comédia', 'Drama', 'Romance'],
-      ano: 0,
+      ano: 2009,
       realizador: '',
       produtora: '',
-      elenco: '',
+      elenco: ["Ed O'Neill", "Sofía Vergara", "Julie Bowen"],
       sinopse: '',
       avaliacao: 4.2,
       nAvaliacoes: 6,
@@ -208,10 +208,10 @@ export default new Vuex.Store({
       trailer: 'https://www.youtube.com/embed/lkN-A00WLYE',
       tipo: 'Filme',
       categoria: ['Comédia', 'Musical', 'Romance'],
-      ano: 0,
+      ano: 2008,
       realizador: '',
       produtora: '',
-      elenco: '',
+      elenco: ['Meryl Streep', 'Pierce Brosnan', 'Amanda Seyfried'],
       sinopse: '',
       avaliacao: 3.8,
       nAvaliacoes: 6,
@@ -271,6 +271,13 @@ export default new Vuex.Store({
     },
     SET_REMOVER_JOGO(state, payload) {
       state.jogos = state.jogos.filter((jogo) => jogo.nome != payload)
+      localStorage.jogos = JSON.stringify(state.jogos);
+    },
+    SET_NOVA_CLASSIFICACAO(state, payload) {
+      state.jogos.map((jogo) => {
+        if (jogo.nome == payload[0])
+        jogo.classificacao.push(payload[1]);
+      })
       localStorage.jogos = JSON.stringify(state.jogos);
     },
     
