@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>{{jogo.nome}}</h1>
-        <h2>{{certas}} respostas certas em {{numPerguntas}} </h2>
+        <h2 v-if="numPerguntas > 0">{{certas}} respostas certas em {{numPerguntas}} </h2>
 
         <h3>Tabela de Classificação</h3>
         <table>
@@ -15,7 +15,7 @@
             <tbody>
                 <tr v-for="(utilizador, index) in classificacao" :key="index">
                     <td class="posicao">{{index + 1}}</td>
-                    <td class="nome"><img src="../assets/img/User.svg" class='img'> {{utilizador.utilizador}}</td>
+                    <td class="nome"><img :src="imagemUtilizador(utilizador.utilizador)" class='img'> {{utilizador.utilizador}}</td>
                     <td class="pontuacao">{{utilizador.pontuacao}}pts</td>
                 </tr>
             </tbody>
@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    // import {mapGetters} from "vuex";
+    import { mapGetters} from 'vuex';
 
     export default {
         name: "classificacao",
@@ -43,6 +43,8 @@
         },
 
         computed: {
+            ...mapGetters(['getUtilizadores']),
+
             classificacao() {
                 let top5 = this.jogo.classificacao.slice(0).sort(this.ordenarClassificacao);
                 return top5.slice(0, 5);
@@ -54,6 +56,17 @@
                 if (utilizadorA.pontuacao < utilizadorB.pontuacao) return 1;
                 else if (utilizadorA.pontuacao > utilizadorB.pontuacao) return -1;
                 else return 0;
+            },
+
+            imagemUtilizador(nome){
+                let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
+                console.log(utilizador);
+                if(utilizador == undefined){
+                    return '../assets/img/User.svg'
+                }
+                else{
+                    return utilizador.foto
+                }
             }
         },
     }

@@ -11,7 +11,7 @@ export default new Vuex.Store({
         nome: "Paulo Rodrigues",
         palavra_passe: 'nao sei',
         data_nascimento: '2000-09-16',
-        foto: '@/assets/img/User.svg',
+        foto: 'https://conteudo.imguol.com.br/c/entretenimento/e2/2020/04/13/pocoyo-virou-embaixador-do-isolamento-social-no-brasil-1586794881482_v2_450x337.jpg',
         tipo: 'admin',
         favoritos: [],
         lista: [],
@@ -20,7 +20,7 @@ export default new Vuex.Store({
         nome: "Sofia Freitas",
         palavra_passe: 'nao sei',
         data_nascimento: '2001-11-07',
-        foto: '@/assets/img/User.svg',    
+        foto: '../assets/img/User.svg',    
         tipo: 'admin',
         favoritos: [],
         lista: [],
@@ -181,10 +181,10 @@ export default new Vuex.Store({
       tipo: 'Serie',
       categoria: ['Comédia', 'Romance'],
       ano: 1994,
-      realizador: '',
-      produtora: '',
+      realizador: ['David Crane', 'Marta Kauffman'],
+      produtora: 'Warner Bros. Television',
       elenco: ['Jennifer Ani', 'Courteney Cox', 'Lisa Kudrow'],
-      sinopse: '',
+      sinopse: 'Segue a vida pessoal e profissional de seis amigos de vinte a trinta e poucos anos que vivem em Manhattan.',
       avaliacao: 4.4,
       nAvaliacoes: 6,
       comentarios: [],
@@ -195,7 +195,7 @@ export default new Vuex.Store({
       tipo: 'Serie',
       categoria: ['Comédia', 'Drama', 'Romance'],
       ano: 2009,
-      realizador: '',
+      realizador: ['Jeffrey Morton', 'Chris Smirnoff'],
       produtora: '',
       elenco: ["Ed O'Neill", "Sofía Vergara", "Julie Bowen"],
       sinopse: '',
@@ -228,6 +228,7 @@ export default new Vuex.Store({
     // Utilizador
     isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.palavra_passe === palavra_passe),
     isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
+    getUtilizadores: (state) => state.utilizadores,
     getLoggedUser: (state) => state.loggedUser,
 
      // Jogos
@@ -262,6 +263,10 @@ export default new Vuex.Store({
     SET_NEW_PASSWORD(state, payload){
       state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
       localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    },
+    SET_GERIR_UTILIZADORES(state, payload){
+      state.utilizadores = payload;
+      localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
 
     // Jogos

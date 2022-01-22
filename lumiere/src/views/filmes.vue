@@ -105,7 +105,7 @@
                                         <label for="realizadorFilme">Realizador:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input id="realizadorFilme" v-model="form.realizador" placeholder="Realizador"></b-form-input>
+                                        <b-form-input id="realizadorFilme" v-model="form.realizador" placeholder="Realizador (separados por virgulas)"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
@@ -113,7 +113,7 @@
                                         <label for="produtoraFilme">Produtora:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora (serapados pos virgula)"></b-form-input>
+                                        <b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
@@ -121,7 +121,7 @@
                                         <label for="elencoFilme">Elenco:</label>
                                     </b-col>
                                     <b-col>
-                                        <b-form-input id="elencoFilme" v-model="form.elenco" placeholder="Elenco (serapados pos virgula)"></b-form-input>
+                                        <b-form-input id="elencoFilme" v-model="form.elenco" placeholder="Elenco (separados por virgulas)"></b-form-input>
                                     </b-col>
                                 </b-row>
                                 <b-row class="mb-2">
@@ -197,12 +197,8 @@
                 footer-bg-variant="light" 
                 ok-only>
                 <template #modal-header="{close}">
-                    <b-col cols=11 class="modalTitulo" >
-                        <h4>Nova Categoria</h4>
-                    </b-col>
-                    <b-col style="text-align: right">
-                        <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
-                    </b-col>
+                    <h4 class="modalTitulo">Nova Categoria</h4>
+                    <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
                 <template>
                     <label for="novaCategoria">Nova Categoria</label>

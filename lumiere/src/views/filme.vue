@@ -3,10 +3,6 @@
         <b-container fluid>
             <h2>{{filme.nome}}</h2>
             <img :src="filme.imagem" id="imgFilme">
-            <!-- <video width="560" height="315" controls id="trailer">
-                <source :src="filme.trailer" type="video/.mp4">
-            </video> -->
-            <!-- <span id="trailer">{{filme.trailer}}</span> -->
             <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
             <br>
             <b-col cols="6">
@@ -16,13 +12,13 @@
                     <b-button @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
                     <b-button @click="lista()" variant="info" id="lista">A minha lista</b-button>
                 </div>
-                <div>
+                <div class="infoFilme"> 
                     <p><span>Sinopse: </span>{{filme.sinopse}}</p>
                     <p><span>Ano: </span>{{filme.ano}}</p>
-                    <p><span>Realizador: </span>{{filme.realizador}}</p>
-                    <p><span>Produtora: </span>{{filme.produtora}}</p>
-                    <p><span>Elenco: </span><a v-for="(elemento, index) in filme.elenco" :key="index">{{elemento}} </a></p>
-                    <p><span>Género: </span><a v-for="(categoria, index) in filme.categoria" :key="index">{{categoria}} </a></p>
+                    <p><span>Realizador: </span><a class="infoFilme">{{realizador}}</a></p>
+                    <p><span>Produtora: </span><a class="infoFilme">{{filme.produtora}}</a></p>
+                    <p><span>Elenco: </span><a class="infoFilme">{{elenco}} </a></p>
+                    <p><span>Género: </span><a>{{categoria}} </a></p>
                 </div>    
             </b-col>
             <b-col>
@@ -42,8 +38,9 @@
                 header-text-variant="light"
                 body-bg-variant="light"
                 footer-bg-variant="light">
-                <template #modal-header="">
-                    AVALIAR
+                <template #modal-header="{close}">
+                    <h4 class='modalTitulo'>AVALIAR</h4>
+                    <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
                 <template>
                   <form @submit.prevent = "avaliar">                   
@@ -71,6 +68,7 @@
     import {mapGetters} from "vuex";
 
     export default {
+        name: 'Filme',
         data() {
             return {
                 filme: {},
@@ -81,11 +79,22 @@
 
         computed: {
             ...mapGetters(['getFilmes', 'getLoggedUser']),
+
+            elenco(){
+                return this.filme.elenco.join(', ');
+            },
+
+            categoria(){
+                return this.filme.categoria.join(', ');
+            },
+            realizador(){
+                return this.filme.realizador.join(', ');
+            }
         },
 
         
         created () {
-        this.filme = this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
+            this.filme = this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
         },
 
         methods:{
@@ -111,71 +120,89 @@
 </script>
 
 <style scoped>
-    h2{
-        margin-top:3%;
-        margin-bottom:2%;
-    }
-    #imgFilme{
-        position: relative;
-        width: 10%;
-        height: 10%;
-        top: -13.5vh;
-        z-index: 1;
-    }
-    #trailer{
-        position: relative;
-        left:-9.2vw;
+h2{
+    margin-top:3%;
+    margin-bottom:2%;
+}
+#imgFilme{
+    position: relative;
+    width: 10%;
+    height: 10%;
+    top: -13.5vh;
+    z-index: 1;
+}
+#trailer{
+    position: relative;
+    left:-9.2vw;
 
-    }
-    button{
-        margin-left: 1%;
-        margin-right: 0.5%;
-        margin-bottom: 0.5%;
-    }
-    span{
-        font-family: var(--font2);
-        font-size: 20px;
-    }
+}
+button{
+    margin-left: 1%;
+    margin-right: 0.5%;
+    margin-bottom: 0.5%;
+}
+span{
+    font-family: var(--font2);
+    font-size: 20px;
+}
 
-    input{
-        width: 100%;
-        height: 20vh;
-    }
-    #rate{
-        position: relative;
-        top:-20%
-    }
-    #zonaComentarios{
-        width: 100%;
-        height: 100%;
-        background-color: var(--cor3)
-    }
-    #user{
-        position: relative;
-        width: 5%;
-        height: 5%;
-        border-radius: 50%;
-        left: 2%;
-    }
-    #comentarioUser{
-        position: relative;
-        left: 9%;
-        top:-12.5vh;
-    }
-    #comentarioUserFundo{
-        position: relative;
-        width: 95%;
-        height: 15%;
-        left: 9%;
-        background-color: var(--cor0)
-    }
-    #username{
-        position: relative;
-        font-family: var(--font2);
-        font-size: 15px;
-        color:white;
-        left: 9%;
-        top:-10vh;
-    }
-    
+input{
+    width: 100%;
+    height: 20vh;
+}
+#rate{
+    position: relative;
+    top:-20%
+}
+#zonaComentarios{
+    width: 100%;
+    height: 100%;
+    background-color: var(--cor3)
+}
+#user{
+    position: relative;
+    width: 5%;
+    height: 5%;
+    border-radius: 50%;
+    left: 2%;
+}
+#comentarioUser{
+    position: relative;
+    left: 9%;
+    top:-12.5vh;
+}
+#comentarioUserFundo{
+    position: relative;
+    width: 95%;
+    height: 15%;
+    left: 9%;
+    background-color: var(--cor0)
+}
+#username{
+    position: relative;
+    font-family: var(--font2);
+    font-size: 15px;
+    color:white;
+    left: 9%;
+    top:-10vh;
+}
+
+.infoFilme{
+    text-decoration: none;
+    color:white;
+    font-family: var(--font1);
+}
+
+.modalTitulo{
+  margin: auto;
+  font-family: var(--font2);
+  color: white;
+}
+
+.fecharModal{
+  position: absolute;
+  right: 5px;
+  top: 0px;
+  color: white;
+}
 </style>

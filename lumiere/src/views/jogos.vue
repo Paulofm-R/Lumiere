@@ -17,7 +17,8 @@
             <b-row id="catalogoJogos">
                 <b-col cols="3" class="catalogoJogo" v-for="(jogo, index) in filtroTipoJogo" :key="index">
                     <div class="card jogo" @click='selecionarJogo(jogo.nome)'>
-                        <b-button @click="removerJogo(jogo.nome)" v-if="acaoAdmin" class="remover" :id="jogo.nome">X</b-button>
+                        <b-button @click="removerJogo(jogo.nome)" v-if="acaoAdmin" class="remover" :class="jogo.nome">X</b-button>
+                        <b-icon icon="info-circle-fill" scale='1.5' variant="info" @click.stop="classificacao(jogo.nome)" class="classificacao" :class="jogo.nome"></b-icon>
                         <img :src="jogo.img">
                         <div class="nomeJogo">
                             <h4>{{jogo.nome}}</h4>
@@ -217,6 +218,10 @@
                 }
             },
 
+            classificacao(nome){
+                this.$router.push({ name: "classificacao", params:{ jogoNome: nome}} )
+            },
+
             adicionaJogo(){
                 let confirmarNovoJogo = true;
                 
@@ -369,6 +374,16 @@ h1{
 
 .catalogoJogo > .jogo > .remover:active{
     box-shadow: inset 5px 5px 13px 0px rgba(0, 0, 0, 0.479);
+}
+
+.catalogoJogo > .jogo > .classificacao{
+    position: absolute;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 25px;
+    border-color: rgba(0, 0, 0, 0.884);
+    color: black;
+    padding: 0;
 }
 
 .catalogoJogo > .jogo > img{
