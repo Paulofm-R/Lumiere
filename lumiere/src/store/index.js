@@ -198,7 +198,7 @@ export default new Vuex.Store({
       realizador: ['Jeffrey Morton', 'Chris Smirnoff'],
       produtora: '',
       elenco: ["Ed O'Neill", "Sofía Vergara", "Julie Bowen"],
-      sinopse: '',
+      sinopse: 'Três famílias diferentes, mas relacionadas, enfrentam provações e tribulações em suas próprias maneiras cômicas.',
       avaliacao: 4.2,
       nAvaliacoes: 6,
       comentarios: [],
@@ -209,13 +209,19 @@ export default new Vuex.Store({
       tipo: 'Filme',
       categoria: ['Comédia', 'Musical', 'Romance'],
       ano: 2008,
-      realizador: '',
-      produtora: '',
+      realizador: ['Phyllida Lloyd'],
+      produtora: 'Relativity Media',
       elenco: ['Meryl Streep', 'Pierce Brosnan', 'Amanda Seyfried'],
-      sinopse: '',
+      sinopse: 'A história de uma noiva tentando encontrar seu verdadeiro pai contada usando canções de sucesso do popular grupo ABBA dos anos 1970.',
       avaliacao: 3.8,
       nAvaliacoes: 6,
-      comentarios: [],
+      comentarios: [{
+        utilizador: 'Rogério Fagundes',
+        comentario: 'Um dos filmes que mais gosto, uma vez que usa as músicas da minha banda favorita, ABBA, enquanto nos cativa no inigma que desenrola toda a história.',
+      },{
+        utilizador: 'Carla Queiros',
+        comentario: 'Melhor filme musical que já vi na minha vida!!',
+      },],
     },],
 
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
@@ -298,7 +304,10 @@ export default new Vuex.Store({
     SET_NOVA_CATEGORIA(state, payload) {
       state.categoria.push(payload);
       localStorage.categoria = JSON.stringify(state.categoria);
-    }
+    },
+    // SET_AVALIACAO_FILME(state, payload) {
+
+    // }
   },
   actions: {
   },

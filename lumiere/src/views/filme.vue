@@ -21,17 +21,24 @@
                     <p><span>Género: </span><a>{{categoria}} </a></p>
                 </div>    
             </b-col>
-            <b-col>
+            <b-row>
                 <div id="zonaComentarios">
+                    <hr>
                     <h3>Comentários</h3>
-                    <img src="../assets/img/User.svg" id="user">
-                    <input type="image" src="../assets/img/spoiler.svg">
-                    <p id="username">Rogério Fagundes</p>
-                    <p id="comentarioUser">Um dos filmes que mais gosto, uma vez que usa as músicas da minha banda favorita, ABBA, enquanto nos cativa no inigma que desenrola toda a história.</p>
+                    <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
+                        <b-col cols="1">
+                            <img src="../assets/img/User.svg" class="imagemUtilizador">
+                            <!-- <input type="image" src="../assets/img/spoiler.svg"> -->
+                        </b-col>
+                        <b-col>
+                            <p id="username">{{comentario.utilizador}}</p>
+                            <p id="comentarioUser">{{comentario.comentario}}</p>
+                        </b-col>
+                    </b-row>
                     <div id="comentarioUserFundo">
                     </div>
                 </div>
-            </b-col>
+            </b-row>
 
             <b-modal id="avaliarModal" centered
                 header-bg-variant="info"
@@ -46,11 +53,10 @@
                   <form @submit.prevent = "avaliar">                   
                     <div>
                         <b-form-rating v-model="avaliacao"></b-form-rating>
-                        <p class="mt-2">Value: {{ avaliacao }}</p>
                     </div>
                     <div>
                         <p>Comentário:</p>
-                        <input type="text">
+                        <b-form-textarea id="textarea" v-model="text" placeholder="Seu comentario" rows="5"></b-form-textarea>
                     </div>                
                   </form>
                 </template>
@@ -89,6 +95,10 @@
             },
             realizador(){
                 return this.filme.realizador.join(', ');
+            },
+
+            comentarios(){
+                return this.filme.comentarios;
             }
         },
 
@@ -157,34 +167,30 @@ input{
 #zonaComentarios{
     width: 100%;
     height: 100%;
-    background-color: var(--cor3)
 }
-#user{
-    position: relative;
-    width: 5%;
-    height: 5%;
+
+.comentario{
+    margin-top: 5vh;
+}
+
+.imagemUtilizador{
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
-    left: 2%;
 }
+
 #comentarioUser{
-    position: relative;
-    left: 9%;
-    top:-12.5vh;
+    
 }
 #comentarioUserFundo{
-    position: relative;
     width: 95%;
     height: 15%;
-    left: 9%;
     background-color: var(--cor0)
 }
 #username{
-    position: relative;
     font-family: var(--font2);
-    font-size: 15px;
+    font-size: 18px;
     color:white;
-    left: 9%;
-    top:-10vh;
 }
 
 .infoFilme{

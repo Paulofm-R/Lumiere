@@ -60,7 +60,6 @@
 
             imagemUtilizador(nome){
                 let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
-                console.log(utilizador);
                 if(utilizador == undefined){
                     return '../assets/img/User.svg'
                 }
@@ -127,10 +126,8 @@ tbody > tr > td.nome > .img{
     text-align: left;
 }
 
-caption{
-    font-size:1.5em;
-    font-weight: bold;
-    padding: 10px;
-    background-color: lightgray;
+td.posicao:nth-of-type(1){
+    font-size: 2em;
+    font-family: var(--font2);
 }
 </style>
