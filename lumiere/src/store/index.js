@@ -15,6 +15,8 @@ export default new Vuex.Store({
         tipo: 'admin',
         favoritos: [],
         lista: [],
+        numJogos: 0,
+        desafios: []
       },
       {
         nome: "Sofia Freitas",
@@ -24,6 +26,8 @@ export default new Vuex.Store({
         tipo: 'admin',
         favoritos: [],
         lista: [],
+        numJogos: 0,
+        desafios: []
       },
     ],
     loggedUser: localStorage.loggedUser ? JSON.parse(localStorage.loggedUser) : '',
@@ -72,49 +76,10 @@ export default new Vuex.Store({
     },{
       nome: 'Quantos herois conheces?',
       img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg',
-      tipo: "Quizz",
-      perguntas: [{
-        pergunta: 'Qual destes não é considerado um Avengers?',
-        alternativas: ['Loki', 'Hawkeye', 'Ant-Man', 'Spider-Man'],
-        resposta: 'Loki',
-      },{
-        pergunta: 'De qual mitologia pertence o Thor?',
-        alternativas: ['Grega', 'Romana', 'Egipcia', 'Nordica'],
-        resposta: 'Nordica',
-      },{
-        pergunta: 'Em que filme o Deadpool fez a sua primeira aparição?',
-        alternativas: ['Deadpool', 'Homem de Ferro', 'X-Men Origens: Wolverine', 'X-Men: First Class'],
-        resposta: 'X-Men Origens: Wolverine',
-      },{
-        pergunta: 'Como se chamava o meia/o irmã/ão do Wolverine?',
-        alternativas: ['Ororo Munroe', 'Scott Summers', 'Jean Grey', 'Victor Creed'],
-        resposta: 'Victor Creed',
-      }]
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },{
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },
-    {
-      nome: 'Marvel Quizz',
-      img: 'https://i.pinimg.com/564x/24/92/00/249200c431fe811110761709b303fcaf.jpg'
-    },{
-      nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    }
+    },      
   ], 
     tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista'],
+    jogoAtual: '',
 
     // Filmes
     filmes: localStorage.filmes ? JSON.parse(localStorage.filmes) : [{ 
@@ -223,11 +188,30 @@ export default new Vuex.Store({
         comentario: 'Melhor filme musical que já vi na minha vida!!',
       },],
     },],
-
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
+    filmeAtual: '',
 
-    desafios:[{nome: 'Joga 5 quizzes',
-               nEtapas: '5'}]
+    desafios:[{nome: 'Joga 5 jogos',
+               nEtapas: 5,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+               {nome: 'Joga 10 jogos',
+               nEtapas: 10,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+               {nome: 'Joga 20 jogos',
+               nEtapas: 20,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+               {nome: 'Joga 40 jogos',
+               nEtapas: 40,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+               {nome: 'Joga 50 jogos',
+               nEtapas: 50,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+               {nome: 'Joga 100 jogos',
+               nEtapas: 100,
+              imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
+              {nome: 'Joga 75 jogos',
+              nEtapas: 75,
+             imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},]
   },
 
   getters: {
@@ -247,8 +231,12 @@ export default new Vuex.Store({
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
     getCategoria: (state) => state.categoria,
     isCategoriaAvailable: (state) => (cat) => state.categoria.every((categoria) => categoria !== cat),
+    isFilmeFavoritoValido: (state) => (nome) => state.loggedUser.favoritos.every((filme) => filme.nome !== nome),
+    isFilmeListaValido: (state) => (nome) => state.loggedUser.lista.every((filme) => filme.nome !== nome),
 
     //Desafios
+    getDesafios: (state) => state.desafios,
+    isDesafioAvailable: (state) => (nome) => state.desafios.every((desafio) => desafio.nome !== nome),
   },
 
   mutations: {
@@ -263,8 +251,16 @@ export default new Vuex.Store({
       localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
     SET_LOGOUT(state){
+      state.utilizadores.map((utilizador) => {
+        if(utilizador.nome == state.loggedUser.nome){
+          console.log(utilizador);
+          utilizador = state.loggedUser
+          console.log(utilizador);
+        }
+      })
       state.loggedUser = '';
       localStorage.removeItem('loggedUser');
+      localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
     SET_NEW_PASSWORD(state, payload){
       state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
@@ -286,10 +282,24 @@ export default new Vuex.Store({
     },
     SET_NOVA_CLASSIFICACAO(state, payload) {
       state.jogos.map((jogo) => {
-        if (jogo.nome == payload[0])
-        jogo.classificacao.push(payload[1]);
+        if (jogo.nome == state.jogoAtual) {
+          jogo.classificacao.push(payload);
+          state.loggedUser.numJogos += 1;
+        }
       })
       localStorage.jogos = JSON.stringify(state.jogos);
+      localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    },
+    SET_JOGO_ATUAL(state, payload){
+      state.jogoAtual = payload
+    },
+    SET_DESAFIO(state){
+      state.desafios.map((desafio) => {
+        if(desafio.nEtapas == state.loggedUser.numJogos){
+          state.loggedUser.desafios.push(desafio)
+        }
+      })
+      localStorage.loggedUser = JSON.stringify(state.loggedUser);
     },
     
     // Filmes
@@ -305,12 +315,52 @@ export default new Vuex.Store({
       state.categoria.push(payload);
       localStorage.categoria = JSON.stringify(state.categoria);
     },
-    // SET_AVALIACAO_FILME(state, payload) {
+    SET_FILME_ATUAL(state, payload){
+      state.filmeAtual = payload
+    },
+    SET_NOVA_AVALIACAO(state, payload){
+      state.filmes.map((filme) => {
+        if (filme.nome == state.filmeAtual){
+          filme.avaliacao *= filme.nAvaliacoes;
+          filme.avaliacao += payload;
+          filme.nAvaliacoes++;
+          filme.avaliacao /= (filme.nAvaliacoes);
+          filme.avaliacao = filme.avaliacao.toFixed(1);
+        }
+      })
+      localStorage.filmes = JSON.stringify(state.filmes);
+    },
+    SET_NOVO_COMENTARIO(state, payload) {
+      state.filmes.map((filme) => {
+        if (filme.nome == state.filmeAtual){
+          filme.comentarios.push(payload);
+        }
+      })
+      localStorage.filmes = JSON.stringify(state.filmes);
+    },
+    SET_NOVO_FAVORITO(state, payload){
+      state.filmes.map((filme) => {
+        if (filme.nome == payload){
+          state.loggedUser.favoritos.push(filme)
+        }
+      })
+      localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    },
+    SET_NOVA_LISTA(state, payload){
+      state.filmes.map((filme) => {
+        if (filme.nome == payload){
+          state.loggedUser.lista.push(filme)
+        }
+      })
+      localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    },
 
-    // }
+    // Desafios
+    SET_NOVO_DESAFIO(state, payload) {
+      state.desafios.push(payload);
+      localStorage.desafios = JSON.stringify(state.desafios);
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
+  actions: {},
+  modules: {}
 })

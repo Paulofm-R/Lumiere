@@ -56,7 +56,7 @@ import {mapGetters, mapMutations} from "vuex";
         },
 
         methods: {
-            ...mapMutations(['SET_NOVA_CLASSIFICACAO']),
+            ...mapMutations(['SET_NOVA_CLASSIFICACAO', 'SET_DESAFIO']),
 
             selecionar(alternativa, index){
                 this.selecionadasQuizz[index] = alternativa
@@ -75,9 +75,8 @@ import {mapGetters, mapMutations} from "vuex";
                     pontuacao: pontuacao,
                 }
                 
-                let novo = [this.jogo.nome, novaClassificacao]
-                this.SET_NOVA_CLASSIFICACAO(novo)
-                console.log(this.jogo);
+                this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
+                this.SET_DESAFIO();
                 this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas: this.jogo.perguntas.length }} );
             }
         },

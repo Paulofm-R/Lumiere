@@ -117,7 +117,7 @@
                   nome: this.nome,
                   palavra_passe: this.palavra_passe,
                   data_nascimento: this.data_nascimento,
-                  foto: '@/assets/img/User.svg',
+                  foto: './assets/img/User.svg',
                   tipo: 'utilizador',
                 }
                 if(this.palavra_passe == this.cpalavra_passe){

@@ -4,29 +4,63 @@
             <img :src="getLoggedUser.foto" id="imgPerfil" />
             <b-button variant="warning" v-b-modal.editarPerfilModal id="editarPerfil" ><b-icon icon="pencil-square"></b-icon></b-button>
         </b-row>
-        <b-col id="utilizador" cols="4">
-            <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
-        </b-col>
-        <b-col id='listasUtilizador' cols='8'>
-            <b-button variant="info" class="botoes"><b-icon icon="heart-fill"></b-icon>  Favoritos</b-button>
-            <b-button variant="info" class="botoes"><b-icon icon="play-fill"></b-icon>  A minha lista</b-button>
-            <b-button v-if="getLoggedUser.tipo == 'admin'" variant="info" class="botoes" v-b-modal.utilizadoresModal><b-icon icon="person-fill"></b-icon> Utilizadores</b-button>
+        <b-row>
+            <b-col id="utilizador" cols="4">
+                <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
+            </b-col>
+        </b-row>
+        <b-row>
+            <div id='listasUtilizador'>
+                <b-button variant="info" class="botoes" v-b-modal.listaFavoritos><b-icon icon="heart-fill"></b-icon>  Favoritos</b-button>
+                <b-button variant="info" class="botoes" v-b-modal.listaMeusFilmes><b-icon icon="play-fill"></b-icon>  A minha lista</b-button>
+                <b-button v-if="getLoggedUser.tipo == 'admin'" variant="info" class="botoes" v-b-modal.utilizadoresModal><b-icon icon="person-fill"></b-icon> Utilizadores</b-button>
+            </div>
+        </b-row>
 
-        </b-col>
-        <b-col cols="8">
-            <span id="desafios">Desafios</span>
-            <img src="../assets/img/vetor.svg" id="vetor1">
-            <span id="badges">Badges</span>
-            <img src="../assets/img/vetor.svg" id="vetor2">
-        </b-col>
-        <b-col cols="6">
-            <div id="divDesafios">
-                <!-- <b-progress v-for="(desafio, index) in desafios" :key='index' :value="value" :max="max" class="mb-3"></b-progress> -->
-            </div>
-            <div id="divBadges">
-                <!-- badges do utilizador -->
-            </div>
-        </b-col>
+        <b-row>
+            <b-col cols="8">
+                <span id="desafios">Desafios</span>
+                <img src="../assets/img/vetor.svg" id="vetor1">
+                <span id="badges">Badges</span>
+                <img src="../assets/img/vetor.svg" id="vetor2">
+            </b-col>
+        </b-row>
+
+        <b-row align-h="around">
+            <b-col cols="6">
+                <div id="divDesafios">
+                    <b-button id="adicionarDesafio" v-if="getLoggedUser.tipo == 'admin'" v-b-modal.adicionarDesafio>ADICIONAR</b-button>
+                    <div class='desafio' v-for="(desafio, index) in desafios" :key='index'>
+                        <span>{{desafio.nome}}</span>
+                        <b-progress :value="progressoDesafio" :max="desafio.nEtapas" show-value animated></b-progress>
+                    </div>
+                </div>
+            </b-col>
+            <b-col cols="6" >
+                <div id="divBadges">
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                </div>
+            </b-col>
+        </b-row>
 
         <!-- Modais -->
         <!-- Modal de editar perfil -->
@@ -55,6 +89,47 @@
             </template>
         </b-modal>
 
+        <!-- Lista de Favoritos -->
+        <b-modal id="listaFavoritos" centered
+                size="lg"
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light"
+                scrollable>
+            <template #modal-header='{close}'>
+                <h4 class='modalTitulo'>Favoritos</h4>
+                <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+            </template>
+            <template>
+                <img v-for="(favorito, index) in getLoggedUser.favoritos" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+            </template>
+            <template #modal-footer='{close}'>
+                <b-button @click="close()">Fechar</b-button>
+            </template>
+        </b-modal> 
+
+        <!-- Lista Meus Filmes -->
+        <b-modal id="listaMeusFilmes" centered
+                size="lg"
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light"
+                scrollable>
+            <template #modal-header='{close}'>
+                <h4 class='modalTitulo'>Meus Filmes</h4>
+                <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+            </template>
+            <template>
+                <img v-for="(favorito, index) in getLoggedUser.lista" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+            </template>
+            <template #modal-footer='{close}'>
+                <b-button @click="close()">Fechar</b-button>
+            </template>
+        </b-modal>
+
+        <!-- Gerir utilizadores -->
         <b-modal id="utilizadoresModal" centered
                 header-bg-variant="info"
                 header-text-variant="light"
@@ -80,6 +155,36 @@
                 <b-button @click="close()">Fechar</b-button>
             </template>
         </b-modal>
+
+        <!-- Adicionar Desafios -->
+        <b-modal ref="adicionarDesafio" id="adicionarDesafio" centered
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light">
+            <template #modal-header='{close}'>
+                <h4 class='modalTitulo'>Adicionar Desafios</h4>
+                <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+            </template>
+            <template>
+                <form @submit.prevent = "adicionarDesafio">                   
+                    <div>
+                        <b-form-group class='mb-3' label="Nome do desafio:" label-for="nomeDesafio">
+                            <b-form-input id="nomeDesafio" v-model="formDesafios.nome" type="text" placeholder="Nome do desafio" required></b-form-input>
+                        </b-form-group>
+                        <b-form-group class='mb-3' label="Numero de etapas:" label-for="numEtapas">
+                            <b-form-input id="numEtapas" v-model="formDesafios.nEtapas" type="number" placeholder="Numero de etapas" required></b-form-input>
+                        </b-form-group>
+                        <b-form-group class='mb-3' label="Anexo:" label-for="anexoDesafio">
+                            <b-form-input id="anexoDesafio" v-model="formDesafios.anexo" type="url" placeholder="Anexo" required></b-form-input>
+                        </b-form-group>
+                    </div>              
+                </form>
+            </template>
+            <template #modal-footer=''>
+                <b-button @click="adicionarDesafio()">Adicionar</b-button>
+            </template>
+        </b-modal>
     </div>
 </template>
 
@@ -93,16 +198,34 @@
                 form: {
                     imagemNova: '',
                     novaPalavraPasse: '',
-                }
-                
+                },
+                formDesafios: {
+                    nome: '',
+                    nEtapas: 0,
+                    anexo: '',
+                },
             }
         },
 
         computed: {
-            ...mapGetters(['getLoggedUser', 'getUtilizadores'])
+            ...mapGetters(['getLoggedUser', 'getUtilizadores', 'getDesafios', 'isDesafioAvailable']),
+
+            desafios(){
+                let desafios = this.getDesafios.filter((desafio) => desafio.nEtapas > this.getLoggedUser.numJogos).slice(0).sort(this.ordenarDesfios);
+                desafios = desafios.slice(0, 5);
+                return desafios;
+            },
+
+            progressoDesafio(){
+                return this.getLoggedUser.numJogos
+            },
+
+            badges(){
+                return this.getLoggedUser.desafios
+            }
         },
         methods: {
-            ...mapMutations(['SET_GERIR_UTILIZADORES']),
+            ...mapMutations(['SET_GERIR_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL']),
 
             editarPerfil(){
                 if(this.form.novaPalavraPasse != ''){
@@ -127,7 +250,36 @@
                 if (confirm("Tens acerteza que queres eliminar esta utilizador?")) {
                     this.SET_GERIR_UTILIZADORES(this.getUtilizadores.filter((utilizador) => utilizador.nome != nome));
                 }
-            }
+            },
+
+            ordenarDesfios(desafioA, desafioB){
+                if (desafioA.nEtapas < desafioB.nEtapas) return -1;
+                else if (desafioA.nEtapas < desafioB.nEtapas) return 1;
+                else return 0;
+            },
+
+            adicionarDesafio(){
+                if(this.formDesafios.nome != '' && this.formDesafios.nEtapas > 0 && this.formDesafios.anexo != ''){
+                    if(this.isDesafioAvailable(this.formDesafios.nome)){
+                        let novoDesafio = {
+                            nome: this.formDesafios.nome,
+                            nEtapas: this.formDesafios.nEtapas,
+                            imagem: this.formDesafios.anexo,
+                        };
+
+                        this.SET_NOVO_DESAFIO(novoDesafio);                                                
+                        this.$refs['adicionarDesafio'].hide()
+
+                    }
+                }
+            },
+
+            escolherFilme(nome) {
+                console.log('ola');
+                this.SET_FILME_ATUAL(nome);
+                this.$router.push({ name: "filme", params:{ filmeNome: nome }});
+            },
+
         },
         created () {
             console.log(this.getLoggedUser.foto);
@@ -166,6 +318,7 @@
 
 #listasUtilizador{
     margin:auto;
+    margin-bottom: 5vh;
     text-align: center;
 }
 
@@ -184,6 +337,7 @@
     font-size: 17px;
     left: 11.5vw;
     z-index: 2;
+    top: -15px;
 }
 
 #badges{
@@ -193,12 +347,26 @@
     font-size: 17px;
     left: 35vw;
     z-index: 2;
+    top: -15px;
+}
+
+.badge{
+    width: 135px;
+    height: 100px;
+    padding: 0;
+    font-family: var(--font1);
+    text-align: center;
+}
+
+.badge > div > img{
+    width: 45%;
 }
 
 #vetor1{
     position: relative;
     width: 20vw;
     height: 20vh;
+    top: -15px;
     z-index: 1;
 }
 
@@ -207,6 +375,7 @@
     width: 20vw;
     height: 20vh;
     left: 23vw;
+    top: -15px;
     z-index: 1;
 }
 
@@ -215,19 +384,22 @@
     top: -10vh;
     left: 5vw;
     width: 40vw;
-    height: 35vh;
+    height: 325px;
     background-color: var(--cor3);
-    
+    padding: 5%;
+    padding-top: 10%;
 }
 
 #divBadges{
     position: relative;
-    top: -45vh;
-    left: 51.4vw;
+    top: -10vh;
+    left: 2vw;
     width: 40vw;
-    height: 35vh;
+    height: 325px;
     background-color: var(--cor3);
-    
+    padding: 2.5%;
+    padding-top: 10%;
+    overflow: auto;
 }
 
 .botoes{
@@ -277,6 +449,26 @@
   right: 5px;
   top: 0px;
   color: white;
+}
+
+#adicionarDesafio{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--cor2);
+    font-family: var(--font1);
+}
+
+.imagemLista{
+    margin-right: 3%;
+    margin-bottom: 4%;
+    margin-left: 1%;
+    cursor: pointer;
+    opacity: 90%;
+}
+
+.imagemLista:hover{
+    opacity: 100%;
 }
 
 </style>

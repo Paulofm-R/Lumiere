@@ -210,7 +210,7 @@
         },
 
         methods: {
-            ...mapMutations(['SET_REMOVER_JOGO', 'SET_NOVO_JOGO']),
+            ...mapMutations(['SET_REMOVER_JOGO', 'SET_NOVO_JOGO', 'SET_JOGO_ATUAL']),
 
             removerJogo(nome){
                 if(confirm("Tens acerteza que queres remover este jogo?")){
@@ -262,6 +262,7 @@
             },
 
             selecionarJogo(nome){
+                this.SET_JOGO_ATUAL(nome)
                 this.$router.push({ name: "jogo", params:{ jogoNome: nome }} );
             },
 

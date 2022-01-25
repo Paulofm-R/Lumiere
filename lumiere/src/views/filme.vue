@@ -8,9 +8,9 @@
             <b-col cols="6">
                 <div>
                     <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
-                    <b-button v-b-modal.avaliarModal id="avaliar" variant="info">Avaliar</b-button>
-                    <b-button @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
-                    <b-button @click="lista()" variant="info" id="lista">A minha lista</b-button>
+                    <b-button @click="avaliarModal()" id="avaliar" variant="info">Avaliar</b-button>
+                    <b-button v-if="getLoggedUser != ''" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
+                    <b-button v-if="getLoggedUser != ''" @click="lista()" variant="info" id="lista">A minha lista</b-button>
                 </div>
                 <div class="infoFilme"> 
                     <p><span>Sinopse: </span>{{filme.sinopse}}</p>
@@ -27,7 +27,7 @@
                     <h3>Comentários</h3>
                     <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
                         <b-col cols="1">
-                            <img src="../assets/img/User.svg" class="imagemUtilizador">
+                            <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
                             <!-- <input type="image" src="../assets/img/spoiler.svg"> -->
                         </b-col>
                         <b-col>
@@ -40,7 +40,7 @@
                 </div>
             </b-row>
 
-            <b-modal id="avaliarModal" centered
+            <b-modal ref='avaliarModal' id="avaliarModal" centered
                 header-bg-variant="info"
                 header-text-variant="light"
                 body-bg-variant="light"
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <p>Comentário:</p>
-                        <b-form-textarea id="textarea" v-model="text" placeholder="Seu comentario" rows="5"></b-form-textarea>
+                        <b-form-textarea id="textarea" v-model="comentario" placeholder="Seu comentario" rows="5"></b-form-textarea>
                     </div>                
                   </form>
                 </template>
@@ -71,7 +71,7 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
+    import {mapGetters, mapMutations} from "vuex";
 
     export default {
         name: 'Filme',
@@ -84,7 +84,7 @@
         },
 
         computed: {
-            ...mapGetters(['getFilmes', 'getLoggedUser']),
+            ...mapGetters(['getFilmes', 'getLoggedUser', 'getUtilizadores', 'isFilmeFavoritoValido', 'isFilmeListaValido']),
 
             elenco(){
                 return this.filme.elenco.join(', ');
@@ -108,20 +108,46 @@
         },
 
         methods:{
-            avaliar() {
-                if(this.filme.avaliacao <= 5){
-                    this.filme.avaliacao *= this.filme.nAvaliacoes
-                    this.filme.avaliacao += this.avaliacao
-                    this.filme.nAvaliacoes += 1
-                    this.filme.avaliacao /= (this.filme.nAvaliacoes)
-                    this.filme.avaliacao = this.filme.avaliacao.toFixed(1)
+            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA']),
+
+            avaliarModal(){
+                if(this.getLoggedUser != ''){
+                    this.$refs['avaliarModal'].show()
                 }
-                
+            },
+
+            avaliar() {
+                if(this.avaliacao > 0){
+                    this.SET_NOVA_AVALIACAO(this.avaliacao)
+                }
+                if(this.comentario.length > 0){
+                    let novoComentario = {
+                        utilizador: this.getLoggedUser.nome,
+                        comentario: this.comentario
+                    }
+                    this.SET_NOVO_COMENTARIO(novoComentario)
+                }
             },
             favoritos() {
-                console.log('tou ca bro')
-                this.getLoggedUser.favoritos.push(this.filme)
-            }
+                if(this.isFilmeFavoritoValido(this.filme.nome)){
+                    this.SET_NOVO_FAVORITO(this.filme.nome)
+                }
+            },
+            lista() {
+                if(this.isFilmeListaValido(this.filme.nome)){
+                    this.SET_NOVA_LISTA(this.filme.nome)
+                }
+            },
+
+            utilizadorFoto(nome){
+                let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
+                if(utilizador == undefined){
+                    return '../assets/img/User.svg'
+                }
+                else{
+                    return utilizador.foto
+                }
+            },
 
         }
     }

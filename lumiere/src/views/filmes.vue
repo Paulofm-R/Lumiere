@@ -284,7 +284,7 @@
         },
 
         methods: {
-            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA']),
+            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME_ATUAL']),
 
             addCategoria(){
                 this.form.categorias.push('')
@@ -359,6 +359,7 @@
             },
 
             escolherFilme(nome) {
+                this.SET_FILME_ATUAL(nome);
                 this.$router.push({ name: "filme", params:{ filmeNome: nome }});
             },
 
