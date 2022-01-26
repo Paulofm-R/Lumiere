@@ -26,12 +26,13 @@
                     <hr>
                     <h3>Comentários</h3>
                     <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
-                        <b-col cols="1">
+                        <b-col cols="1" class='imagemSpoiler'>
                             <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
-                            <!-- <input type="image" src="../assets/img/spoiler.svg"> -->
+                            <input @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
                         </b-col>
-                        <b-col>
+                        <b-col class="coment">
                             <p id="username">{{comentario.utilizador}}</p>
+                            <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false" class="esconderSpoiler">VER SPOILER</b-button>
                             <p id="comentarioUser">{{comentario.comentario}}</p>
                         </b-col>
                     </b-row>
@@ -108,7 +109,7 @@
         },
 
         methods:{
-            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA']),
+            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA', 'SET_SPOILER']),
 
             avaliarModal(){
                 if(this.getLoggedUser != ''){
@@ -123,10 +124,12 @@
                 if(this.comentario.length > 0){
                     let novoComentario = {
                         utilizador: this.getLoggedUser.nome,
-                        comentario: this.comentario
+                        comentario: this.comentario,
+                        spoiler: false,
                     }
                     this.SET_NOVO_COMENTARIO(novoComentario)
                 }
+                this.$refs['avaliarModal'].hide()
             },
             favoritos() {
                 if(this.isFilmeFavoritoValido(this.filme.nome)){
@@ -148,6 +151,11 @@
                     return utilizador.foto
                 }
             },
+
+            spoiler(comentario){
+                comentario.spoiler = comentario.spoiler == false ? true : false;
+                this.SET_SPOILER()
+            }
 
         }
     }
@@ -236,5 +244,30 @@ input{
   right: 5px;
   top: 0px;
   color: white;
+}
+
+.imagemSpoiler{
+    position: relative;
+}
+
+.botaoSpoiler{
+    position: absolute;
+    top: -10px;
+    right: 25px;
+    width: 30px;
+}
+
+.coment{
+    position: relative;
+}
+
+.esconderSpoiler{
+    position: absolute;
+    left: -10px;
+    top: 30px;
+    width: 100%;
+    height: 100%;
+    font-family: var(--font1);
+    background-color: var(--cor2)
 }
 </style>

@@ -161,7 +161,7 @@ export default new Vuex.Store({
       categoria: ['Comédia', 'Drama', 'Romance'],
       ano: 2009,
       realizador: ['Jeffrey Morton', 'Chris Smirnoff'],
-      produtora: '',
+      produtora: 'Lloyd-Levitan Productions',
       elenco: ["Ed O'Neill", "Sofía Vergara", "Julie Bowen"],
       sinopse: 'Três famílias diferentes, mas relacionadas, enfrentam provações e tribulações em suas próprias maneiras cômicas.',
       avaliacao: 4.2,
@@ -183,9 +183,11 @@ export default new Vuex.Store({
       comentarios: [{
         utilizador: 'Rogério Fagundes',
         comentario: 'Um dos filmes que mais gosto, uma vez que usa as músicas da minha banda favorita, ABBA, enquanto nos cativa no inigma que desenrola toda a história.',
+        spoiler: false,
       },{
         utilizador: 'Carla Queiros',
         comentario: 'Melhor filme musical que já vi na minha vida!!',
+        spoiler: false,
       },],
     },],
     categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
@@ -336,6 +338,9 @@ export default new Vuex.Store({
           filme.comentarios.push(payload);
         }
       })
+      localStorage.filmes = JSON.stringify(state.filmes);
+    },
+    SET_SPOILER(state){
       localStorage.filmes = JSON.stringify(state.filmes);
     },
     SET_NOVO_FAVORITO(state, payload){

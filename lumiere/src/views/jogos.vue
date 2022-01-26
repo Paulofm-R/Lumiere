@@ -6,6 +6,7 @@
                 <b-col cols=4 id="filtro">
                     <select name="filtroJogos" id="filtroJogos" v-model="filtroTipo">
                         <option value="" default disabled>Filtrar por...</option>
+                        <option value="">TODOS</option>
                         <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{tipo}}</option>
                     </select>
                 </b-col>
