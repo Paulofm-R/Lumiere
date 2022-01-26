@@ -8,8 +8,8 @@ export default new Vuex.Store({
     // Utilizadores
     utilizadores: localStorage.utilizadores? JSON.parse(localStorage.utilizadores) : [
       {
-        nome: "Paulo Rodrigues",
-        palavra_passe: 'nao sei',
+        nome: "Admin",
+        palavra_passe: 'Esmad_2122',
         data_nascimento: '2000-09-16',
         foto: 'https://conteudo.imguol.com.br/c/entretenimento/e2/2020/04/13/pocoyo-virou-embaixador-do-isolamento-social-no-brasil-1586794881482_v2_450x337.jpg',
         tipo: 'admin',
@@ -19,11 +19,11 @@ export default new Vuex.Store({
         desafios: []
       },
       {
-        nome: "Sofia Freitas",
-        palavra_passe: 'nao sei',
+        nome: "User",
+        palavra_passe: 'Esmad_2122',
         data_nascimento: '2001-11-07',
-        foto: '../assets/img/User.svg',    
-        tipo: 'admin',
+        foto: '../image/User.svg',    
+        tipo: 'utilizador',
         favoritos: [],
         lista: [],
         numJogos: 0,

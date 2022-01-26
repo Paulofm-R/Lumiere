@@ -472,7 +472,7 @@ h2{
 .catalogoMelhorAvaliados > .card{
     height: 100%;
     width: 100%;
-    background-color: var(--cor0);
+    background-color: rgba(255,0,0,0);
 }
 
 .card > img{

@@ -181,7 +181,7 @@
 }
 
 .link.router-link-exact-active {
-  color: #42b983;
+  color: white;
   font-family: var(--font2);
   font-size: 1.2em;
 }

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="fundo">
         <b-container fluid>
             <h1>JOGOS</h1>
             <b-row align-h="between">
@@ -454,5 +454,9 @@ h1{
     width: 80%;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
+}
+
+#fundo{
+    background-image: url('../assets/img/fundo_jogos.svg');
 }
 </style>

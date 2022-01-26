@@ -98,106 +98,94 @@
         background-size: 30%;
     }
 
-    /* img{
-        position: relative;
-        opacity: 0.4;
-        width: 60vw;
-        height: 60vh;
-        top: -35vh;
-        left: 19vw;
-        
-    } */
-
     #catalogo{
         position: relative;
         width: 15vw;
         height: 30vh;
-        background-color: var(--cor3);
+        background-color: var(--cor2);
         margin-left: 285px;
         margin-right: 30px;
         align-content: center;
-        background-image: url('../assets/img/catalogo.svg');
+        background-image: url('../assets/img/catalogoImg.svg');
 
     }
 
     #catalogo:hover{
-        background-color: var(--cor2);
-        background-image: url('../assets/img/catalogo_hoover.svg');
+        background-color: var(--cor3);
+        background-image: url('../assets/img/catalogo.svg');
         background-position: center;
-        background-size: 98%;
+        background-repeat: no-repeat;
+        background-size: 100%;
 
-    }
-
-    #infoCatalogo{
-        /* text-align: right; */
     }
 
     #imgCatalogo{
         position: relative;
-        top: -20vh;
-        left: 49.5%;
-        width: 15vw;
-        height: 15vh;
+        top: -24vh;
+        left: 38.5%;
+        width: 20vw;
+        height: 20vh;
     }
 
     #vetor1{
         position: relative;
-        top: -20vh;
-        left: 68%;
-        width: 20vw;
-        height: 20vh;
+        top: -24vh;
+        left: 65%;
+        width: 30vw;
+        height: 30vh;
     }
 
     #jogos{
         position: relative;
         width: 15vw;
         height: 30vh;
-        background-color: var(--cor3);
+        background-color: var(--cor2);
         margin-left: 22.4vw;
         margin-right: 30px;
-        background-image: url('../assets/img/jogos.svg');
+        background-image: url('../assets/img/jogosImg.svg');
 
     }
 
     #jogos:hover{
-        background-color: var(--cor2);
-        background-image: url('../assets/img/jogos_hoover.svg');
+        background-color: var(--cor3);
+        background-image: url('../assets/img/jogos.svg');
         background-position: center;
-        background-size: 98%;
+        background-size: 110%;
 
     }
 
     #imgJogo{
         position: relative;
-        top: -20vh;
-        left: -8vw;
-        width: 15vw;
-        height: 15vh;
+        top: -24vh;
+        left: -16.5%;
+        width: 20vw;
+        height: 20vh;
     }
 
     #vetor2{
         position: relative;
-        top: -20vh;
+        top: -24vh;
         left: 10%;
-        width: 20vw;
-        height: 20vh;
+        width: 30vw;
+        height: 30vh;
     }
 
     #sobreNos{
         position: relative;
         width: 15vw;
         height: 30vh;
-        background-color: var(--cor3);
+        background-color: var(--cor2);
         margin-left: 26.1vw;
         margin-right: 30px;
         /* text-align: center; */
-        background-image: url('../assets/img/sobreNos.svg');
+        background-image: url('../assets/img/Logo.svg');
+        background-repeat: no-repeat;
 
     }
 
     #sobreNos:hover{
-        background-color: var(--cor2);
-        background-image: url('../assets/img/sobreNos_hoover.svg');
+        background-color: var(--cor3);
+        background-image: url('../assets/img/sobreNos.svg');
         background-position: center;
         background-size: 98%;
 
@@ -205,17 +193,17 @@
 
     #vetor3{
         position: relative;
-        top: -20vh;
-        left: 68%;
-        width: 20vw;
-        height: 20vh;
+        top: -24vh;
+        left: 65%;
+        width: 30vw;
+        height: 30vh;
     }
 
     #imgSobreNos{
         position: relative;
-        top: -20vh;
-        left: 52.5%;
-        width: 10vw;
-        height: 10vh;
+        top: -24vh;
+        left: 38.5%;
+        width: 20vw;
+        height: 20vh;
     }
 </style>

@@ -40,6 +40,8 @@
         text-align: left;
         font-family: var(--font1);
         font-size: 24px;
+        margin-left: 7%;
+        margin-top: 2%;
     }
 
     #txtFinal{
@@ -52,12 +54,5 @@
         text-align: right;
         font-family: var(--font3);
         font-size: 40px;
-    }
-
-    #sobreNosDiv{
-        background-image: url("../assets/img/Logo.svg");
-        background-repeat: no-repeat;
-        background-size: 70%;
-        background-position: center;
     }
 </style>

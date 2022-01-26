@@ -76,9 +76,9 @@
             <template>
                 <form @submit.prevent = "editarPerfil">                   
                     <div>
-                        <label for="urlFotoJogo">Nova Foto</label>
-                        <input type="url" width="30vw" height="30vh" v-model="form.imagemNova">
-                        <!-- <input id="urlFotoPerfil" type="image" :src='getLoggedUser.foto' width="30vw" height="30vh" v-model ="form.imagemNova"> -->
+                        <label for="urlFotoJogo">Nova Foto: </label>
+                        <input type="url" width="40vw" height="30vh" v-model="form.imagemNova">
+                        <br>
                         <label for="novaPalavraPasse">Nova Palavra Passe: </label>
                         <input type="password" id="novaPalavraPasse" v-model="form.novaPalavraPasse">
                     </div>               
@@ -311,11 +311,6 @@
     margin-right: 1vw;;
 }
 
-/* #editarPerfil{
-    position: relative;
-    top: -3.5vh;
-} */
-
 #listasUtilizador{
     margin:auto;
     margin-bottom: 5vh;
@@ -335,7 +330,7 @@
     font-family: var(--font2);
     color: var(--cor0);
     font-size: 17px;
-    left: 11.5vw;
+    left: 9.5vw;
     z-index: 2;
     top: -15px;
 }
@@ -345,7 +340,7 @@
     font-family: var(--font2);
     color: var(--cor0);
     font-size: 17px;
-    left: 35vw;
+    left: 36.5vw;
     z-index: 2;
     top: -15px;
 }
@@ -364,17 +359,17 @@
 
 #vetor1{
     position: relative;
-    width: 20vw;
-    height: 20vh;
+    width: 15vw;
+    height: 15vh;
     top: -15px;
     z-index: 1;
 }
 
 #vetor2{
     position: relative;
-    width: 20vw;
-    height: 20vh;
-    left: 23vw;
+    width: 15vw;
+    height: 15vh;
+    left: 27.5vw;
     top: -15px;
     z-index: 1;
 }

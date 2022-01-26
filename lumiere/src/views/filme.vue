@@ -10,7 +10,7 @@
                     <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
                     <b-button @click="avaliarModal()" id="avaliar" variant="info">Avaliar</b-button>
                     <b-button v-if="getLoggedUser != ''" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
-                    <b-button v-if="getLoggedUser != ''" @click="lista()" variant="info" id="lista">A minha lista</b-button>
+                    <b-button v-if="getLoggedUser != ''" @click="lista()" variant="info" id="lista">+ A minha lista</b-button>
                 </div>
                 <div class="infoFilme"> 
                     <p><span>Sinopse: </span>{{filme.sinopse}}</p>
