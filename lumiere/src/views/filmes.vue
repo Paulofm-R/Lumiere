@@ -297,7 +297,7 @@
             },
 
             NovaCategoria(){
-                if(this.novaCategoria.length === 0){
+                if(this.novaCategoria.length != 0){
                     if(this.isCategoriaAvailable(this.novaCategoria)){
                         this.SET_NOVA_CATEGORIA(this.novaCategoria)
                         this.$refs['novaCategoriaModal'].hide()

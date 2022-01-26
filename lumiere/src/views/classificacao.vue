@@ -82,7 +82,7 @@ h3{
 
 table {
     margin: auto;
-    height: 45vh;
+    max-height: 45vh;
     width: 45vw;
     color: white;
     border-collapse: collapse;

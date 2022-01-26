@@ -30,14 +30,19 @@
                     <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
                 <template>
-                  <form @submit.prevent="login">
-                    <label for="username">Username: </label>
-                    <input type="text" id="username" v-model="nome">
-                    <br>
-                    <label for="password">Password :  </label>
-                    <input type="password" id="password" v-model="palavra_passe">
-                    <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
-                  </form>
+                  <div class="bodyModal">
+                    <form @submit.prevent="login">
+                      <div class='inputLogin'>
+                        <label for="username">Username: </label>
+                        <input type="text" id="username" v-model="nome">
+                      </div>
+                      <div class='inputLogin'>
+                        <label for="password">Password :  </label>
+                        <input type="password" id="password" v-model="palavra_passe">
+                      </div>
+                      <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
+                    </form>
+                  </div>
                 </template>
                 <template #modal-footer>
                     <b-button class="modalFooter" id='login' @click='login()'>Login</b-button>
@@ -55,19 +60,28 @@
                       <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                   </template>
                   <template>
-                    <form @submit.prevent="regitar">
-                      <label for="username">Username: </label>
-                      <input type="text" id="username" v-model="nome" required>
-                      <br>
-                      <label for="password">Password :  </label>
-                      <input type="password" id="password" v-model="palavra_passe" required>
-                      <br>
-                      <label for="cPassword">Confirmar Password:  </label>
-                      <input type="password" id="cPassword" v-model="cpalavra_passe" required>
-                      <br>
-                      <label for="dataNasc">Data Nascimento:  </label>
-                      <input type="date" id="dataNasc" v-model="data_nascimento" required>
-                    </form> 
+                      <form @submit.prevent="regitar">
+                        <b-row>
+                          <b-col id="labelRegistro" cols="6">
+                            <label class='labelRegistro' for="username">Username: </label>
+                            <br>
+                            <label class='labelRegistro' for="password">Password :  </label>
+                            <br>
+                            <label class='labelRegistro' for="cPassword">Confirmar Password:  </label>
+                            <br>
+                            <label class='labelRegistro' for="dataNasc">Data Nascimento:  </label>
+                          </b-col>
+                          <b-col id="inputRegistro" cols="6">
+                            <input class='inputRegistro' type="text" id="username" v-model="nome" required>
+                            <br>
+                            <input class='inputRegistro' type="password" id="password" v-model="palavra_passe" required>
+                            <br>
+                            <input class='inputRegistro' type="password" id="cPassword" v-model="cpalavra_passe" required>
+                            <br>
+                            <input class='inputRegistro' type="date" id="dataNasc" v-model="data_nascimento" required>
+                          </b-col>
+                        </b-row>
+                      </form>
                   </template>
                   <template #modal-footer>
                       <b-button class="modalFooter" id='registar' @click='registar()'>Registar</b-button>
@@ -221,5 +235,31 @@
   right: 5px;
   top: 0px;
   color: white;
+}
+
+.bodyModal{
+  text-align: center;
+}
+
+.inputLogin{
+  margin: 10px;
+}
+
+#labelRegistro{
+  text-align: right;
+  padding-right: 5px;
+}
+
+#inputRegistro{
+  text-align: left;
+  padding-left: 5px;
+}
+
+.labelRegistro{
+  margin-bottom: 10px;
+}
+
+.inputRegistro{
+  margin-bottom: 5px;
 }
 </style>

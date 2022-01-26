@@ -87,8 +87,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requerAutenticacao && !store.getters.getLoggedUser) {
-    alert('Necessario Login primeiro')
-  } else {
+    alert('É preciso autenticar primeiro!')
+    } else {
     next();
   }
 });

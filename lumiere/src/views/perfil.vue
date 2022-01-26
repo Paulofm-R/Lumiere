@@ -58,13 +58,29 @@
                         <div><img :src="badge.imagem" alt="" width="35px"></div>
                         <span>{{badge.nome}}</span>
                     </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
+                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{badge.nome}}</span>
+                    </div>
                 </div>
             </b-col>
         </b-row>
 
         <!-- Modais -->
         <!-- Modal de editar perfil -->
-        <b-modal id="editarPerfilModal" centered
+        <b-modal ref="editarPerfilModal" id="editarPerfilModal" centered
                 header-bg-variant="info"
                 header-text-variant="light"
                 body-bg-variant="light"
@@ -74,18 +90,23 @@
                 <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
             </template>
             <template>
-                <form @submit.prevent = "editarPerfil">                   
-                    <div>
-                        <label for="urlFotoJogo">Nova Foto: </label>
-                        <input type="url" width="40vw" height="30vh" v-model="form.imagemNova">
-                        <br>
-                        <label for="novaPalavraPasse">Nova Palavra Passe: </label>
-                        <input type="password" id="novaPalavraPasse" v-model="form.novaPalavraPasse">
-                    </div>               
-                </form>
+                <div class="bodyModal">
+                    <form @submit.prevent = "editarPerfil">
+                        <div>
+                            <div class='inputsEditarPerfil'>
+                                <label for="urlFotoJogo">Nova Foto : </label>
+                                <input type="url" width="40vw" height="30vh" v-model="form.imagemNova">
+                            </div>
+                            <div class='inputsEditarPerfil'>
+                                <label for="novaPalavraPasse">Nova Palavra Passe : </label>
+                                <input type="password" id="novaPalavraPasse" v-model="form.novaPalavraPasse">
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </template>
             <template #modal-footer>
-                <b-button>Aceitar Alterações</b-button>
+                <b-button @click='editarPerfil'>Aceitar Alterações</b-button>
             </template>
         </b-modal>
 
@@ -141,15 +162,16 @@
                 <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
             </template>
             <template>
-                <form @submit.prevent = "editarUtilizadores">                   
-                    <div v-for="(utilizador, index) in getUtilizadores" :key="index">
-                        <b-row class="utilizadores" v-if="utilizador.nome != getLoggedUser.nome">
-                            <b-col class="nomeUtilizadores">{{utilizador.nome}}</b-col>
-                            <b-col><b-button class='botaoEditarUtilizador tipoUtilizadores' @click="mudarTipo(utilizador.nome)" >{{utilizador.tipo}}</b-button></b-col>
-                            <b-col><b-button class='botaoEditarUtilizador removerUtilizadores' @click="removerUtilizador(utilizador.nome)">Remover</b-button></b-col>
-                        </b-row>
-                    </div>              
-                </form>
+                <b-col id="inputGerirUtilizador" cols="5">
+                    <b-form-input v-model="nomeUtilizador" placeholder="Nome de utilizador"></b-form-input>
+                </b-col>
+                <div v-for="(utilizador, index) in utilizadores" :key="index">
+                    <b-row class="utilizadores" v-if="utilizador.nome != getLoggedUser.nome">
+                        <b-col class="nomeUtilizadores">{{utilizador.nome}}</b-col>
+                        <b-col><b-button class='botaoEditarUtilizador tipoUtilizadores' @click="mudarTipo(utilizador.nome)" >{{utilizador.tipo}}</b-button></b-col>
+                        <b-col><b-button class='botaoEditarUtilizador removerUtilizadores' @click="removerUtilizador(utilizador.nome)">Remover</b-button></b-col>
+                    </b-row>
+                </div>              
             </template>
             <template #modal-footer='{close}'>
                 <b-button @click="close()">Fechar</b-button>
@@ -204,6 +226,7 @@
                     nEtapas: 0,
                     anexo: '',
                 },
+                nomeUtilizador: '',
             }
         },
 
@@ -222,6 +245,10 @@
 
             badges(){
                 return this.getLoggedUser.desafios
+            },
+
+            utilizadores(){
+                return this.getUtilizadores.filter((utilizador) => (utilizador.nome.includes(this.nomeUtilizador) || this.nomeUtilizador == '') && utilizador.nome != this.getLoggedUser.nome).slice(0);
             }
         },
         methods: {
@@ -231,13 +258,14 @@
                 if(this.form.novaPalavraPasse != ''){
                     this.getLoggedUser.palavra_passe = this.form.novaPalavraPasse;
                     localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
-                    console.log(this.getLoggedUser.palavra_passe)
                 }
                 
+                if(this.form.imagemNova != ''){
+                    this.getLoggedUser.foto = this.form.imagemNova
+                    localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
+                }
 
-                this.getLoggedUser.foto = this.form.imagemNova
-                localStorage.loggedUser = JSON.stringify(this.getLoggedUser)
-                console.log(this.form.imagemNova)
+                this.$refs['editarPerfilModal'].hide()
             },
 
             mudarTipo(nome){
@@ -295,8 +323,8 @@
 
 #editarPerfil{
     position: absolute;
-    bottom: 0;
-    left: 55%;
+    bottom: 15px;
+    left: 54%;
     width: 45px;
 }
 
@@ -319,8 +347,8 @@
 
 #imgPerfil{
     border-radius: 50%;
-    width: 20%;
-    height: 20%;
+    width: 225px;
+    height: 200px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -397,6 +425,14 @@
     overflow: auto;
 }
 
+#divBadges::-webkit-scrollbar {
+background:#333;
+}
+ 
+#divBadges::-webkit-scrollbar-thumb {
+background: var(--cor4);
+}
+
 .botoes{
     margin-top: 5vh;
     margin-left: 1%;
@@ -466,4 +502,20 @@
     opacity: 100%;
 }
 
+#inputGerirUtilizador{
+    margin-bottom: 5%;
+}
+
+
+.desafio{
+    margin-bottom: 7px;
+}
+
+.bodyModal{
+  text-align: center;
+}
+
+.inputsEditarPerfil{
+    margin-bottom: 10px;
+}
 </style>

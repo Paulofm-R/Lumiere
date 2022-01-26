@@ -1,7 +1,10 @@
 <template>
     <div>
         <b-container fluid>
-            <h2>{{filme.nome}}</h2>
+            <h2>
+                {{filme.nome}}
+                <b-button id="removerFilme" @click='removerFilme'>Remover</b-button>
+            </h2>
             <img :src="filme.imagem" id="imgFilme">
             <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
             <br>
@@ -28,7 +31,7 @@
                     <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
                         <b-col cols="1" class='imagemSpoiler'>
                             <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
-                            <input @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
+                            <input v-if="getLoggedUser != ''" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
                         </b-col>
                         <b-col class="coment">
                             <p id="username">{{comentario.utilizador}}</p>
@@ -109,11 +112,14 @@
         },
 
         methods:{
-            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA', 'SET_SPOILER']),
+            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA', 'SET_SPOILER', 'SET_REMOVER_FILME']),
 
             avaliarModal(){
                 if(this.getLoggedUser != ''){
                     this.$refs['avaliarModal'].show()
+                }
+                else{
+                    alert('É preciso autenticar primeiro!')
                 }
             },
 
@@ -145,7 +151,7 @@
             utilizadorFoto(nome){
                 let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
                 if(utilizador == undefined){
-                    return '../assets/img/User.svg'
+                    return './image/User.svg'
                 }
                 else{
                     return utilizador.foto
@@ -155,8 +161,12 @@
             spoiler(comentario){
                 comentario.spoiler = comentario.spoiler == false ? true : false;
                 this.SET_SPOILER()
-            }
+            },
 
+            removerFilme(){
+                this.SET_REMOVER_FILME(this.filme.nome)
+                this.$router.push({ name: "filmes"});
+            }
         }
     }
 
@@ -269,5 +279,16 @@ input{
     height: 100%;
     font-family: var(--font1);
     background-color: var(--cor2)
+}
+
+#removerFilme{
+    margin-left: 50px;
+    background-color: var(--cor2);
+    font-family: var(--font1);
+    width:100px;
+}
+
+#removerFilme:hover{
+    opacity: 90%;
 }
 </style>

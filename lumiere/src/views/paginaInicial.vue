@@ -107,6 +107,8 @@
         margin-right: 30px;
         align-content: center;
         background-image: url('../assets/img/catalogoImg.svg');
+        background-repeat: no-repeat;
+        background-position: center;
 
     }
 
@@ -143,7 +145,7 @@
         margin-left: 22.4vw;
         margin-right: 30px;
         background-image: url('../assets/img/jogosImg.svg');
-
+        background-position: center;
     }
 
     #jogos:hover{
@@ -180,6 +182,7 @@
         /* text-align: center; */
         background-image: url('../assets/img/Logo.svg');
         background-repeat: no-repeat;
+        background-position: center;
 
     }
 
