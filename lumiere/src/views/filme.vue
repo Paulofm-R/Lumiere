@@ -224,7 +224,7 @@ input{
 }
 
 #comentarioUser{
-    
+    font-family: var(--font1);
 }
 #comentarioUserFundo{
     width: 95%;
