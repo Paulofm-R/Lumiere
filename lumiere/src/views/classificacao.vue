@@ -61,7 +61,7 @@
             imagemUtilizador(nome){
                 let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
                 if(utilizador == undefined){
-                    return '../assets/img/User.svg'
+                    return './image/User.svg'
                 }
                 else{
                     return utilizador.foto
