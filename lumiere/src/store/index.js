@@ -190,10 +190,10 @@ export default new Vuex.Store({
         spoiler: false,
       },],
     },],
-    categoria: ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
+    categoria: localStorage.categoria ? JSON.parse(localStorage.categoria) : ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
     filmeAtual: '',
 
-    desafios:[{nome: 'Joga 5 jogos',
+    desafios: localStorage.desafios ? JSON.parse(localStorage.desafios) : [{nome: 'Joga 5 jogos',
                nEtapas: 5,
               imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'},
                {nome: 'Joga 10 jogos',

@@ -68,6 +68,24 @@
                     <b-button id='avaliar' @click='avaliar()'>Avaliar</b-button>
                 </template>
           </b-modal>
+
+          <!-- Adicionado com sucesso -->
+          <b-modal ref='adicionadoSucesso' id="adicionadoSucesso"
+                header-bg-variant="info"
+                header-text-variant="light"
+                body-bg-variant="light"
+                footer-bg-variant="light">
+                <template #modal-header="{close}">
+                    <h4 class='modalTitulo'>Adicionado com sucesso</h4>
+                    <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
+                </template>
+                <template>
+                  <p>O filme foi adicionado com sucesso a sua lista</p>
+                </template>
+                <template #modal-footer="{close}">
+                    <b-button @click='close()'>Fechar</b-button>
+                </template>
+          </b-modal>
             
         </b-container>
         
@@ -140,11 +158,13 @@
             favoritos() {
                 if(this.isFilmeFavoritoValido(this.filme.nome)){
                     this.SET_NOVO_FAVORITO(this.filme.nome)
+                    this.$refs['adicionadoSucesso'].show()
                 }
             },
             lista() {
                 if(this.isFilmeListaValido(this.filme.nome)){
                     this.SET_NOVA_LISTA(this.filme.nome)
+                    this.$refs['adicionadoSucesso'].show()
                 }
             },
 
