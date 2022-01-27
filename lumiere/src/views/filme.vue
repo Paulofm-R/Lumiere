@@ -3,7 +3,7 @@
         <b-container fluid>
             <h2>
                 {{filme.nome}}
-                <b-button id="removerFilme" @click='removerFilme'>Remover</b-button>
+                <b-button v-if="getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>Remover</b-button>
             </h2>
             <img :src="filme.imagem" id="imgFilme">
             <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
