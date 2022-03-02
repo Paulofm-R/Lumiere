@@ -458,5 +458,6 @@ h1{
 
 #fundo{
     background-image: url('../assets/img/fundo_jogos.svg');
+    min-height: 60vh;
 }
 </style>

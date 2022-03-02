@@ -15,7 +15,7 @@ export default new Vuex.Store({
         tipo: 'admin',
         favoritos: [],
         lista: [],
-        numJogos: 0,
+        numJogos: 4,
         desafios: []
       },
       {
@@ -27,6 +27,17 @@ export default new Vuex.Store({
         favoritos: [],
         lista: [],
         numJogos: 0,
+        desafios: []
+      },
+      {
+        nome: "Paulo Rodrigues",
+        palavra_passe: '123',
+        data_nascimento: '2000-09-16',
+        foto: './image/User.svg',
+        tipo: 'admin',
+        favoritos: [],
+        lista: [],
+        numJogos: 4,
         desafios: []
       },
     ],
@@ -75,10 +86,41 @@ export default new Vuex.Store({
       },]
     },{
       nome: 'Quantos herois conheces?',
-      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png'
-    },      
+      img: 'https://poltronanerd.com.br/wp-content/uploads/2020/05/Screenshot_2020-05-13-The-History-Of-The-DC-Comics-Logo.png',
+      tipo: 'Preencher',
+      perguntas: [{
+        pergunta: 'Nome deste heroi',
+        anexo: 'https://t.ctcdn.com.br/KZnZL0u8N4F5W6VISUNHlKjP3Nc=/1400x788/smart/i519239.png',
+        tipoAnexo: 'Imagem',
+        resposta: 'Flash',
+      },
+      {
+        pergunta: 'Nome deste heroi',
+        anexo: 'https://files.tecnoblog.net/wp-content/uploads/2021/04/Qual-a-ordem-cronologica-dos-filmes-do-Batman-Deny-Freeman-Flickr.jpg',
+        tipoAnexo: 'Imagem',
+        resposta: 'Batman',
+      },
+      {
+        pergunta: 'Nome deste heroi',
+        anexo: 'https://www.planocritico.com/wp-content/uploads/2017/06/plano-critico-mulher_maravilha_entenda_melhor_plano_critico.jpg',
+        tipoAnexo: 'Imagem',
+        resposta: 'Mulher Maravilha',
+      },]
+      },{
+        nome: 'Elenco de Mamma Mia',
+        img: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
+        tipo: "Lista",
+        perguntas: [{
+          pergunta: 'Tenta acertar todos os atores que participaram neste filme!',
+          anexo: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
+          tipoAnexo: 'Imagem',
+          resposta: ['Meryl Streep', 'Amanda Seyfried', 'Stellan Skarsgård', 'Pierce Brosnan', 'Colin Firth', 'Rachel McDowall', 'Ashley Lille', 'Julie Walters', 'Christine Baranski', 'Dominic Cooper'],
+        }
+    ],
+    classificacao: [],
+    },
   ], 
-    tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher'],
+    tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista'],
     jogoAtual: '',
 
     // Filmes
@@ -285,10 +327,16 @@ export default new Vuex.Store({
     SET_NOVA_CLASSIFICACAO(state, payload) {
       state.jogos.map((jogo) => {
         if (jogo.nome == state.jogoAtual) {
-          jogo.classificacao.push(payload);
-          state.loggedUser.numJogos += 1;
+          if(jogo.classificacao.every((utilizador) => utilizador.utilizador !== payload.utilizador)){
+            jogo.classificacao.push(payload);
+            state.loggedUser.numJogos += 1;
+          }
+          // else{
+          //   jogo.classificacao.find((utilizador) => utilizador.utilizador == payload.utilizador) = payload
+          // }
         }
       })
+      
       localStorage.jogos = JSON.stringify(state.jogos);
       localStorage.loggedUser = JSON.stringify(state.loggedUser);
     },

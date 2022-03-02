@@ -11,13 +11,13 @@
                     </b-row>
                     <b-row align-h="around">
                         <b-col class="alternativas" cols='4' v-for="(alternativa, ind) in jogo.alternativas" :key="ind">
-                            <b-button variant="outline-dark" class='botao botaoJogo' :class="selecionadasQuizz[index] == alternativa ? 'selecionada': 'naoSelecionada'" @click='selecionar(alternativa, index)'>{{alternativa}}</b-button>
+                            <b-button variant="outline-dark" class='botao botaoJogo' :class="respostasUtilizador[index] == alternativa ? 'selecionada': 'naoSelecionada'" @click='selecionar(alternativa, index)'>{{alternativa}}</b-button>
                         </b-col>
                     </b-row>
                 </div>
                 
             </div>
-            <div v-if="jogo.tipo == 'Preencher'" class='preencher'>
+            <div v-if="jogo.tipo == 'Preencher'" id='preencher'>
                 <div class="jogo" v-for="(jogo, index) in jogo.perguntas" :key="index">
                     <h2>{{jogo.pergunta}}</h2>
                     <div>
@@ -25,9 +25,28 @@
                         <iframe v-else width="560" height="315" :src="jogo.anexo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="anexoJogo"></iframe>
                     </div>
                     <div>
-                        <b-form-input class="respostas" v-model="selecionadasQuizz[index]" placeholder="Sua resposta" required></b-form-input>
+                        <b-form-input class="respostas" v-model="respostasUtilizador[index]" placeholder="Sua resposta" required></b-form-input>
                     </div>
                     
+                </div>
+            </div>
+            <div v-if="jogo.tipo == 'Lista'">
+                <div class="jogo">
+                    <h2>{{jogo.perguntas[0].pergunta}}</h2>
+                    <div>
+                        <img v-if="jogo.perguntas[0].tipoAnexo == 'Imagem'" :src="jogo.perguntas[0].anexo" height="350" class="anexoJogo">
+                        <iframe v-else width="560" height="315" :src="jogo.perguntas[0].anexo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="anexoJogo"></iframe>
+                    </div>
+                    <div>
+                        <b-form-input class="respostas" v-model="respostasUtilizadorLista" placeholder="Sua resposta" @change="verificarRespostaLista()"></b-form-input>
+                    </div>
+                    <div>
+                        <b-row align-h="center" id="jogoListaTabela">
+                            <b-col cols="5" class="respostaLista" v-for="(resposta, index) in jogo.perguntas[0].resposta" :key="index">
+                                <span v-if="resposta == respostasUtilizador[index]">{{resposta}}</span>
+                            </b-col>
+                        </b-row>
+                    </div>
                 </div>
             </div>
 
@@ -46,7 +65,8 @@ import {mapGetters, mapMutations} from "vuex";
         data() {
             return {
                 jogo: {},
-                selecionadasQuizz: [],
+                respostasUtilizador: [],
+                respostasUtilizadorLista: '',
                 certas: 0,
             }
         },
@@ -59,17 +79,31 @@ import {mapGetters, mapMutations} from "vuex";
             ...mapMutations(['SET_NOVA_CLASSIFICACAO', 'SET_DESAFIO']),
 
             selecionar(alternativa, index){
-                this.selecionadasQuizz[index] = alternativa
+                this.respostasUtilizador[index] = alternativa
                 this.$forceUpdate()
             },
 
-            terminar(nome){
-                for(let i = 0; i < this.jogo.perguntas.length; i++){
-                    if(this.jogo.perguntas[i].resposta == this.selecionadasQuizz[i]){
-                        this.certas++
+            terminar(){
+                // let quantPerguntas = 0;
+                if (this.jogo.tipo != 'Lista'){
+                    for(let i = 0; i < this.jogo.perguntas.length; i++){
+                        if(this.jogo.perguntas[i].resposta == this.respostasUtilizador[i]){
+                            this.certas++
+                        }
+                        // quantPerguntas++;
                     }
                 }
+                 else{
+                    for(let i = 0; i < this.jogo.perguntas[0].resposta.length; i++){
+                        if(this.jogo.perguntas[0].resposta[i] == this.respostasUtilizador[i]){
+                            this.certas++
+                        }
+                        // quantPerguntas++;
+                    }
+                }
+                
                 const pontuacao = this.certas * 25;
+                
                 const novaClassificacao = {
                     utilizador: this.getLoggedUser.nome,
                     pontuacao: pontuacao,
@@ -77,7 +111,17 @@ import {mapGetters, mapMutations} from "vuex";
                 
                 this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
                 this.SET_DESAFIO();
-                this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas: this.jogo.perguntas.length }} );
+
+                // this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas:                         quantPerguntas}} );
+            },
+
+            verificarRespostaLista(){
+                for (let i = 0; i < this.jogo.perguntas[0].resposta.length; i++){
+                    if(this.jogo.perguntas[0].resposta[i] == this.respostasUtilizadorLista){
+                        this.respostasUtilizador[i] = this.respostasUtilizadorLista
+                        this.$forceUpdate()
+                    }
+                }
             }
         },
 
@@ -96,11 +140,11 @@ h1{
     font-size: 2.5em;
 }
 
-.preencher{
+#preencher{
     margin: auto;
 }
 
-.preencher>.jogo{
+#preencher>.jogo{
     width: 75%;
     margin: auto;
     margin-bottom: 15vh;
@@ -118,6 +162,7 @@ h1{
 
 .jogo{
     margin-bottom: 7.5vh;
+    text-align: center;
 }
 
 .botao{
@@ -167,6 +212,26 @@ h1{
 .alternativas > button:active{
     background-color: var(--cor3);
     box-shadow: inset 5px 5px 10px 0px rgba(0, 0, 0, 0.575);
+}
+
+#jogoListaTabela{
+    width: 50vw;
+    margin: auto;
+    margin-top: 10vh;
+}
+
+.respostaLista{
+    height: 45px;
+    text-align: center;
+    padding-top: 10px;
+    background-color: var(--cor3);
+    font-family: var(--font1);
+    font-size: 1.1em;
+    color: black;
+}
+
+.respostaLista:nth-of-type(2n+1){
+    background-color: var(--cor4);
 }
 
 #terminarQuizz{

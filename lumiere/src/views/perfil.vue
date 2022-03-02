@@ -303,14 +303,10 @@
             },
 
             escolherFilme(nome) {
-                console.log('ola');
                 this.SET_FILME_ATUAL(nome);
                 this.$router.push({ name: "filme", params:{ filmeNome: nome }});
             },
 
-        },
-        created () {
-            console.log(this.getLoggedUser.foto);
         },
     };
     

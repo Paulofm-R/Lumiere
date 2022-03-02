@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="body">
         <h1>{{jogo.nome}}</h1>
         <h2 v-if="numPerguntas > 0">{{certas}} respostas certas em {{numPerguntas}} </h2>
 
@@ -72,6 +72,10 @@
 </script>
 
 <style scoped>
+.body{
+    min-height: 60vh;
+}
+
 h1,
 h2,
 h3{

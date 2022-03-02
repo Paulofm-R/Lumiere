@@ -16,7 +16,8 @@
             </b-row>
 
             <b-row v-if="getLoggedUser.tipo == 'admin'" id="adicionar">
-                <b-button id="botaoAdicionar" v-b-modal="'adicionarFilme'">ADICIONAR</b-button>
+                <!-- <b-button id="botaoAdicionar" v-b-modal="'adicionarFilme'">ADICIONAR</b-button> -->
+                <b-button id="botaoAdicionar" @click="$router.push({ name: 'adicionarFilme'})">ADICIONAR</b-button>
             </b-row>
 
             <b-row class="melhorAvaliados" align-h="center">

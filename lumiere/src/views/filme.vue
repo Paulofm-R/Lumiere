@@ -28,19 +28,22 @@
                 <div id="zonaComentarios">
                     <hr>
                     <h3>Comentários</h3>
-                    <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
-                        <b-col cols="1" class='imagemSpoiler'>
-                            <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
-                            <input v-if="getLoggedUser != ''" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
-                        </b-col>
-                        <b-col class="coment">
-                            <p id="username">{{comentario.utilizador}}</p>
-                            <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false" class="esconderSpoiler">VER SPOILER</b-button>
-                            <p id="comentarioUser">{{comentario.comentario}}</p>
-                        </b-col>
-                    </b-row>
-                    <div id="comentarioUserFundo">
+                    <div v-if="comentarios.length > 0">
+                        <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
+                            <b-col cols="1" class='imagemSpoiler'>
+                                <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
+                                <input v-if="getLoggedUser != ''" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
+                            </b-col>
+                            <b-col class="coment">
+                                <p id="username">{{comentario.utilizador}}</p>
+                                <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false" class="esconderSpoiler">VER SPOILER</b-button>
+                                <p id="comentarioUser">{{comentario.comentario}}</p>
+                            </b-col>
+                        </b-row>
+                        <div id="comentarioUserFundo">
+                        </div>
                     </div>
+                    <p id="semComentarios" v-else>Ainda não tem comentarios. Seja o primeiro a comentar!</p>
                 </div>
             </b-row>
 
@@ -310,5 +313,10 @@ input{
 
 #removerFilme:hover{
     opacity: 90%;
+}
+
+#semComentarios{
+    font-family: var(--font1);
+    text-align: center;
 }
 </style>

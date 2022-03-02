@@ -8,6 +8,7 @@ import Jogo from '../views/jogo.vue'
 import Classificacao from '../views/classificacao.vue'
 import Perfil from '../views/perfil.vue'
 import SobreNos from '../views/sobreNos.vue'
+import AdicionarFilme from '../views/adicionarFilme.vue'
 
 import store from "../store/index.js";
 
@@ -70,6 +71,15 @@ const routes = [
     path: '/sobreNos',
     name: 'sobreNos',
     component: SobreNos,
+  },
+  {
+    // Pagina com o catologo de jogos
+    path: '/adicionarFilme',
+    name: 'adicionarFilme',
+    component: AdicionarFilme,
+    meta: {
+      requerAutenticacao: true,
+    },
   },
   {
 		// Todos as rotas que não sejam as que estão acima definidas é lhes mostrada a página de erro
