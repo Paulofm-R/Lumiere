@@ -10,7 +10,7 @@
                 <b-col cols='2'>
                     <select name="selectFiltro" id="selectFiltro" v-model="filtroCategoria">
                         <option value="" selected>Todos</option>
-                        <option v-for="(categoria, index) in getCategoria" :key="index" :value="categoria">{{categoria}}</option>
+                        <option v-for="(categoria, index) in categoriasOrdenadasSelect" :key="index" :value="categoria">{{categoria}}</option>
                     </select>
                 </b-col>
             </b-row>
@@ -162,8 +162,8 @@
                 </template>
             </b-modal>
 
-             <!--Modal para adicionar ficheiros-->
-             <b-modal id="ficheirosModal" centered
+            <!--Modal para adicionar ficheiros-->
+            <b-modal id="ficheirosModal" centered
                 header-bg-variant="info"
                 body-bg-variant="light"
                 footer-bg-variant="light" 
@@ -277,6 +277,10 @@
                 }
 
                 return seriesMelhoresAvaliados;
+            },
+
+            categoriasOrdenadasSelect(){
+                return this.getCategoria.slice(0).sort(this.ordenarAlfabeticaCategoria);
             },
 
             categoriasOrdenadas(){
