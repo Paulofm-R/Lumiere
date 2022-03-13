@@ -65,7 +65,7 @@
     h3{
         margin-left: 12vw;
         margin-right: 12vw;
-        padding-top: 15vh;
+        /* padding-top: 15vh; */
         font-family: var(--font2);
         font-size: 50px;
     }
@@ -208,5 +208,9 @@
         left: 38.5%;
         width: 20vw;
         height: 20vh;
+    }
+
+    #infoCatalogo{
+        margin-top: 15vh;
     }
 </style>

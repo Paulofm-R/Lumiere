@@ -72,7 +72,7 @@ import {mapGetters, mapMutations} from "vuex";
         },
 
         computed: {
-            ...mapGetters(['getLoggedUser']),
+            ...mapGetters(['getLoggedUser', 'getJogos']),
         },
 
         methods: {
@@ -83,22 +83,22 @@ import {mapGetters, mapMutations} from "vuex";
                 this.$forceUpdate()
             },
 
-            terminar(){
-                // let quantPerguntas = 0;
+            terminar(nome){
+                let quantPerguntas = 0;
                 if (this.jogo.tipo != 'Lista'){
                     for(let i = 0; i < this.jogo.perguntas.length; i++){
                         if(this.jogo.perguntas[i].resposta == this.respostasUtilizador[i]){
                             this.certas++
                         }
-                        // quantPerguntas++;
+                        quantPerguntas++;
                     }
                 }
                  else{
-                    for(let i = 0; i < this.jogo.perguntas[0].resposta.length; i++){
-                        if(this.jogo.perguntas[0].resposta[i] == this.respostasUtilizador[i]){
-                            this.certas++
+                     for(let i = 0; i < this.jogo.perguntas[0].resposta.length; i++){
+                         if(this.jogo.perguntas[0].resposta[i] == this.respostasUtilizador[i]){
+                             this.certas++
                         }
-                        // quantPerguntas++;
+                        quantPerguntas++;
                     }
                 }
                 
@@ -108,11 +108,11 @@ import {mapGetters, mapMutations} from "vuex";
                     utilizador: this.getLoggedUser.nome,
                     pontuacao: pontuacao,
                 }
-                
+                                
                 this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
                 this.SET_DESAFIO();
 
-                // this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas:                         quantPerguntas}} );
+                this.$router.push({ name: "classificacao", params:{ jogoNome: nome, certas: this.certas, numPerguntas: quantPerguntas}} );
             },
 
             verificarRespostaLista(){
@@ -126,7 +126,8 @@ import {mapGetters, mapMutations} from "vuex";
         },
 
         created () {
-            this.jogo = JSON.parse(localStorage.getItem('jogos')).find((jogo) => jogo.nome == this.$route.params.jogoNome);
+            this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
+            this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
         },
     }
 </script>

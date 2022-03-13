@@ -105,7 +105,8 @@ export default new Vuex.Store({
         anexo: 'https://www.planocritico.com/wp-content/uploads/2017/06/plano-critico-mulher_maravilha_entenda_melhor_plano_critico.jpg',
         tipoAnexo: 'Imagem',
         resposta: 'Mulher Maravilha',
-      },]
+      },],
+      classificacao: [],
       },{
         nome: 'Elenco de Mamma Mia',
         img: 'https://m.media-amazon.com/images/M/MV5BMTA2MDU0MjM0MzReQTJeQWpwZ15BbWU3MDYwNzgwNzE@._V1_FMjpg_UX1000_.jpg',
@@ -135,6 +136,7 @@ export default new Vuex.Store({
       produtora: 'Marvel Studios',
       elenco: ['Paul Rudd', 'Evangeline Lilly', 'Michael Peña'],
       sinopse: 'Enquanto Scott Lang equilibra ser um super-herói e um pai, Hope van Dyne e Dr. Hank Pym apresentam uma nova missão urgente que encontra o Homem-Formiga lutando ao lado da Vespa para descobrir segredos de seu passado.',
+      classificacao: 'M/12',
       avaliacao: 3.5,
       nAvaliacoes: 6,
       comentarios: [],
@@ -149,6 +151,7 @@ export default new Vuex.Store({
       produtora: 'Marvel Studios',
       elenco: ['Robert Downey Jr.', 'Chris Evans', 'Mark Ruffalo'],
       sinopse: 'Após os eventos devastadores de Vingadores: Guerra Infinita (2018), o universo está em ruínas. Com a ajuda dos aliados restantes, os Vingadores se reúnem mais uma vez para reverter as ações de Thanos e restaurar o equilíbrio do universo.',
+      classificacao: 'M/12',
       avaliacao: 4.2,
       nAvaliacoes: 6,
       comentarios: [],
@@ -163,6 +166,7 @@ export default new Vuex.Store({
       produtora: 'Marvel Studios',
       elenco: ['Chris Pratt', 'Vin Diesel', 'Bradley Cooper'],
       sinopse: 'Um grupo de criminosos intergalácticos deve se unir para parar um guerreiro fanático com planos de purgar o universo.',
+      classificacao: 'M/12',
       avaliacao: 4.0,
       nAvaliacoes: 6,
       comentarios: [],
@@ -178,6 +182,7 @@ export default new Vuex.Store({
       produtora: 'Bays/Thomas Productions',
       elenco: ['Josh Radnor', 'Jason Segel', 'Cobie Smulders'],
       sinopse: 'Um pai conta a seus filhos - através de uma série de flashbacks - a jornada que ele e seus quatro melhores amigos fizeram até ele conhecer sua mãe.',
+      classificacao: 'M/14',
       avaliacao: 4.2,
       nAvaliacoes: 6,
       comentarios: [],
@@ -192,6 +197,7 @@ export default new Vuex.Store({
       produtora: 'Warner Bros. Television',
       elenco: ['Jennifer Ani', 'Courteney Cox', 'Lisa Kudrow'],
       sinopse: 'Segue a vida pessoal e profissional de seis amigos de vinte a trinta e poucos anos que vivem em Manhattan.',
+      classificacao: 'M/12',
       avaliacao: 4.4,
       nAvaliacoes: 6,
       comentarios: [],
@@ -206,6 +212,7 @@ export default new Vuex.Store({
       produtora: 'Lloyd-Levitan Productions',
       elenco: ["Ed O'Neill", "Sofía Vergara", "Julie Bowen"],
       sinopse: 'Três famílias diferentes, mas relacionadas, enfrentam provações e tribulações em suas próprias maneiras cômicas.',
+      classificacao: 'M/12',
       avaliacao: 4.2,
       nAvaliacoes: 6,
       comentarios: [],
@@ -220,6 +227,7 @@ export default new Vuex.Store({
       produtora: 'Relativity Media',
       elenco: ['Meryl Streep', 'Pierce Brosnan', 'Amanda Seyfried'],
       sinopse: 'A história de uma noiva tentando encontrar seu verdadeiro pai contada usando canções de sucesso do popular grupo ABBA dos anos 1970.',
+      classificacao: 'M/6',
       avaliacao: 3.8,
       nAvaliacoes: 6,
       comentarios: [{
@@ -297,9 +305,7 @@ export default new Vuex.Store({
     SET_LOGOUT(state){
       state.utilizadores.map((utilizador) => {
         if(utilizador.nome == state.loggedUser.nome){
-          console.log(utilizador);
           utilizador = state.loggedUser
-          console.log(utilizador);
         }
       })
       state.loggedUser = '';

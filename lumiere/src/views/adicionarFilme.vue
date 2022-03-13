@@ -25,6 +25,7 @@
                                 <p><span>Elenco: </span></p>
                                 <p><span>Género: </span></p>
                                 <p><span>Tipo: </span></p>
+                                <p><span>Classificações: </span></p>
                             </b-col>
                             <b-col cols="10" id="inputsInfFilme">
                                 <div><b-form-input id="anoFilme" type="number" min="1895" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input></div>
@@ -47,6 +48,17 @@
                                             <option value="" selected disabled>Tipo Filme</option>
                                             <option value="Filme">Filme</option>
                                             <option value="Serie">Serie</option>
+                                        </select>
+                                </div>
+                                <div>
+                                    <select v-model="form.classificacao" name="selClassificacaoFilme" id="selClassificacaoFilme">
+                                            <option value="" selected disabled>Classificação do Filme</option>
+                                            <option value="M/3">M/3</option>
+                                            <option value="M/6">M/6</option>
+                                            <option value="M/12">M/12</option>
+                                            <option value="M/14">M/14</option>
+                                            <option value="M/16">M/16</option>
+                                            <option value="M/18">M/18</option>
                                         </select>
                                 </div>
                             </b-col>
@@ -145,6 +157,7 @@
                     imagem: '',
                     trailer: '',
                     sinopse: '',
+                    classificacao: '',
                 },
                 trailerURL: '',
                 novaCategoria: '',
@@ -211,8 +224,6 @@
                     }
                 }
 
-                console.log(this.form);
-
                 if(confimarNovoFilme){
                     if(this.isNomeFilmeAvalido(this.form.nome)){
                         let realizador = this.form.realizador.split(',');
@@ -230,6 +241,7 @@
                             produtora: this.form.produtora,
                             elenco: elenco,
                             sinopse: this.form.sinopse,
+                            classificacao: this.form.classificacao,
                             avaliacao: 0,
                             nAvaliacoes: 0,
                             comentarios: [],
@@ -297,7 +309,8 @@ img.imgFilme{
 #produtoraFilme,
 #elencoFilme,
 #selCategoriaFilme,
-#selTipoFilme {
+#selTipoFilme,
+#selClassificacaoFilme {
     height: 40px;
     width: 255px;
     display: inline;

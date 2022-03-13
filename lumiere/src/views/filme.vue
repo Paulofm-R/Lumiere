@@ -5,11 +5,13 @@
                 {{filme.nome}}
                 <b-button v-if="getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>Remover</b-button>
             </h2>
-            <img :src="filme.imagem" id="imgFilme">
-            <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
-            <br>
+            <span id="classificacaoFilme">{{filme.classificacao}}</span>
+            <div id="anexosFilme">
+                <img :src="filme.imagem" id="imgFilme">
+                <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
+            </div>
             <b-col cols="6">
-                <div>
+                <div id="filmeAvaliacaoFavoritos">
                     <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
                     <b-button @click="avaliarModal()" id="avaliar" variant="info">Avaliar</b-button>
                     <b-button v-if="getLoggedUser != ''" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
@@ -199,12 +201,22 @@
 <style scoped>
 h2{
     margin-top:3%;
-    margin-bottom:2%;
+    margin-bottom:1.5%;
 }
+
+#classificacaoFilme{
+    font-family: var(--font1);
+    font-size: 10pt;
+}
+
+#anexosFilme{
+    height: 325px;
+}
+
 #imgFilme{
     position: relative;
     width: 10%;
-    height: 10%;
+    height: 65%;
     top: -13.5vh;
     z-index: 1;
 }
@@ -213,6 +225,11 @@ h2{
     left:-9.2vw;
 
 }
+
+#filmeAvaliacaoFavoritos{
+    margin-bottom: 8vh;
+}
+
 button{
     margin-left: 1%;
     margin-right: 0.5%;

@@ -370,7 +370,7 @@
 }
 
 .badge{
-    width: 135px;
+    width: 25%;
     height: 100px;
     padding: 0;
     font-family: var(--font1);
