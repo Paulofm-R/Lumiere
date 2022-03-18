@@ -42,38 +42,6 @@
                         <div><img :src="badge.imagem" alt="" width="35px"></div>
                         <span>{{badge.nome}}</span>
                     </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
-                    <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{badge.nome}}</span>
-                    </div>
                 </div>
             </b-col>
         </b-row>
@@ -123,7 +91,13 @@
                 <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
             </template>
             <template>
-                <img v-for="(favorito, index) in getLoggedUser.favoritos" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                <div v-if="getLoggedUser.favoritos.length > 0">
+                    <img v-for="(favorito, index) in getLoggedUser.favoritos" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                </div>
+                <div v-else class="textoModal">
+                    <p>Ainda não tens nenhum filme na tua lista de favoritos</p>
+                    <p>Vai ao <router-link class="link" :to="{name: 'filmes'}">Catálolo</router-link> e adiciona o teu primeiro filme!</p>
+                </div>
             </template>
             <template #modal-footer='{close}'>
                 <b-button @click="close()">Fechar</b-button>
@@ -143,7 +117,13 @@
                 <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
             </template>
             <template>
-                <img v-for="(favorito, index) in getLoggedUser.lista" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                <div v-if="getLoggedUser.favoritos.length > 0">
+                    <img v-for="(favorito, index) in getLoggedUser.lista" :key="index" :src="favorito.imagem" alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                </div>
+                <div v-else class="textoModal">
+                    <p>Ainda não tens nenhum filme na tua lista de filmes</p>
+                    <p>Vai ao <router-link class="link" :to="{name: 'filmes'}">Catálolo</router-link> e adiciona o teu primeiro filme!</p>
+                </div>
             </template>
             <template #modal-footer='{close}'>
                 <b-button @click="close()">Fechar</b-button>
@@ -513,5 +493,21 @@ background: var(--cor4);
 
 .inputsEditarPerfil{
     margin-bottom: 10px;
+}
+
+.textoModal{
+    text-align: center;
+    font-family: var(--font1);
+    font-size: 1.25em;
+}
+
+.textoModal > p > .link{
+    text-decoration: none;
+    color: black;
+}
+
+.textoModal > p > .link:hover{
+    text-decoration: underline;
+    font-family: var(--font2);
 }
 </style>

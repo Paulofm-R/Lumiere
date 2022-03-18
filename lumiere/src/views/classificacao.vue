@@ -4,7 +4,7 @@
         <h2 v-if="numPerguntas > 0">{{certas}} respostas certas em {{numPerguntas}} </h2>
 
         <h3>Tabela de Classificação</h3>
-        <table>
+        <table v-if="classificacao.length > 0">
             <thead>
                 <tr>
                     <th>POSIÇÃO</th>
@@ -19,13 +19,17 @@
                     <td class="pontuacao">{{utilizador.pontuacao}}pts</td>
                 </tr>
             </tbody>
-            <tfoot></tfoot>
         </table>
+        <div v-else id="tabelaSemClassificacao">
+                <p>Ainda não tem nenhuma classificação</p>
+                <p>Seja o primeiro a jogar e ter a sua classificacao aqui</p>
+                <b-button id="botaoJogar" @click="jogar()">Jogar</b-button>
+            </div>
     </div>
 </template>
 
 <script>
-    import { mapGetters} from 'vuex';
+    import { mapGetters, mapMutations} from 'vuex';
 
     export default {
         name: "classificacao",
@@ -37,13 +41,14 @@
         },
 
         created () {
-            this.jogo = JSON.parse(localStorage.getItem('jogos')).find((jogo) => jogo.nome == this.$route.params.jogoNome);
+            // this.jogo = JSON.parse(localStorage.getItem('jogos')).find((jogo) => jogo.nome == this.$route.params.jogoNome);
+            this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
             this.certas = this.$route.params.certas;
             this.numPerguntas = this.$route.params.numPerguntas;
         },
 
         computed: {
-            ...mapGetters(['getUtilizadores']),
+            ...mapGetters(['getUtilizadores', 'getJogos']),
 
             classificacao() {
                 let top5 = this.jogo.classificacao.slice(0).sort(this.ordenarClassificacao);
@@ -52,6 +57,8 @@
         },
 
         methods: {
+            ...mapMutations(['SET_JOGO_ATUAL']),
+
             ordenarClassificacao(utilizadorA, utilizadorB) {
                 if (utilizadorA.pontuacao < utilizadorB.pontuacao) return 1;
                 else if (utilizadorA.pontuacao > utilizadorB.pontuacao) return -1;
@@ -66,6 +73,11 @@
                 else{
                     return utilizador.foto
                 }
+            },
+
+            jogar(){
+                this.SET_JOGO_ATUAL(this.jogo.nome)
+                this.$router.push({ name: "jogo", params:{ jogoNome: this.jogo.nome }} );
             }
         },
     }
@@ -133,5 +145,22 @@ tbody > tr > td.nome > .img{
 td.posicao:nth-of-type(1){
     font-size: 2em;
     font-family: var(--font2);
+}
+
+#tabelaSemClassificacao{
+    margin-top: 6vh;
+    text-align: center;
+    font-family: var(--font1);
+    font-size: 18px;
+}
+
+#tabelaSemClassificacao #botaoJogar{
+    width: 100px;
+    height: 45px;
+    background-color: var(--cor2);
+}
+
+#tabelaSemClassificacao #botaoJogar:active{
+    opacity: 90%;
 }
 </style>
