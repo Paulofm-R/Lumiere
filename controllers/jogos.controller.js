@@ -1,7 +1,7 @@
 const db = require("../models/index.js");
 const Jogo = db.jogos;
 
-// Create and Save a new Tutorial
+// Criar e guardar um novo Jogo
 exports.create = async (req, res) => {
     // create a document (instance of model Jogo)
     const jogo = new Jogo({

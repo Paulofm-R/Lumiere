@@ -1,7 +1,7 @@
 const db = require("../models/index.js");
 const Categoria = db.categorias;
 
-// Create and Save a new Tutorial
+// Criar e guardar uma nova Categoria
 exports.create = async (req, res) => {
     // create a document (instance of model Categoria)
     const categoria = new Categoria({

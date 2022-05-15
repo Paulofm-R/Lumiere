@@ -1,9 +1,10 @@
 const db = require("../models/index.js");
 const Filme = db.filmes;
+const Comentario = db.comentarios;
 
-// Create and Save a new Tutorial
+// Criar e guardar um novo Filme
 exports.create = async (req, res) => {
-    // create a document (instance of model Tutorial)
+    // create a document (instance of model Filme)
     const filme = new Filme({
         nome: req.body.nome,
         imagem: req.body.imagem,
@@ -22,7 +23,7 @@ exports.create = async (req, res) => {
     });
 
     try {
-        await filme.save(); // save Tutorial in the database
+        await filme.save(); // save Filme in the database
         console.log(filme)
         res.status(201).json({ success: true, msg: "New Filme created.", URL: `/filmes/${filme._id}` });
     }
@@ -46,7 +47,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
-    // build REGEX to filter tutorials titles with a sub-string - i will do a case insensitive match 
+    // build REGEX to filter filmes titles with a sub-string - i will do a case insensitive match 
     // (https://docs.mongodb.com/manual/reference/operator/query/regex/)
     let condition = nome ? { nome: new RegExp(nome, 'i') } : {};
 
@@ -65,7 +66,7 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// Find a single Tutorial with an id
+// Find a single Filme with an id
 exports.findOne = async (req, res) => {
     try {
         // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
@@ -107,3 +108,29 @@ exports.delete = async (req, res) => {
         });
     };
 };
+
+// exports.update = async (req, res) => {
+//     try {
+//         let filme = await Filme.findById(req.params.filmeID);
+//         if (filme === null){
+//             return res.status(404).json({
+//                 success: false, msg: `Cannot find any filme with ID ${req.params.filmeID}`
+//             })
+//         }
+//         console.log(filme);
+//         let comentarios = await filme.find({ 
+//             attributes: ['id', 'utilizador', 'comentario', 'spoiler']
+//         });
+        
+//         // map default response to desired response data structure
+//         res.status(200).json({
+//             success: true,
+//             comentarios: comentarios
+//         });
+//     }
+//     catch (err) {
+//         res.status(500).json({
+//             success: false, msg: err.message || "Some error occurred while retrieving the filmes."
+//         })
+//     }
+// }

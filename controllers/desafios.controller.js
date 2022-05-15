@@ -1,7 +1,7 @@
 const db = require("../models/index.js");
 const Desafio = db.desafios;
 
-// Create and Save a new Tutorial
+// Criar e guardar um nov Desafio
 exports.create = async (req, res) => {
     // create a document (instance of model Desafio)
     const desafio = new Desafio({

@@ -1,9 +1,9 @@
 const db = require("../models/index.js");
 const Utilizador = db.utilizadores;
 
-// Create and Save a new Tutorial
+// Criar e guardar um novo Utilizador
 exports.create = async (req, res) => {
-    // create a document (instance of model Tutorial)
+    // create a document (instance of model Utilizador)
     const utilizador = new Utilizador({
         nome: req.body.nome,
         palavra_passe: req.body.palavra_passe,
@@ -17,7 +17,7 @@ exports.create = async (req, res) => {
     });
 
     try {
-        await utilizador.save(); // save Tutorial in the database
+        await utilizador.save(); // save Utilizador in the database
         console.log(utilizador)
         res.status(201).json({ success: true, msg: "New Utilizador created.", URL: `/utilizadores/${utilizador._id}` });
     }
@@ -41,7 +41,7 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
-    // build REGEX to filter tutorials titles with a sub-string - i will do a case insensitive match 
+    // build REGEX to filter utilizadores titles with a sub-string - i will do a case insensitive match 
     // (https://docs.mongodb.com/manual/reference/operator/query/regex/)
     let condition = nome ? { nome: new RegExp(nome, 'i') } : {};
 
@@ -105,7 +105,7 @@ exports.delete = async (req, res) => {
 
 exports.update = async (req, res) => {
     // validate request body data
-    if (!req.body || !req.body.nome) {
+    if (!req.body) {
         res.status(400).json({ message: "Request body can not be empty!" });
         return;
     }
@@ -119,18 +119,18 @@ exports.update = async (req, res) => {
                 useFindAndModify: false //https://mongoosejs.com/docs/deprecations.html#findandmodify,
             }
         ).exec();
-        console.log(tutorial)
+        console.log(utilizador)
 
-        if (!tutorial)
+        if (!utilizador)
             return res.status(404).json({
-                message: `Cannot update Tutorial with id=${req.params.tutorialID}. Maybe Tutorial was not found!`
+                message: `Cannot update Utilizador with id=${req.params.utilizadorID}. Maybe Utilizador was not found!`
             });
         res.status(200).json({
-            message: `Tutorial id=${req.params.tutorialID} was updated successfully.`
+            message: `Utilizador id=${req.params.utilizadorID} was updated successfully.`
         });
     } catch (err) {
         res.status(500).json({
-            message: `Error updating Tutorial with id=${req.params.tutorialID}.`
+            message: `Error updating Utilizador with id=${req.params.utilizadorID}.`
         });
     };
 }

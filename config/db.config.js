@@ -6,6 +6,5 @@ const config = {
     DB: process.env.DB_NAME
 };
 
-// config.URL = `mongodb+srv://PaulofmR:PauloR123@cluster0.on3a1.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`
 config.URL = `mongodb+srv://${config.USER}:${config.PASSWORD}@cluster0.on3a1.mongodb.net/${config.DB}?retryWrites=true&w=majority`;
 module.exports = config;

@@ -13,6 +13,9 @@ router.route('/:filmeID')
     .get(filmeController.findOne)
     .delete(filmeController.delete);
 
+// router.route('/:filmeID/comentarios/:comentarioID')
+//     .patch(filmeController.update)
+
 router.all('*', function (req, res) {
     //send an predefined error message 
     res.status(404).json({ message: 'Filmes: what???' });
