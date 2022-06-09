@@ -1,15 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import PaginaInicial from '../views/paginaInicial.vue'
-import Filmes from '../views/filmes.vue'
-import Filme from '../views/filme.vue'
-import Jogos from '../views/jogos.vue'
-import Jogo from '../views/jogo.vue'
-import Classificacao from '../views/classificacao.vue'
-import Perfil from '../views/perfil.vue'
-import SobreNos from '../views/sobreNos.vue'
-import AdicionarFilme from '../views/adicionarFilme.vue'
-
 import store from "../store/index.js";
 
 Vue.use(VueRouter)
@@ -25,19 +16,19 @@ const routes = [
     // Pagina com o catologo de filmes
     path: '/filmes',
     name: 'filmes',
-    component: Filmes,
+    component: () => import(/* webpackChunkName: "filmes" */ '../views/filmes.vue'),
   },
   {
     // Pagina com informacoes do filme
     path: '/filmes/:filmeInfo',
     name: 'filme',
-    component: Filme,
+    component: () => import(/* webpackChunkName: "filme" */ '../views/filme.vue'),
   },
   {
     // Pagina com o catologo de jogos
     path: '/jogos',
     name: 'jogos',
-    component: Jogos,
+    component: () => import(/* webpackChunkName: "jogos" */ '../views/jogos.vue'),
     meta: {
       requerAutenticacao: true,
     },
@@ -46,7 +37,7 @@ const routes = [
     // Pagina com o jogo
     path: '/jogos/:jogo',
     name: 'jogo',
-    component: Jogo,
+    component: () => import(/* webpackChunkName: "jogo" */ '../views/jogo.vue'),
     meta: {
       requerAutenticacao: true,
     },
@@ -55,13 +46,13 @@ const routes = [
     // Pagina com a classificacao dos jogadores
     path: '/jogos/:classificacao',
     name: 'classificacao',
-    component: Classificacao,
+    component: () => import(/* webpackChunkName: "classificacao" */'../views/classificacao.vue'),
   },
   {
     // Pagina de perfil
     path: '/perfil',
     name: 'perfil',
-    component: Perfil,
+    component: () => import(/* webpackChunkName: "perfil" */'../views/perfil.vue'),
     meta: {
       requerAutenticacao: true,
     },
@@ -70,13 +61,13 @@ const routes = [
     // Pagina que fala sobre o site
     path: '/sobreNos',
     name: 'sobreNos',
-    component: SobreNos,
+    component: () => import/* webpackChunkName: "sobreNos" */ ('../views/sobreNos.vue'),
   },
   {
     // Pagina com o catologo de jogos
     path: '/adicionarFilme',
     name: 'adicionarFilme',
-    component: AdicionarFilme,
+    component: () => import(/* webpackChunkName: "adicionarFilme" */ '../views/adicionarFilme.vue'),
     meta: {
       requerAutenticacao: true,
     },

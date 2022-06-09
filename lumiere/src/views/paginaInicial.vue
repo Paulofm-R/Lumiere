@@ -24,21 +24,21 @@
             <div id="infoCatalogo">
                 <h3>CATÁLOGO</h3>
                 <p align="left">Conhece novos filmes e séries, e a opinião dos <br> nossos utilizadores. Ou então, conta-nos a tua <br> opinião sobre as mesma e dá a conhecer a tua <br> opinião a todos.</p>
-                <img src="../assets/img/vetor.svg" id="vetor1">
-                <img src="../assets/img/catalogoImg.svg" id="imgCatalogo">
+                <img src="https://atuousti.sirv.com/Lumiere/vetor.svg" id="vetor1">
+                <img src="https://atuousti.sirv.com/Lumiere/catalogoImg.svg" id="imgCatalogo">
             </div>
             <div id="infoJogos">
                 <h3 align="right">JOGOS</h3>
                 <p style="text-align: right">Encontra diversos jogos sobre os teus filmes e <br> séries favoritas. Compete contra outros cinéfilos <br> como tu e prova quem é o verdadeiro conhecedor <br> da sétima arte. Entra para jogar!</p>
-                <img src="../assets/img/vetor.svg" id="vetor2">
-                <img src="../assets/img/jogosImg.svg" id="imgJogo">
+                <img src="https://atuousti.sirv.com/Lumiere/vetor.svg" id="vetor2">
+                <img src="https://atuousti.sirv.com/Lumiere/jogosImg.svg" id="imgJogo">
 
             </div>
             <div id="infoSobreNos">
                 <h3>SOBRE NÓS</h3>
                 <p align="left">Descobre um pouco como começou este projeto e <br> tudo sobre nós!</p>
-                <img src="../assets/img/vetor.svg" id="vetor3">
-                <img src="../assets/img/sobreNosImg.svg" id="imgSobreNos">
+                <img src="https://atuousti.sirv.com/Lumiere/vetor.svg" id="vetor3">
+                <img src="https://atuousti.sirv.com/Lumiere/sobreNosImg.svg" id="imgSobreNos">
 
             </div>
 
@@ -58,7 +58,7 @@
         text-align: center;
         padding-top: 500 px;
         font-size: 92px;
-        font-family: var(--font1) bold;
+        font-family: var(--font1);
         padding-top: 75px;
     }
 
@@ -66,7 +66,7 @@
         margin-left: 12vw;
         margin-right: 12vw;
         /* padding-top: 15vh; */
-        font-family: var(--font2);
+        font-family: var(--fon1);
         font-size: 50px;
     }
 
@@ -92,7 +92,7 @@
     }
 
     #txtEntrada{
-        background-image: url("../assets/img/LogoEntrada.svg");
+        background-image: url("https://atuousti.sirv.com/Lumiere/LogoEntrada.svg");
         background-repeat: no-repeat;
         background-position: center center;
         background-size: 30%;
@@ -106,7 +106,7 @@
         margin-left: 285px;
         margin-right: 30px;
         align-content: center;
-        background-image: url('../assets/img/catalogoImg.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/catalogoImg.svg");
         background-repeat: no-repeat;
         background-position: center;
 
@@ -114,7 +114,7 @@
 
     #catalogo:hover{
         background-color: var(--cor3);
-        background-image: url('../assets/img/catalogo.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/catalogo.svg");
         background-position: center;
         background-repeat: no-repeat;
         background-size: 100%;
@@ -144,13 +144,13 @@
         background-color: var(--cor2);
         margin-left: 22.4vw;
         margin-right: 30px;
-        background-image: url('../assets/img/jogosImg.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/jogosImg.svg");
         background-position: center;
     }
 
     #jogos:hover{
         background-color: var(--cor3);
-        background-image: url('../assets/img/jogos.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/jogos.svg");
         background-position: center;
         background-size: 110%;
 
@@ -180,7 +180,7 @@
         margin-left: 26.1vw;
         margin-right: 30px;
         /* text-align: center; */
-        background-image: url('../assets/img/Logo.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/Logo.svg");
         background-repeat: no-repeat;
         background-position: center;
 
@@ -188,7 +188,7 @@
 
     #sobreNos:hover{
         background-color: var(--cor3);
-        background-image: url('../assets/img/sobreNos.svg');
+        background-image: url("https://atuousti.sirv.com/Lumiere/sobreNos.svg");
         background-position: center;
         background-size: 98%;
 

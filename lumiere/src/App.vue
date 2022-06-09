@@ -18,22 +18,19 @@
 </script>
 
 <style>
-@font-face {
-  font-family: 'Spartan';
-  src: url('./assets/font/Spartan/static/Spartan-ExtraBold.ttf') format('truetype');
-  font-weight: normal;
-}
 
 @font-face {
   font-family: 'News Cycle';
-  src: url('./assets/font/news cycle/NewsCycle-Regular.ttf') format('truetype');
-  font-weight: normal;
+  font-weight: 400;
+  src: local('News Cycle');
+
 }
 
 @font-face {
   font-family: 'News Cycle-Bold';
-  src: url('./assets/font/news cycle/NewsCycle-Bold.ttf') format('truetype');
-  font-weight: bold;
+  font-weight: 700;
+  src: local('News Cycle');
+  
 }
 
 @font-face {
@@ -48,7 +45,7 @@
   --cor2: #FADA5E;
   --cor3: #4BC3B5;
   --cor4: #CDF0E5;
-  --font0: 'Spartan';
+  --font0: 'League Spartan';
   --font1: 'News Cycle';
   --font2: 'News Cycle-Bold';
   --font3: 'Meow_Script';
