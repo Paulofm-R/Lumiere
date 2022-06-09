@@ -14,7 +14,8 @@ router.route('/:jogoID')
     .delete(jogoController.delete);
 
 router.route('/:jogoID/classificacao')
-    .get(jogoController.findClassificacao);
+    .get(jogoController.findClassificacao)
+    .post(jogoController.addClassificacao);
 
 router.all('*', function (req, res) {
     //send an predefined error message 

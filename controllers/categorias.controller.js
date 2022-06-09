@@ -11,7 +11,7 @@ exports.create = async (req, res) => {
     try {
         await categoria.save(); // save Categoria in the database
         console.log(categoria)
-        res.status(201).json({ success: true, msg: "New Categoria created.", URL: `/categorias/${categoria._id}` });
+        res.status(201).json({ success: true, msg: "Nova categoria criada.", URL: `/categorias/${categoria._id}` });
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -21,14 +21,14 @@ exports.create = async (req, res) => {
             });
             return res.status(400).json({ success: false, msgs: errors });
         }
-        else
+        else {
             res.status(500).json({
-                success: false, msg: err.message || "Some error occurred while creating the categoria."
+                success: false, msg: err.message || "Ocorreu algum erro ao criar a categoria."
             });
+        }
     }
 };
 
-// Retrieve all Categoria / find by title
 exports.findAll = async (req, res) => {
     try {
         let data = await Categoria
@@ -39,7 +39,7 @@ exports.findAll = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: err.message || "Some error occurred while retrieving the categorias."
+            success: false, msg: err.message || "Ocorreu algum erro ao recuperar as categorias."
         });
     }
 };

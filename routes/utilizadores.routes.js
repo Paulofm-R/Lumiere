@@ -13,6 +13,12 @@ router.route('/:utilizadorID')
     .get(utilizadorController.findOne)
     .delete(utilizadorController.delete);
 
+router.route('/:utilizadorID/favoritos/:filmeID')
+    .post(utilizadorController.addFavoritos);
+
+router.route('/:utilizadorID/lista/:filmeID')
+    .post(utilizadorController.addLista);
+
 router.all('*', function (req, res) {
     //send an predefined error message 
     res.status(404).json({ message: 'Filmes: what???' });

@@ -14,19 +14,19 @@ app.use(cors(corsOptions)); //enable CORS requests from http://localhost:8081
 app.use(express.json()); //enable parsing JSON body data
 
 // root route -- /api/
-app.get('/', function (req, res) {
+app.get('/Lumiere', function (req, res) {
     res.status(200).json({ message: 'home -- Lumiere api' });
 });
 
 // routing middleware
-app.use('/filmes', require('./routes/filmes.routes.js'))
-app.use('/jogos', require('./routes/jogos.routes.js'))
-app.use('/utilizadores', require('./routes/utilizadores.routes.js'))
-app.use('/categorias', require('./routes/categorias.routes.js'))
-app.use('/desafios', require('./routes/desafios.routes.js'))
+app.use('/Lumiere/filmes', require('./routes/filmes.routes.js'))
+app.use('/Lumiere/jogos', require('./routes/jogos.routes.js'))
+app.use('/Lumiere/utilizadores', require('./routes/utilizadores.routes.js'))
+app.use('/Lumiere/categorias', require('./routes/categorias.routes.js'))
+app.use('/Lumiere/desafios', require('./routes/desafios.routes.js'))
 
 // handle invalid routes
 app.get('*', function (req, res) {
     res.status(404).json({ message: 'WHAT???' });
 })
-app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/`));
+app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/Lumiere`));

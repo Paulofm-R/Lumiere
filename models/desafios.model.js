@@ -1,9 +1,9 @@
 module.exports = (mongoose) => {
     const schema = mongoose.Schema(
         {
-            nome: { type: String, required: [true, 'Porque não nome?'] },
+            nome: { type: String, unique: true, required: [true, 'Porque não nome?'] },
             nEtapas: { type: Number, required: [true, 'Porque não número de etapas?'] },
-            imagem: { type: String, required: [true, 'Porque não uma imagem?']}
+            imagem: { type: String, required: [true, 'Porque não uma imagem?'] }
         },
         { timestamps: false }
     );

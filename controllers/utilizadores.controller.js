@@ -1,5 +1,6 @@
 const db = require("../models/index.js");
 const Utilizador = db.utilizadores;
+const Filme = db.filmes;
 
 // Criar e guardar um novo Utilizador
 exports.create = async (req, res) => {
@@ -19,7 +20,7 @@ exports.create = async (req, res) => {
     try {
         await utilizador.save(); // save Utilizador in the database
         console.log(utilizador)
-        res.status(201).json({ success: true, msg: "New Utilizador created.", URL: `/utilizadores/${utilizador._id}` });
+        res.status(201).json({ success: true, msg: "Novo Utilizador criado.", URL: `/utilizadores/${utilizador._id}` });
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -31,7 +32,7 @@ exports.create = async (req, res) => {
         }
         else
             res.status(500).json({
-                success: false, msg: err.message || "Some error occurred while creating the utilizador."
+                success: false, msg: err.message || "Ocorreu algum erro ao criar o usuário."
             });
     }
 
@@ -42,7 +43,6 @@ exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
     // build REGEX to filter utilizadores titles with a sub-string - i will do a case insensitive match 
-    // (https://docs.mongodb.com/manual/reference/operator/query/regex/)
     let condition = nome ? { nome: new RegExp(nome, 'i') } : {};
 
     try {
@@ -50,11 +50,11 @@ exports.findAll = async (req, res) => {
             .find(condition)
             .select('nome foto tipo')  // só vai buscar o nome, foto, tipo
             .exec();
-        res.status(200).json({success: true, utilizador: data});
+        res.status(200).json({ success: true, utilizador: data });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: err.message || "Some error occurred while retrieving the utilizadores."
+            success: false, msg: err.message || "Ocorreu algum erro ao recuperar os usuários."
         });
 
     }
@@ -65,21 +65,20 @@ exports.findOne = async (req, res) => {
     try {
         // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
         // You can either use a callback as the solution suggests or as of v4+ findOne returns a thenable so you can use .then or await/async to retrieve the document
-        //https://mongoosejs.com/docs/promises.html
         console.log(req.params.utilizadorID);
         const utilizador = await Utilizador.findById(req.params.utilizadorID)
             .exec();
-        // no data returned means there is no filme in DB with that given ID 
+        // no data returned means there is no utilizador in DB with that given ID 
         if (utilizador === null)
             return res.status(404).json({
-                success: false, msg: `Cannot find any utilizador with ID ${req.params.utilizadorID}.`
+                success: false, msg: `Não foi possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
             });
-        // on success, send the filme data
+        // on success, send the utilizador data
         res.json({ success: true, utilizador: utilizador });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: `Error retrieving filme with ID ${req.params.utilizadorID}.`
+            success: false, msg: `Erro ao recuperar o utilizador com ID ${req.params.utilizadorID}.`
         });
     }
 };
@@ -90,15 +89,15 @@ exports.delete = async (req, res) => {
         const utilizador = await Utilizador.findByIdAndRemove(req.params.utilizadorID).exec();
         if (!utilizador)
             res.status(404).json({
-                message: `Cannot delete Utilizador with id=${req.params.utilizadorID}. Maybe Utilizador was not found!`
+                message: `Não é possível excluir o usuário com id=${req.params.utilizadorID}. Talvez o usuário não foi encontrado!`
             });
         else
             res.status(200).json({
-                message: `Utilizador id=${req.params.utilizadorID} was deleted successfully.`
+                message: `Utilizador id=${req.params.utilizadorID} foi excluído com sucesso.`
             });
     } catch (err) {
         res.status(500).json({
-            message: `Error deleting Utilizador with id=${req.params.utilizadorID}.`
+            message: `Erro ao excluir usuário com id=${req.params.utilizadorID}.`
         });
     };
 };
@@ -106,31 +105,127 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     // validate request body data
     if (!req.body) {
-        res.status(400).json({ message: "Request body can not be empty!" });
+        res.status(400).json({ message: "O corpo da solicitação não pode estar vazio!" });
         return;
     }
     try {
-        // Issues a mongodb findAndModify update command by a document's _id field
-        // Finds a matching document, updates it according to the update arg, passing any options, and returns the found document (if any) to the callback
         const utilizador = await Utilizador.findByIdAndUpdate(req.params.utilizadorID, req.body,
             {
-                returnOriginal: false, // to return the updated document
-                runValidators: true, //runs update validators on this command. Update validators validate the update operation against the model's schema ( example: does not allow for null titles)
-                useFindAndModify: false //https://mongoosejs.com/docs/deprecations.html#findandmodify,
+                returnOriginal: false,
+                runValidators: true,
+                useFindAndModify: false
             }
         ).exec();
-        console.log(utilizador)
 
         if (!utilizador)
             return res.status(404).json({
-                message: `Cannot update Utilizador with id=${req.params.utilizadorID}. Maybe Utilizador was not found!`
+                message: `Não é possível atualizar o usuário com id=${req.params.utilizadorID}. Talvez o usuário não foi encontrado!`
             });
         res.status(200).json({
-            message: `Utilizador id=${req.params.utilizadorID} was updated successfully.`
+            message: `Utilizador id=${req.params.utilizadorID} foi atualizado com sucesso.`
         });
     } catch (err) {
         res.status(500).json({
-            message: `Error updating Utilizador with id=${req.params.utilizadorID}.`
+            message: `Erro ao atualizar o usuário com id=${req.params.utilizadorID}.`
         });
     };
 }
+
+// filmes
+exports.addFavoritos = async (req, res) => {
+    try {
+        const filme = await Filme.findById(req.params.filmeID)
+            .select('_id')
+            .exec();
+
+        if (filme === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
+            });
+        }
+
+        const utilizador = await Utilizador.findById(req.params.utilizadorID)
+            .exec();
+
+
+        if (utilizador === null)
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
+            });
+
+        utilizador.favoritos.push(filme)
+        await utilizador.save()
+
+        res.status(200).json({
+            message: `Filme adicionado aos favoritos com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o utilizador com ID ${req.params.utilizadorID}.`
+        });
+    }
+};
+
+exports.addLista = async (req, res) => {
+    try {
+        const filme = await Filme.findById(req.params.filmeID)
+            .select('_id')
+            .exec();
+
+        if (filme === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
+            });
+        }
+
+        const utilizador = await Utilizador.findById(req.params.utilizadorID)
+            .exec();
+
+
+        if (utilizador === null)
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
+            });
+
+        utilizador.lista.push(filme)
+        await utilizador.save()
+
+        res.status(200).json({
+            message: `Filme adicionado aos lista com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o utilizador com ID ${req.params.utilizadorID}.`
+        });
+    }
+};
+
+// Login
+exports.login = async (req, res) => {
+    try {
+        if (!req.body || !req.body.utilizador || !req.body.palavra_passe) {
+            return res.status(400).json({ success: false, msg: "Must provide username and password." });
+        }
+
+        let utilizador = await Utilizador.findOne({ where: { nome: req.body.utilizador } });
+
+        if (!utilizador) return res.status(404).json({ success: false, msg: "Utilizador não encontrado." });
+
+        const check = bcrypt.compareSync(req.body.palavra_passe, utilizador.palavra_passe);
+        if (!check) return res.status(401).json({ success: false, accessToken: null, msg: "Invalid credentials!" });
+
+        const token = jwt.sign({ id: user.id, role: user.role },
+            config.SECRET, {
+            expiresIn: '24h' // 24 hours
+        });
+        
+        return res.status(200).json({ success: true, accessToken: token });
+    } catch (err) {
+        if (err instanceof ValidationError)
+            res.status(400).json({ success: false, msg: err.errors.map(e => e.message) });
+        else
+            res.status(500).json({ success: false, msg: err.message || "Some error occurred at login." });
+    };
+};

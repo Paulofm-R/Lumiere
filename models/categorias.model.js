@@ -1,7 +1,7 @@
 module.exports = (mongoose) => {
     const schema = mongoose.Schema(
         {
-            categoria: { type: String, required: [true, 'Porque não categoria?'] },
+            categoria: { type: String, unique: true, required: [true, 'Porque não categoria?'] },
         },
         { timestamps: false }
     );

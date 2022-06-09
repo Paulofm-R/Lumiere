@@ -1,5 +1,6 @@
 const db = require("../models/index.js");
 const Jogo = db.jogos;
+const Utilizador = db.utilizadores
 
 // Criar e guardar um novo Jogo
 exports.create = async (req, res) => {
@@ -8,14 +9,13 @@ exports.create = async (req, res) => {
         nome: req.body.nome,
         img: req.body.img,
         tipo: req.body.tipo,
-        classificacao: [''],
+        classificacao: [],
         perguntas: req.body.perguntas,
     });
 
     try {
         await jogo.save(); // save jogos in the database
-        console.log(jogo);
-        res.status(201).json({ success: true, msg: "New Jogo created.", URL: `/jogos/${jogo._id}` });
+        res.status(201).json({ success: true, msg: "Novo Jogo criado.", URL: `/jogos/${jogo._id}` });
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -27,18 +27,16 @@ exports.create = async (req, res) => {
         }
         else
             res.status(500).json({
-                success: false, msg: err.message || "Some error occurred while creating the jogo."
+                success: false, msg: err.message || "Ocorreu algum erro ao criar o jogo."
             });
     }
 
 };
 
-// Retrieve all Filmes / find by title
 exports.findAll = async (req, res) => {
     const tipo = req.query.tipo;
 
     // build REGEX to filter tutorials titles with a sub-string - i will do a case insensitive match 
-    // (https://docs.mongodb.com/manual/reference/operator/query/regex/)
     let condition = tipo ? { tipo: new RegExp(tipo, 'i') } : {};
 
     try {
@@ -46,54 +44,51 @@ exports.findAll = async (req, res) => {
             .find(condition)
             .select('nome img tipo')  // só vai buscar o nome, imagem, tipo
             .exec();
-        res.status(200).json({success: true, jogo: data});
+        res.status(200).json({ success: true, jogo: data });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: err.message || "Some error occurred while retrieving the jogos."
+            success: false, msg: err.message || "Ocorreu algum erro ao recuperar os jogos."
         });
 
     }
 };
 
-// Find a single Tutorial with an id
 exports.findOne = async (req, res) => {
     try {
-        // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
-        // You can either use a callback as the solution suggests or as of v4+ findOne returns a thenable so you can use .then or await/async to retrieve the document
-        //https://mongoosejs.com/docs/promises.html
+
         const jogo = await Jogo.findById(req.params.jogoID)
             .exec();
-        // no data returned means there is no filme in DB with that given ID 
-        if (jogo === null)
+
+        if (jogo === null) {
             return res.status(404).json({
-                success: false, msg: `Cannot find any jogo with ID ${req.params.jogoID}.`
+                success: false, msg: `Não é possível encontrar nenhum jogo com ID ${req.params.jogoID}.`
             });
-        // on success, send the filme data
+        }
+
         res.json({ success: true, jogo: jogo });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: `Error retrieving filme with ID ${req.params.jogoID}.`
+            success: false, msg: `Erro ao recuperar o jogo com ID ${req.params.jogoID}.`
         });
     }
 };
 
-// Delete a Filme with the specified id in the request
 exports.delete = async (req, res) => {
     try {
         const jogo = await Jogo.findByIdAndRemove(req.params.jogoID).exec();
         if (!jogo)
             res.status(404).json({
-                message: `Cannot delete Jogo with id=${req.params.jogoID}. Maybe Jogo was not found!`
+                message: `Não é possível excluir o jogo com id=${req.params.jogoID}. Talvez o Jogo não tenha sido encontrado!`
             });
         else
             res.status(200).json({
-                message: `Jogo id=${req.params.jogoID} was deleted successfully.`
+                message: `Jogo id=${req.params.jogoID} foi excluído com sucesso.`
             });
     } catch (err) {
         res.status(500).json({
-            message: `Error deleting Jogo with id=${req.params.jogoID}.`
+            message: `Erro ao excluir o jogo com id=${req.params.jogoID}.`
         });
     };
 };
@@ -103,17 +98,64 @@ exports.findClassificacao = async (req, res) => {
         const jogo = await Jogo.findById(req.params.jogoID)
             .select('nome classificacao')  //pegar só no nome e na classificação do jogo
             .exec();
-        // no data returned means there is no filme in DB with that given ID 
-        if (jogo === null)
+
+        if (jogo === null) {
             return res.status(404).json({
-                success: false, msg: `Cannot find any jogo with ID ${req.params.jogoID}.`
+                success: false, msg: `Não é possível encontrar nenhum jogo com ID ${req.params.jogoID}.`
             });
-        // on success, send the filme data
+        }
+        // on success, send the jogos data
         res.json({ success: true, jogo: jogo });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: `Error retrieving filme with ID ${req.params.jogoID}.`
+            success: false, msg: `Erro ao recuperar o jogo com ID ${req.params.jogoID}.`
         });
     }
 }
+
+exports.addClassificacao = async (req, res) => {
+    if (!req.body || !req.body.utilizadorID || !req.body.pontuacao) {
+        res.status(400).json({
+            message: "Falta informação para poder prosseguir!"
+        });
+        return;
+    }
+
+    try {
+        const utilizadorID = await Utilizador.findById(req.body.utilizadorID)
+            .select('_id')
+            .exec();
+
+        if (utilizadorID === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.body.utilizadorID}.`
+            });
+        }
+
+        const jogo = await Jogo.findById(req.params.jogoID).exec();
+
+        if (jogo === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum jogo com ID ${req.params.jogoID}.`
+            });
+        }
+
+        let novaClassificacao = {
+            utilizador: utilizadorID,
+            pontuacao: req.body.pontuacao,
+        }
+
+        jogo.classificacao.push(novaClassificacao)
+        await jogo.save()
+
+        res.status(200).json({
+            message: `Classificação adicionado com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o jogo com ID ${req.params.jogoID}.`
+        });
+    }
+};

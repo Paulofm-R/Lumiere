@@ -12,8 +12,7 @@ exports.create = async (req, res) => {
 
     try {
         await desafio.save(); // save Desafio in the database
-        console.log(desafio)
-        res.status(201).json({ success: true, msg: "New Desafio created.", URL: `/desafios/${desafio._id}` });
+        res.status(201).json({ success: true, msg: "Novo Desafio criado.", URL: `/desafios/${desafio._id}` });
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -25,7 +24,7 @@ exports.create = async (req, res) => {
         }
         else
             res.status(500).json({
-                success: false, msg: err.message || "Some error occurred while creating the desafio."
+                success: false, msg: err.message || "Ocorreu algum erro ao criar o desafio."
             });
     }
 };
@@ -41,7 +40,7 @@ exports.findAll = async (req, res) => {
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: err.message || "Some error occurred while retrieving the desafios."
+            success: false, msg: err.message || "Ocorreu algum erro ao recuperar os desafios."
         });
     }
 };
@@ -49,23 +48,19 @@ exports.findAll = async (req, res) => {
 // Find a single Tutorial with an id
 exports.findOne = async (req, res) => {
     try {
-        // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
-        // You can either use a callback as the solution suggests or as of v4+ findOne returns a thenable so you can use .then or await/async to retrieve the document
-        //https://mongoosejs.com/docs/promises.html
-        console.log(req.params.desafioID);
         const desafio = await Desafio.findById(req.params.desafioID)
             .exec();
-        // no data returned means there is no filme in DB with that given ID 
+        // no data returned means there is no desafio in DB with that given ID 
         if (desafio === null)
             return res.status(404).json({
-                success: false, msg: `Cannot find any desafio with ID ${req.params.desafioID}.`
+                success: false, msg: `Não é possível encontrar nenhum desafio com ID ${req.params.desafioID}.`
             });
-        // on success, send the filme data
+        // on success, send the desafio data
         res.json({ success: true, desafio: desafio });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: `Error retrieving desafio with ID ${req.params.desafioID}.`
+            success: false, msg: `Erro ao recuperar desafio com ID ${req.params.desafioID}.`
         });
     }
 };

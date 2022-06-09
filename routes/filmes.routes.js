@@ -13,8 +13,14 @@ router.route('/:filmeID')
     .get(filmeController.findOne)
     .delete(filmeController.delete);
 
-// router.route('/:filmeID/comentarios/:comentarioID')
-//     .patch(filmeController.update)
+router.route('/:filmeID/comentarios')
+    .post(filmeController.addComentario);
+
+router.route('/:filmeID/comentarios/:comentarioID')
+    .patch(filmeController.updateComentario);
+
+router.route('/:filmeID/avaliacao')
+    .patch(filmeController.updateAvaliacao);
 
 router.all('*', function (req, res) {
     //send an predefined error message 

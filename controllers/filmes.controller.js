@@ -1,6 +1,6 @@
 const db = require("../models/index.js");
 const Filme = db.filmes;
-const Comentario = db.comentarios;
+const Utilizador = db.utilizadores
 
 // Criar e guardar um novo Filme
 exports.create = async (req, res) => {
@@ -24,8 +24,7 @@ exports.create = async (req, res) => {
 
     try {
         await filme.save(); // save Filme in the database
-        console.log(filme)
-        res.status(201).json({ success: true, msg: "New Filme created.", URL: `/filmes/${filme._id}` });
+        res.status(201).json({ success: true, msg: "Novo Filme criado.", URL: `/filmes/${filme._id}` });
     }
     catch (err) {
         if (err.name === "ValidationError") {
@@ -37,7 +36,7 @@ exports.create = async (req, res) => {
         }
         else
             res.status(500).json({
-                success: false, msg: err.message || "Some error occurred while creating the filme."
+                success: false, msg: err.message || "Ocorreu algum erro ao criar o filme."
             });
     }
 
@@ -47,8 +46,6 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
-    // build REGEX to filter filmes titles with a sub-string - i will do a case insensitive match 
-    // (https://docs.mongodb.com/manual/reference/operator/query/regex/)
     let condition = nome ? { nome: new RegExp(nome, 'i') } : {};
 
     try {
@@ -56,11 +53,11 @@ exports.findAll = async (req, res) => {
             .find(condition)
             .select('nome imagem tipo categoria elenco avaliacao')  // só vai buscar o nome, imagem, tipo, categoria, elenco e avaliação
             .exec();
-        res.status(200).json({success: true, filme: data});
+        res.status(200).json({ success: true, filme: data });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: err.message || "Some error occurred while retrieving the filmes."
+            success: false, msg: err.message || "Ocorreu algum erro ao recuperar os filmes."
         });
 
     }
@@ -69,23 +66,19 @@ exports.findAll = async (req, res) => {
 // Find a single Filme with an id
 exports.findOne = async (req, res) => {
     try {
-        // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
-        // You can either use a callback as the solution suggests or as of v4+ findOne returns a thenable so you can use .then or await/async to retrieve the document
-        //https://mongoosejs.com/docs/promises.html
-        console.log(req.params.filmeID);
         const filme = await Filme.findById(req.params.filmeID)
             .exec();
         // no data returned means there is no filme in DB with that given ID 
         if (filme === null)
             return res.status(404).json({
-                success: false, msg: `Cannot find any filme with ID ${req.params.filmeID}.`
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
             });
         // on success, send the filme data
         res.json({ success: true, filme: filme });
     }
     catch (err) {
         res.status(500).json({
-            success: false, msg: `Error retrieving filme with ID ${req.params.filmeID}.`
+            success: false, msg: `Erro ao recuperar o filme com ID ${req.params.filmeID}.`
         });
     }
 };
@@ -96,41 +89,141 @@ exports.delete = async (req, res) => {
         const filme = await Filme.findByIdAndRemove(req.params.filmeID).exec();
         if (!filme)
             res.status(404).json({
-                message: `Cannot delete Filme with id=${req.params.filmeID}. Maybe Filme was not found!`
+                message: `Não é possível excluir o filme com id=${req.params.filmeID}. Talvez o Filme não tenha sido encontrado!`
             });
         else
             res.status(200).json({
-                message: `Filme id=${req.params.filmeID} was deleted successfully.`
+                message: `Filme id=${req.params.filmeID} foi excluído com sucesso.`
             });
     } catch (err) {
         res.status(500).json({
-            message: `Error deleting Filme with id=${req.params.filmeID}.`
+            message: `Erro ao excluir o filme com id=${req.params.filmeID}.`
         });
     };
 };
 
-// exports.update = async (req, res) => {
-//     try {
-//         let filme = await Filme.findById(req.params.filmeID);
-//         if (filme === null){
-//             return res.status(404).json({
-//                 success: false, msg: `Cannot find any filme with ID ${req.params.filmeID}`
-//             })
-//         }
-//         console.log(filme);
-//         let comentarios = await filme.find({ 
-//             attributes: ['id', 'utilizador', 'comentario', 'spoiler']
-//         });
+// Comentarios
+exports.addComentario = async (req, res) => {
+    if (!req.body || !req.body.utilizadorID || !req.body.comentario) {
+        res.status(400).json({
+            message: "Campos em falta!"
+        });
+        return;
+    }
+
+    try {
+        const utilizadorID = await Utilizador.findById(req.body.utilizadorID)
+            .select('_id')
+            .exec();
+
+        if (utilizadorID === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.body.utilizadorID}.`
+            });
+        }
+
+        const filme = await Filme.findById(req.params.filmeID)
+            .exec();
+        // no data returned means there is no filme in DB with that given ID 
+        if (filme === null)
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
+            });
+
+        let novoId = filme.comentarios.length
+        let novoComentario = {
+            id: novoId,
+            utilizador: utilizadorID,
+            comentario: req.body.comentario,
+            spoiler: false
+        }
+
+        filme.comentarios.push(novoComentario)
+        await filme.save()
+
+        res.status(200).json({
+            message: `Comentario adicionado com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o filme com ID ${req.params.filmeID}.`
+        });
+    }
+};
+
+exports.updateComentario = async (req, res) => {
+    try {
+        const filme = await Filme.findById(req.params.filmeID)
+            .exec();
+
+        if (filme === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
+            });
+        }
+
+        const comentario = filme.comentarios.find(comentario => comentario.id == req.params.comentarioID)
+
+        if (comentario === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum comentario com ID ${req.params.comentarioID}.`
+            });
+        }
+        console.log(filme);
+        comentario.spoiler = comentario.spoiler == false ? true : false;
         
-//         // map default response to desired response data structure
-//         res.status(200).json({
-//             success: true,
-//             comentarios: comentarios
-//         });
-//     }
-//     catch (err) {
-//         res.status(500).json({
-//             success: false, msg: err.message || "Some error occurred while retrieving the filmes."
-//         })
-//     }
-// }
+        await filme.save()
+        console.log('---------');
+        console.log(filme);
+
+        res.status(200).json({
+            message: `Comentario alterado com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o filme com ID ${req.params.filmeID}.`
+        });
+    }
+};
+
+// Avaliação
+exports.updateAvaliacao = async (req, res) => {
+    if (!req.body || !req.body.avaliacao) {
+        res.status(400).json({
+            message: "Campos em falta!"
+        });
+        return;
+    }
+    try {
+        const filme = await Filme.findById(req.params.filmeID)
+            .exec();
+
+        if (filme === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
+            });
+        }
+
+        let avaliacaoAtual = filme.avaliacao;
+        let nAvaliacoesAtual = filme.nAvaliacoes;
+
+        let novoNumAvaliacao = nAvaliacoesAtual + 1;
+        let novaAvaliacao = ((avaliacaoAtual * nAvaliacoesAtual) + req.body.avaliacao) / novoNumAvaliacao;
+
+        filme.avaliacao = novaAvaliacao.toFixed(1);
+        filme.nAvaliacoes = novoNumAvaliacao;
+        
+        await filme.save()
+
+        res.status(200).json({
+            message: `Avaliação alterado com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o filme com ID ${req.params.filmeID}.`
+        });
+    }
+};
