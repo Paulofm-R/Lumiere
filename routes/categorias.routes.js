@@ -1,5 +1,6 @@
 const express = require('express');
 const categoriaController = require("../controllers/categorias.controller");
+const autenticadoController = require("../controllers/autenticado.controller");
 
 // express router
 let router = express.Router();
@@ -7,7 +8,7 @@ let router = express.Router();
 
 router.route('/')
     .get(categoriaController.findAll)
-    .post(categoriaController.create);
+    .post(autenticadoController.verifyToken, categoriaController.create);
 
 router.all('*', function (req, res) {
     //send an predefined error message 

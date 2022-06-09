@@ -14,6 +14,12 @@ exports.create = async (req, res) => {
     });
 
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+
         await jogo.save(); // save jogos in the database
         res.status(201).json({ success: true, msg: "Novo Jogo criado.", URL: `/jogos/${jogo._id}` });
     }
@@ -77,6 +83,12 @@ exports.findOne = async (req, res) => {
 
 exports.delete = async (req, res) => {
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+        
         const jogo = await Jogo.findByIdAndRemove(req.params.jogoID).exec();
         if (!jogo)
             res.status(404).json({
@@ -142,7 +154,7 @@ exports.addClassificacao = async (req, res) => {
         }
 
         let novaClassificacao = {
-            utilizador: utilizadorID,
+            utilizador: utilizadorID._id,
             pontuacao: req.body.pontuacao,
         }
 

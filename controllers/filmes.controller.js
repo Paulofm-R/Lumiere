@@ -23,6 +23,12 @@ exports.create = async (req, res) => {
     });
 
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+
         await filme.save(); // save Filme in the database
         res.status(201).json({ success: true, msg: "Novo Filme criado.", URL: `/filmes/${filme._id}` });
     }
@@ -86,6 +92,12 @@ exports.findOne = async (req, res) => {
 // Delete a Filme with the specified id in the request
 exports.delete = async (req, res) => {
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+
         const filme = await Filme.findByIdAndRemove(req.params.filmeID).exec();
         if (!filme)
             res.status(404).json({
@@ -133,7 +145,7 @@ exports.addComentario = async (req, res) => {
         let novoId = filme.comentarios.length
         let novoComentario = {
             id: novoId,
-            utilizador: utilizadorID,
+            utilizador: utilizadorID._id,
             comentario: req.body.comentario,
             spoiler: false
         }
@@ -152,36 +164,51 @@ exports.addComentario = async (req, res) => {
     }
 };
 
+// RIP
 exports.updateComentario = async (req, res) => {
     try {
+        
         const filme = await Filme.findById(req.params.filmeID)
             .exec();
+        // const filme = await Filme.findOneAndUpdate({ _id: req.params.filmeID, "comentarios.id": req.params.comentarioID }, { $set: { "comentarios.$.spoiler": true } }, { new: true }).exec();
 
         if (filme === null) {
             return res.status(404).json({
                 success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
             });
         }
-
         const comentario = filme.comentarios.find(comentario => comentario.id == req.params.comentarioID)
+
+        // filme.comentarios.forEach(comentario => {
+        //     if (comentario.id == req.params.comentarioID) {
+        //         comentario.spoiler = !comentario.spoiler;
+        //     }
+        // })
 
         if (comentario === null) {
             return res.status(404).json({
                 success: false, msg: `Não é possível encontrar nenhum comentario com ID ${req.params.comentarioID}.`
             });
         }
-        console.log(filme);
-        comentario.spoiler = comentario.spoiler == false ? true : false;
-        
-        await filme.save()
-        console.log('---------');
-        console.log(filme);
+        // comentario.spoiler = !comentario.spoiler;
 
+        comentario.spoiler = !comentario.spoiler
+        await filme.save(comentario);        
+        
         res.status(200).json({
             message: `Comentario alterado com sucesso!`
         });
     }
     catch (err) {
+        if (err.name === "ValidationError") {
+            let errors = {};
+
+            Object.keys(err.errors).forEach((key) => {
+                errors[key] = err.errors[key].message;
+            });
+
+            return res.status(400).send(errors);
+        }
         res.status(500).json({
             success: false, msg: `Erro ao recuperar o filme com ID ${req.params.filmeID}.`
         });
@@ -214,7 +241,7 @@ exports.updateAvaliacao = async (req, res) => {
 
         filme.avaliacao = novaAvaliacao.toFixed(1);
         filme.nAvaliacoes = novoNumAvaliacao;
-        
+
         await filme.save()
 
         res.status(200).json({

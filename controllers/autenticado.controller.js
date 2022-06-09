@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken"); //JWT tokens creation (sign())
-const bcrypt = require("bcryptjs"); //password encryption
 
-const config = require("../config/config.js");
+const config = require("../config/db.config.js");
 const db = require("../models/index");
 const Utilizador = db.utilizadores;
 
@@ -16,11 +15,11 @@ exports.verifyToken = (req, res, next) => {
 
     try {
         let decoded = jwt.verify(token, config.SECRET);
-        req.loggedUserId = decoded.id; // save user ID and role into request object
-        req.loggedUserRole = decoded.role;
+        req.UtilizadorAutenticadoID = decoded.id; // save user ID and role into request object
+        req.UtilizadorAutenticadoRole = decoded.tipo;
         next();
     }
     catch (err) {
-        return res.status(401).json({ success: false, msg: "Unauthorized!" });
+        return res.status(401).json({ success: false, msg: "Não autorizado!" });
     }
 };

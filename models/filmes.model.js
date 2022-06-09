@@ -13,8 +13,8 @@ module.exports = (mongoose) => {
             sinopse: { type: String, required: [true, 'Porque não sinipse?'] },
             classificacao: { type: String, enum: { values: ['M/3', 'M/6', 'M/12', 'M/14', 'M/16', 'M/18'], message: '{VALUE} não é suportado' }},
             avaliacao: { type: Number, required: [false] },
-            nAvaliacoes: { type: Number, required: [false] },
-            comentarios: { type: Array, required: [false] },
+            nAvaliacoes: { type: Number },
+            comentarios: { type: Array},
         },
         { timestamps: false }
     );

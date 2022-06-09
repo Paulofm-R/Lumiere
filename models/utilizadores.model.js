@@ -9,7 +9,8 @@ module.exports = (mongoose) => {
             favoritos: { type: Array, required: [false] },
             lista: { type: Array, required: [false] },
             numJogos: { type: Number, required: [false] },
-            desafios: { type: Array, required: [false] }
+            desafios: { type: Array, required: [false] },
+            desafiosConcluidos: { type: Array, required: [false] }
         },
         { timestamps: false }
     );

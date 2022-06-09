@@ -1,6 +1,12 @@
+const jwt = require("jsonwebtoken"); //JWT tokens creation (sign())
+// const bcrypt = require("bcryptjs"); //password encryption
+const config = require("../config/db.config.js");
+
 const db = require("../models/index.js");
 const Utilizador = db.utilizadores;
 const Filme = db.filmes;
+const Jogo = db.jogos;
+const Desafio = db.desafios;
 
 // Criar e guardar um novo Utilizador
 exports.create = async (req, res) => {
@@ -153,7 +159,7 @@ exports.addFavoritos = async (req, res) => {
                 success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
             });
 
-        utilizador.favoritos.push(filme)
+        utilizador.favoritos.push(filme._id)
         await utilizador.save()
 
         res.status(200).json({
@@ -188,7 +194,7 @@ exports.addLista = async (req, res) => {
                 success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
             });
 
-        utilizador.lista.push(filme)
+        utilizador.lista.push(filme._id)
         await utilizador.save()
 
         res.status(200).json({
@@ -202,30 +208,98 @@ exports.addLista = async (req, res) => {
     }
 };
 
+// Desafios
+exports.addDesafio = async (req, res) => {
+    try {
+        const jogo = await Jogo.findById(req.params.jogoID)
+            .select('_id')
+            .exec();
+
+        if (jogo === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum jogo com ID ${req.params.jogoID}.`
+            });
+        }
+
+        const utilizador = await Utilizador.findById(req.params.utilizadorID)
+            .exec();
+
+
+        if (utilizador === null)
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
+            });
+
+        utilizador.desafios.push(jogo._id)
+        await utilizador.save()
+
+        res.status(200).json({
+            message: `Jogo guardado nos desafios com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o utilizador com ID ${req.params.utilizadorID}.`
+        });
+    }
+};
+
+exports.addDesafioConcluido = async (req, res) => {
+    try {
+        const desafio = await Desafio.findById(req.params.desafioID)
+            .select('_id')
+            .exec();
+
+        if (jogo === null) {
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum desafio com ID ${req.params.desafioID}.`
+            });
+        }
+
+        const utilizador = await Utilizador.findById(req.params.utilizadorID)
+            .exec();
+
+
+        if (utilizador === null)
+            return res.status(404).json({
+                success: false, msg: `Não é possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
+            });
+
+        utilizador.desafiosConcluidos.push(desafio._id)
+        await utilizador.save()
+
+        res.status(200).json({
+            message: `Desafio guardado nos desafios com sucesso!`
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            success: false, msg: `Erro ao recuperar o utilizador com ID ${req.params.utilizadorID}.`
+        });
+    }
+};
+
 // Login
 exports.login = async (req, res) => {
     try {
-        if (!req.body || !req.body.utilizador || !req.body.palavra_passe) {
-            return res.status(400).json({ success: false, msg: "Must provide username and password." });
+        if (!req.body || !req.body.nome || !req.body.palavra_passe) {
+            return res.status(400).json({ success: false, msg: "Deve fornecer nome de utilizador e senha." });
         }
-
-        let utilizador = await Utilizador.findOne({ where: { nome: req.body.utilizador } });
+        	
+        let utilizador = await Utilizador.findOne({nome: req.body.nome});
 
         if (!utilizador) return res.status(404).json({ success: false, msg: "Utilizador não encontrado." });
 
-        const check = bcrypt.compareSync(req.body.palavra_passe, utilizador.palavra_passe);
-        if (!check) return res.status(401).json({ success: false, accessToken: null, msg: "Invalid credentials!" });
+        // const check = bcrypt.compareSync(req.body.palavra_passe, utilizador.palavra_passe);
+        // if (!check) return res.status(401).json({ success: false, accessToken: null, msg: "Credenciais inválidas!" });
 
-        const token = jwt.sign({ id: user.id, role: user.role },
+        const token = jwt.sign({ id: utilizador._id, role: utilizador.tipo },
             config.SECRET, {
             expiresIn: '24h' // 24 hours
         });
         
         return res.status(200).json({ success: true, accessToken: token });
     } catch (err) {
-        if (err instanceof ValidationError)
-            res.status(400).json({ success: false, msg: err.errors.map(e => e.message) });
-        else
-            res.status(500).json({ success: false, msg: err.message || "Some error occurred at login." });
+            res.status(500).json({ success: false, msg: err.message || "Ocorreu algum erro no login." });
     };
 };

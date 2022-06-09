@@ -1,5 +1,6 @@
 const express = require('express');
 const filmeController = require("../controllers/filmes.controller");
+const autenticadoController = require("../controllers/autenticado.controller");
 
 // express router
 let router = express.Router();
@@ -7,20 +8,20 @@ let router = express.Router();
 
 router.route('/')
     .get(filmeController.findAll)
-    .post(filmeController.create);
+    .post(autenticadoController.verifyToken, filmeController.create);
 
 router.route('/:filmeID')
     .get(filmeController.findOne)
-    .delete(filmeController.delete);
+    .delete(autenticadoController.verifyToken, filmeController.delete);
 
 router.route('/:filmeID/comentarios')
     .post(filmeController.addComentario);
 
 router.route('/:filmeID/comentarios/:comentarioID')
-    .patch(filmeController.updateComentario);
+    .patch( filmeController.updateComentario);
 
 router.route('/:filmeID/avaliacao')
-    .patch(filmeController.updateAvaliacao);
+    .patch(autenticadoController.verifyToken, filmeController.updateAvaliacao);
 
 router.all('*', function (req, res) {
     //send an predefined error message 

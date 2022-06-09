@@ -11,6 +11,12 @@ exports.create = async (req, res) => {
     });
 
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+        
         await desafio.save(); // save Desafio in the database
         res.status(201).json({ success: true, msg: "Novo Desafio criado.", URL: `/desafios/${desafio._id}` });
     }

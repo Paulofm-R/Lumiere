@@ -1,23 +1,34 @@
 const express = require('express');
 const utilizadorController = require("../controllers/utilizadores.controller");
+const autenticadoController = require("../controllers/autenticado.controller");
+
 
 // express router
 let router = express.Router();
 
 router.route('/')
-    .get(utilizadorController.findAll)
+    .get(autenticadoController.verifyToken, utilizadorController.findAll)
     .post(utilizadorController.create);
 
 router.route('/:utilizadorID')
-    .patch(utilizadorController.update)
-    .get(utilizadorController.findOne)
-    .delete(utilizadorController.delete);
+    .patch(autenticadoController.verifyToken, utilizadorController.update)
+    .get(autenticadoController.verifyToken, utilizadorController.findOne)
+    .delete(autenticadoController.verifyToken, utilizadorController.delete);
 
 router.route('/:utilizadorID/favoritos/:filmeID')
-    .post(utilizadorController.addFavoritos);
+    .post(autenticadoController.verifyToken, utilizadorController.addFavoritos);
 
 router.route('/:utilizadorID/lista/:filmeID')
-    .post(utilizadorController.addLista);
+    .post(autenticadoController.verifyToken, utilizadorController.addLista);
+
+router.route('/:utilizadorID/desafio')
+    .post(autenticadoController.verifyToken, utilizadorController.addDesafio);
+
+router.route('/:utilizadorID/desafioConcluido')
+    .post(utilizadorController.addDesafioConcluido);
+
+router.route('/login')
+    .post(utilizadorController.login);
 
 router.all('*', function (req, res) {
     //send an predefined error message 

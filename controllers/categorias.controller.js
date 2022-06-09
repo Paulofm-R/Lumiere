@@ -9,6 +9,11 @@ exports.create = async (req, res) => {
     });
 
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
         await categoria.save(); // save Categoria in the database
         console.log(categoria)
         res.status(201).json({ success: true, msg: "Nova categoria criada.", URL: `/categorias/${categoria._id}` });
