@@ -1,47 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import { UserService } from '@/services/user.service';
+import { AuthService } from '@/services/auth.service';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     // Utilizadores
-    utilizadores: localStorage.utilizadores? JSON.parse(localStorage.utilizadores) : [
-      {
-        nome: "Admin",
-        palavra_passe: 'Esmad_2122',
-        data_nascimento: '2000-09-16',
-        foto: './image/User.svg',
-        tipo: 'admin',
-        favoritos: [],
-        lista: [],
-        numJogos: 4,
-        desafios: []
-      },
-      {
-        nome: "User",
-        palavra_passe: 'Esmad_2122',
-        data_nascimento: '2001-11-07',
-        foto: './image/User.svg',    
-        tipo: 'utilizador',
-        favoritos: [],
-        lista: [],
-        numJogos: 0,
-        desafios: []
-      },
-      {
-        nome: "Paulo Rodrigues",
-        palavra_passe: '123',
-        data_nascimento: '2000-09-16',
-        foto: './image/User.svg',
-        tipo: 'admin',
-        favoritos: [],
-        lista: [],
-        numJogos: 4,
-        desafios: []
-      },
-    ],
-    loggedUser: localStorage.loggedUser ? JSON.parse(localStorage.loggedUser) : '',
+    utilizadores: [],
+    loggedUser: loggedUser? loggedUser : false,
+    jogos:[],
+    
 
     // Jogos
     jogos: localStorage.jogos ? JSON.parse(localStorage.jogos) : [{
