@@ -61,7 +61,7 @@
 import {mapGetters, mapMutations} from "vuex";
 
     export default {
-        name: 'Jogo',
+        name: 'PaginaJogo',
         data() {
             return {
                 jogo: {},

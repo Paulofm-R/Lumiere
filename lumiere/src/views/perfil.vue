@@ -183,7 +183,7 @@
                     </div>              
                 </form>
             </template>
-            <template #modal-footer=''>
+            <template #modal-footer>
                 <b-button @click="adicionarDesafio()">Adicionar</b-button>
             </template>
         </b-modal>
@@ -194,7 +194,7 @@
     import { mapGetters, mapMutations } from 'vuex';
     
     export default {
-        name: 'Perfil',
+        name: 'PaginaPerfil',
         data() {
             return {
                 form: {
@@ -262,7 +262,7 @@
 
             ordenarDesfios(desafioA, desafioB){
                 if (desafioA.nEtapas < desafioB.nEtapas) return -1;
-                else if (desafioA.nEtapas < desafioB.nEtapas) return 1;
+                else if (desafioA.nEtapas > desafioB.nEtapas) return 1;
                 else return 0;
             },
 

@@ -3,7 +3,7 @@
         <b-container fluid>
             <h2>
                 {{filme.nome}}
-                <b-button v-if="getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>Remover</b-button>
+                <b-button v-if="getLoggedUser && getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>Remover</b-button>
             </h2>
             <span id="classificacaoFilme">{{filme.classificacao}}</span>
             <div id="anexosFilme">
@@ -14,8 +14,8 @@
                 <div id="filmeAvaliacaoFavoritos">
                     <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
                     <b-button @click="avaliarModal()" id="avaliar" variant="info">Avaliar</b-button>
-                    <b-button v-if="getLoggedUser != ''" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
-                    <b-button v-if="getLoggedUser != ''" @click="lista()" variant="info" id="lista">+ A minha lista</b-button>
+                    <b-button v-if="getLoggedUser !== null" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
+                    <b-button v-if="getLoggedUser !== null" @click="lista()" variant="info" id="lista">+ A minha lista</b-button>
                 </div>
                 <div class="infoFilme"> 
                     <p><span>Sinopse: </span>{{filme.sinopse}}</p>
@@ -34,7 +34,7 @@
                         <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
                             <b-col cols="1" class='imagemSpoiler'>
                                 <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
-                                <input v-if="getLoggedUser != ''" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
+                                <input v-if="getLoggedUser !== null" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
                             </b-col>
                             <b-col class="coment">
                                 <p id="username">{{comentario.utilizador}}</p>
@@ -101,7 +101,7 @@
     import {mapGetters, mapMutations} from "vuex";
 
     export default {
-        name: 'Filme',
+        name: 'PaginaFilme',
         data() {
             return {
                 filme: {},

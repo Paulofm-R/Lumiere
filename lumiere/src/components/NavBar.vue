@@ -9,7 +9,7 @@
                 <router-link class="link" :to="{name: 'filmes'}">Catálogo</router-link>
                 <router-link class="link" :to="{name: 'jogos'}">Jogos</router-link>
                 <router-link class="link" :to="{name: 'sobreNos'}">Sobre Nós </router-link>
-                <b-button v-if="getLoggedUser == ''" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
+                <b-button v-if="getLoggedUser === null" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
                 <router-link v-else class="link" :to="{name: 'perfil'}">
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
                     <img :src="getLoggedUser.foto" id="imgPerfil">
@@ -96,7 +96,7 @@
 <script>
     import {mapGetters, mapMutations} from 'vuex';
     export default {
-        name: 'App',
+        name: 'NavBar',
         data() {
             return {
               nome: '',

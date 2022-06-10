@@ -30,7 +30,8 @@
 
 <script>
     export default {
-        
+        name: "ComponenteFooter",
+
     }
 </script>
 

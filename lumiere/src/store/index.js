@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { UserService } from '@/services/user.service';
-import { AuthService } from '@/services/auth.service';
+// import { UserService } from '@/services/user.service';
+// import { AuthService } from '@/services/auth.service';
 
 Vue.use(Vuex)
 
@@ -10,8 +10,10 @@ export default new Vuex.Store({
   state: {
     // Utilizadores
     utilizadores: [],
-    loggedUser: loggedUser? loggedUser : false,
-    jogos:[],
+    user: null,
+    loggedIn: false,
+    loggedUser: null,
+    // jogos:[],
     
 
     // Jogos
