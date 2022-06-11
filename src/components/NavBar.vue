@@ -14,7 +14,7 @@
                     <span id="nomeUtilizador">{{getLoggedUser.nome}}</span>
                     <img :src="getLoggedUser.foto" id="imgPerfil">
                 </router-link>
-                <b-button v-if="getLoggedUser != ''" variant="outline-light" @click="logout()"><b-icon icon="door-open"></b-icon></b-button>
+                <b-button v-if="getLoggedUser !== null" variant="outline-light" @click="logout()"><b-icon icon="door-open"></b-icon></b-button>
               </b-col>
 
               <!-- Modais -->
