@@ -4,5 +4,5 @@ module.exports = defineConfig({
 })
 
 module.exports = {
-  baseUrl: '/WebPII/'
+  publicPath: '/WebPII/'
 }
