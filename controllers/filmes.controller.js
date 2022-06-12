@@ -167,33 +167,41 @@ exports.addComentario = async (req, res) => {
 // RIP
 exports.updateComentario = async (req, res) => {
     try {
-        
         const filme = await Filme.findById(req.params.filmeID)
             .exec();
-        // const filme = await Filme.findOneAndUpdate({ _id: req.params.filmeID, "comentarios.id": req.params.comentarioID }, { $set: { "comentarios.$.spoiler": true } }, { new: true }).exec();
 
         if (filme === null) {
             return res.status(404).json({
                 success: false, msg: `Não é possível encontrar nenhum filme com ID ${req.params.filmeID}.`
             });
         }
-        const comentario = filme.comentarios.find(comentario => comentario.id == req.params.comentarioID)
 
+        const comentario = filme.comentarios.find(comentario => comentario.id == req.params.comentarioID)
         // filme.comentarios.forEach(comentario => {
         //     if (comentario.id == req.params.comentarioID) {
-        //         comentario.spoiler = !comentario.spoiler;
+        //         comentario.spoiler = !comentario.spoiler
+        //         console.log(comentario);
         //     }
-        // })
-
+        // });
+        
         if (comentario === null) {
             return res.status(404).json({
                 success: false, msg: `Não é possível encontrar nenhum comentario com ID ${req.params.comentarioID}.`
             });
         }
-        // comentario.spoiler = !comentario.spoiler;
+        
+        // comentario.spoiler = !comentario.spoiler
+        console.log(comentario);
+        const result = await Filme.findOneAndUpdate({_id: req.params.filmeID, "comentarios.id": req.params.comentarioID}, {$set: {"comentarios.$.spoiler": req.body.spoiler}})
+        
+        console.log(result);
+        if (result === null) {
+            res.status(404).json({ msg: 'Erro'})
+            return
+        }
 
-        comentario.spoiler = !comentario.spoiler
-        await filme.save(comentario);        
+        // await filme.save();
+        // console.log(await filme.save());        
         
         res.status(200).json({
             message: `Comentario alterado com sucesso!`

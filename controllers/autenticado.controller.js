@@ -20,6 +20,13 @@ exports.verifyToken = (req, res, next) => {
         next();
     }
     catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ success: false, msg: "Ops, seu token expirou! Por favor faça login novamente." });
+        }
+
+        if (err.name === 'JsonWebTokenError') {
+            return res.status(401).json({ success: false, msg: "JWT malformado" });
+        }
         return res.status(401).json({ success: false, msg: "Não autorizado!" });
     }
 };

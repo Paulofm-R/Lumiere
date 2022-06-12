@@ -69,12 +69,14 @@ exports.findAll = async (req, res) => {
 // Find a single Tutorial with an id
 exports.findOne = async (req, res) => {
     try {
-        // to use a full fledge promise you will need to use .exec(): findById or findOne returns a QUERY object, not a document
-        // You can either use a callback as the solution suggests or as of v4+ findOne returns a thenable so you can use .then or await/async to retrieve the document
-        console.log(req.params.utilizadorID);
+        if (req.UtilizadorAutenticadoID !== req.params.utilizadorID) {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação está disponível apenas para utilizadores ADMINS ou LOGGED!"
+            });
+        }
         const utilizador = await Utilizador.findById(req.params.utilizadorID)
             .exec();
-        // no data returned means there is no utilizador in DB with that given ID 
+
         if (utilizador === null)
             return res.status(404).json({
                 success: false, msg: `Não foi possível encontrar nenhum utilizador com ID ${req.params.utilizadorID}.`
@@ -92,6 +94,12 @@ exports.findOne = async (req, res) => {
 // Delete a Utilizador with the specified id in the request
 exports.delete = async (req, res) => {
     try {
+        if (req.UtilizadorAutenticadoRole !== "admin") {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação só é possivel para ADMINISTRADORES!"
+            });
+        }
+
         const utilizador = await Utilizador.findByIdAndRemove(req.params.utilizadorID).exec();
         if (!utilizador)
             res.status(404).json({
@@ -140,6 +148,12 @@ exports.update = async (req, res) => {
 // filmes
 exports.addFavoritos = async (req, res) => {
     try {
+        if (req.UtilizadorAutenticadoID !== req.params.utilizadorID) {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação está disponível apenas para o proprio utilizador"
+            });
+        }
+
         const filme = await Filme.findById(req.params.filmeID)
             .select('_id')
             .exec();
@@ -175,6 +189,12 @@ exports.addFavoritos = async (req, res) => {
 
 exports.addLista = async (req, res) => {
     try {
+        if (req.UtilizadorAutenticadoID !== req.params.utilizadorID) {
+            return res.status(403).json({
+                success: false, msg: "Esta solicitação está disponível apenas para o proprio utilizador"
+            });
+        }
+        
         const filme = await Filme.findById(req.params.filmeID)
             .select('_id')
             .exec();
@@ -290,15 +310,27 @@ exports.login = async (req, res) => {
 
         if (!utilizador) return res.status(404).json({ success: false, msg: "Utilizador não encontrado." });
 
-        // const check = bcrypt.compareSync(req.body.palavra_passe, utilizador.palavra_passe);
-        // if (!check) return res.status(401).json({ success: false, accessToken: null, msg: "Credenciais inválidas!" });
+        const check = req.body.palavra_passe == utilizador.palavra_passe;
+
+        if (!check){
+            return res.status(401).json({
+                success: false,
+                accessToken: null,
+                msg: "Credenciais inválidas!"
+            })
+        }
 
         const token = jwt.sign({ id: utilizador._id, role: utilizador.tipo },
             config.SECRET, {
             expiresIn: '24h' // 24 hours
         });
         
-        return res.status(200).json({ success: true, accessToken: token });
+        return res.status(200).json({
+            success: true,
+            accessToken: token,
+            id: utilizador._id,
+            role: utilizador.tipo
+        });
     } catch (err) {
             res.status(500).json({ success: false, msg: err.message || "Ocorreu algum erro no login." });
     };
