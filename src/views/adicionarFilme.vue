@@ -173,7 +173,7 @@
         },
 
         methods:{
-            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME_ATUAL']),
+            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME']),
 
             ordenarAlfabeticaCategoria(categoriaA, categoriaB){
                 if (categoriaA < categoriaB) return -1;

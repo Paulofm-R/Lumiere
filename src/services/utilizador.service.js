@@ -15,7 +15,7 @@ function authHeader() {
         return { 'Content-Type': 'application/json' };
 }
 
-export const UserService = {
+export const UtilizadorService = {
     async fetchOneUserByID(id) {
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
             method: "GET",
@@ -59,8 +59,7 @@ export const UserService = {
     }
 }
 
-export default UserService;
-
+export default UtilizadorService;
 
 function handleResponses(code) {
     let message = "";

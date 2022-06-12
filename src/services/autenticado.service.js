@@ -1,6 +1,6 @@
 import API_URL from './config.js'
 
-export const AuthService = {
+export const AutenticadoService = {
     async login(utilizador) { // payload = user (username + password)
         const response = await fetch(`${API_URL}/utilizadores/login`, {
             method: "POST",
@@ -77,4 +77,4 @@ function handleResponses(code) {
     return message;
 }
 
-export default AuthService;
+export default AutenticadoService;

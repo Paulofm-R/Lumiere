@@ -232,7 +232,7 @@
             }
         },
         methods: {
-            ...mapMutations(['SET_GERIR_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL']),
+            ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL']),
 
             editarPerfil(){
                 if(this.form.novaPalavraPasse != ''){
@@ -251,12 +251,12 @@
             mudarTipo(nome){
                 let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome);
                 utilizador.tipo = utilizador.tipo == 'admin' ? 'utilizador' : 'admin';
-                this.SET_GERIR_UTILIZADORES(this.getUtilizadores);
+                this.SET_UTILIZADORES(this.getUtilizadores);
             },
 
             removerUtilizador(nome){
                 if (confirm("Tens acerteza que queres eliminar esta utilizador?")) {
-                    this.SET_GERIR_UTILIZADORES(this.getUtilizadores.filter((utilizador) => utilizador.nome != nome));
+                    this.SET_UTILIZADORES(this.getUtilizadores.filter((utilizador) => utilizador.nome != nome));
                 }
             },
 
