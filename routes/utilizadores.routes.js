@@ -21,10 +21,10 @@ router.route('/:utilizadorID/favoritos/:filmeID')
 router.route('/:utilizadorID/lista/:filmeID')
     .post(autenticadoController.verifyToken, utilizadorController.addLista);
 
-router.route('/:utilizadorID/desafio')
+router.route('/:utilizadorID/desafio/:jogoID')
     .post(autenticadoController.verifyToken, utilizadorController.addDesafio);
 
-router.route('/:utilizadorID/desafioConcluido')
+router.route('/:utilizadorID/desafioConcluido/:desafioID')
     .post(utilizadorController.addDesafioConcluido);
 
 router.route('/login')
