@@ -31,7 +31,7 @@ export const UtilizadorService = {
             throw Error(handleResponses(response.status));
     },
 
-    async fetchOneUserByID(id) {
+    async fetchOneUtilizadorByID(id) {
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
             method: "GET",
             headers: authHeader()
@@ -45,7 +45,7 @@ export const UtilizadorService = {
         }
     },
 
-    async fetchAllUsers() {
+    async fetchAllUtilizador() {
         const response = await fetch(`${API_URL}/utilizadores`, {
             method: "GET",
             headers: authHeader()
@@ -55,6 +55,102 @@ export const UtilizadorService = {
             return data.utilizadores;
         }
         else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async eliminarUtilizador(id) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async updateUtilizador(id, utilizador) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}`, {
+            method: "PACTH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body:
+                JSON.stringify({
+                    foto: utilizador.foto,
+                    palavra_passe: utilizador.palavra_passe,
+                    tipo: utilizador.tipo
+                })
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async addFavoritos(id, filmeID) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}/favoritos/${filmeID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async addLista(id, filmeID) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}/lista/${filmeID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async addDesafio(id, jogoID) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}/desafios/${jogoID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            throw Error(handleResponses(response.status));
+        }
+    },
+
+    async addDesafioConcluido(id, desafioID) {
+        const response = await fetch(`${API_URL}/utilizadores/${id}/desafioConcluido/${desafioID}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
             throw Error(handleResponses(response.status));
         }
     },

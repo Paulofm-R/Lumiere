@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import { UtilizadorService } from '@/services/utilizador.service';
-// import { AuthService } from '@/services/auth.service';
+import { AutenticadoService } from '@/services/autenticado.service';
 import { FilmeService } from '@/services/filme.service';
 import { JogoService } from '@/services/jogos.service';
 import { CategoriaService } from '@/services/categorias.service';
@@ -310,10 +310,14 @@ export default new Vuex.Store({
       state.loggedIn = true;
       state.loggedUser = payload;
     },
-    SET_NEW_USER(state, payload) {
-      state.utilizadores.push(payload);
-      state.loggedUser = state.utilizadores.find((user) => user.nome === payload);
-      localStorage.utilizadores = JSON.stringify(state.utilizadores);
+    // SET_NEW_USER(state, payload) {
+    //   state.utilizadores.push(payload);
+    //   state.loggedUser = state.utilizadores.find((user) => user.nome === payload);
+    //   localStorage.utilizadores = JSON.stringify(state.utilizadores);
+    // },
+    loginFailure(state) {
+      state.loggedIn = false;
+      state.loggedUser = null;
     },
     SET_LOGOUT(state) {
       state.utilizadores.map((utilizador) => {
@@ -471,6 +475,123 @@ export default new Vuex.Store({
     },
 
     // utilizadores
+    async register({ commit }, utilizador) {
+      try {
+        const response = await AutenticadoService.register(utilizador);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async login({ commit }, utilizador) {
+      try {
+        const loggedUser = await AutenticadoService.login(utilizador);
+        commit('loginSuccess', loggedUser);
+      }
+      catch (error) {
+        commit('loginFailure');
+        throw error;
+      }
+    },
+
+    async getAllUtilizadores({ commit }) {
+      try {
+        const utilizadores = await UtilizadorService.fetchAllUtilizadores();
+        commit('SET_Utilizadores', utilizadores);
+      }
+      catch (error) {
+        commit('SET_Utilizadores', []);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async getUtilizador({ commit }, id) {
+      try {
+        const utilizador = await UtilizadorService.fetchOneUtilizadorByID(id);
+        commit('SET_Utilizador', utilizador);
+      }
+      catch (error) {
+        commit('SET_Utilizador', null);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    logout({ commit }) {
+      AutenticadoService.logout();
+      // commit mutation logout
+      commit('logout');
+    },
+
+    async eliminarUtilizador({ commit }, id) {
+      try {
+        const response = await UtilizadorService.eliminarUtilizador(id);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async updateUtilizador({ commit }, id, utilizador) {
+      try {
+        const response = await UtilizadorService.updateUtilizador( id, utilizador);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async addFavoritos({ commit }, id, filmeID) {
+      try {
+        const response = await UtilizadorService.addFavoritos(id, filmeID);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async addLista({ commit }, id, filmeID) {
+      try {
+        const response = await UtilizadorService.addLista(id, filmeID);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async addDesafio({ commit }, id, jogoID) {
+      try {
+        const response = await UtilizadorService.addDesafio(id, jogoID);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async addDesafioConcluido({ commit }, id, desafioID) {
+      try {
+        const response = await UtilizadorService.addDesafioConcluido(id, desafioID);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
 
     // filmes
     async getAllFilmes({ commit }) {
