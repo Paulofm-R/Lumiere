@@ -44,7 +44,7 @@ exports.create = async (req, res) => {
 
 };
 
-// Retrieve all utilizador / find by nome
+// Recuperar todos os utilizador /localizar por nome
 exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
@@ -66,7 +66,7 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// Find a single Tutorial with an id
+// Encontre um único utilizador com um id
 exports.findOne = async (req, res) => {
     try {
         if (req.UtilizadorAutenticadoID !== req.params.utilizadorID) {
@@ -91,7 +91,7 @@ exports.findOne = async (req, res) => {
     }
 };
 
-// Delete a Utilizador with the specified id in the request
+// Excluir um utilizador com o id especificado na solicitação
 exports.delete = async (req, res) => {
     try {
         if (req.UtilizadorAutenticadoRole !== "admin") {

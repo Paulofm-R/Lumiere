@@ -48,7 +48,7 @@ exports.create = async (req, res) => {
 
 };
 
-// Retrieve all Filmes / find by title
+// Recuperar todos os filmes / localizar por título
 exports.findAll = async (req, res) => {
     const nome = req.query.nome;
 
@@ -69,7 +69,7 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// Find a single Filme with an id
+// Encontre um único filme com um id
 exports.findOne = async (req, res) => {
     try {
         const filme = await Filme.findById(req.params.filmeID)
@@ -89,7 +89,7 @@ exports.findOne = async (req, res) => {
     }
 };
 
-// Delete a Filme with the specified id in the request
+// Excluir um filme com o id especificado na solicitação
 exports.delete = async (req, res) => {
     try {
         if (req.UtilizadorAutenticadoRole !== "admin") {
@@ -164,7 +164,6 @@ exports.addComentario = async (req, res) => {
     }
 };
 
-// RIP
 exports.updateComentario = async (req, res) => {
     try {
         const filme = await Filme.findById(req.params.filmeID)
@@ -177,12 +176,6 @@ exports.updateComentario = async (req, res) => {
         }
 
         const comentario = filme.comentarios.find(comentario => comentario.id == req.params.comentarioID)
-        // filme.comentarios.forEach(comentario => {
-        //     if (comentario.id == req.params.comentarioID) {
-        //         comentario.spoiler = !comentario.spoiler
-        //         console.log(comentario);
-        //     }
-        // });
         
         if (comentario === null) {
             return res.status(404).json({
@@ -190,18 +183,19 @@ exports.updateComentario = async (req, res) => {
             });
         }
         
-        // comentario.spoiler = !comentario.spoiler
-        console.log(comentario);
-        const result = await Filme.findOneAndUpdate({_id: req.params.filmeID, "comentarios.id": req.params.comentarioID}, {$set: {"comentarios.$.spoiler": req.body.spoiler}})
-        
-        console.log(result);
-        if (result === null) {
-            res.status(404).json({ msg: 'Erro'})
-            return
-        }
+        comentario.spoiler = req.body.spoiler;
+        const resultado = await Filme.findByIdAndUpdate(req.params.filmeID, filme,
+            {
+                returnOriginal: false,
+                runValidators: true,
+                useFindAndModify: false
+            }
+        ).exec();
 
-        // await filme.save();
-        // console.log(await filme.save());        
+        if (resultado === null) {
+            res.status(404).json({ msg: `Não é possível atualizar o comentario com id=${req.params.comentarioID}.`})
+            return
+        }  
         
         res.status(200).json({
             message: `Comentario alterado com sucesso!`

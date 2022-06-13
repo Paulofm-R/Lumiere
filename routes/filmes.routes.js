@@ -15,10 +15,10 @@ router.route('/:filmeID')
     .delete(autenticadoController.verifyToken, filmeController.delete);
 
 router.route('/:filmeID/comentarios')
-    .post(filmeController.addComentario);
+    .post(autenticadoController.verifyToken, filmeController.addComentario);
 
 router.route('/:filmeID/comentarios/:comentarioID')
-    .patch( filmeController.updateComentario);
+    .patch(autenticadoController.verifyToken, filmeController.updateComentario);
 
 router.route('/:filmeID/avaliacao')
     .patch(autenticadoController.verifyToken, filmeController.updateAvaliacao);

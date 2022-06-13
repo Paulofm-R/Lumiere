@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
     }
 };
 
-// Retrieve all Desafio / find by title
+// Recuperar todos os Desafios
 exports.findAll = async (req, res) => {
     try {
         let data = await Desafio
@@ -51,7 +51,7 @@ exports.findAll = async (req, res) => {
     }
 };
 
-// Find a single Tutorial with an id
+// Encontre um único Desafios com um id
 exports.findOne = async (req, res) => {
     try {
         const desafio = await Desafio.findById(req.params.desafioID)
