@@ -4,6 +4,9 @@ import Vuex from 'vuex'
 // import { UserService } from '@/services/user.service';
 // import { AuthService } from '@/services/auth.service';
 import { FilmeService } from '@/services/filme.service';
+import {JogoService} from '@/services/jogos.service';
+import {CategoriaService} from '@/services/categorias.service';
+import {DesafioService} from '@/services/desafios.service';
 
 Vue.use(Vuex)
 
@@ -27,8 +30,11 @@ export default new Vuex.Store({
     filme: null,
 
     // Categorias
-    categoria: [],
+    categorias: [],
     // categoria: localStorage.categoria ? JSON.parse(localStorage.categoria) : ['Ação', 'Comédia', 'Drama', 'Musical', 'Aventura', 'Romance'],
+
+    // Desafios
+    desafios: [],
 
     // Jogos
     //   jogos: localStorage.jogos ? JSON.parse(localStorage.jogos) : [{
@@ -228,41 +234,41 @@ export default new Vuex.Store({
     
     // loggedIn: '',
 
-    desafios: localStorage.desafios ? JSON.parse(localStorage.desafios) : [{
-      nome: 'Joga 5 jogos',
-      nEtapas: 5,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 10 jogos',
-      nEtapas: 10,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 20 jogos',
-      nEtapas: 20,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 40 jogos',
-      nEtapas: 40,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 50 jogos',
-      nEtapas: 50,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 100 jogos',
-      nEtapas: 100,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },
-    {
-      nome: 'Joga 75 jogos',
-      nEtapas: 75,
-      imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
-    },]
+    // desafios: localStorage.desafios ? JSON.parse(localStorage.desafios) : [{
+    //   nome: 'Joga 5 jogos',
+    //   nEtapas: 5,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 10 jogos',
+    //   nEtapas: 10,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 20 jogos',
+    //   nEtapas: 20,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 40 jogos',
+    //   nEtapas: 40,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 50 jogos',
+    //   nEtapas: 50,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 100 jogos',
+    //   nEtapas: 100,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },
+    // {
+    //   nome: 'Joga 75 jogos',
+    //   nEtapas: 75,
+    //   imagem: 'https://cdn-icons-png.flaticon.com/512/1910/1910528.png'
+    // },]
   },
 
   getters: {
@@ -281,7 +287,7 @@ export default new Vuex.Store({
     getFilmes: (state) => state.filmes,
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
 
-    getCategoria: (state) => state.categoria,
+    getCategoria: (state) => state.categorias,
     isCategoriaAvailable: (state) => (cat) => state.categoria.every((categoria) => categoria !== cat),
 
     isFilmeFavoritoValido: (state) => (nome) => state.loggedUser.favoritos.every((filme) => filme.nome !== nome),
@@ -338,42 +344,47 @@ export default new Vuex.Store({
       console.log(payload.utilizador)
       state.utilizador = payload.utilizador
     },
-    // Jogos
-    SET_NOVO_JOGO(state, payload) {
-      state.jogos.push(payload);
-      localStorage.jogos = JSON.stringify(state.jogos);
-    },
-    SET_REMOVER_JOGO(state, payload) {
-      state.jogos = state.jogos.filter((jogo) => jogo.nome != payload)
-      localStorage.jogos = JSON.stringify(state.jogos);
-    },
-    SET_NOVA_CLASSIFICACAO(state, payload) {
-      state.jogos.map((jogo) => {
-        if (jogo.nome == state.jogo) {
-          if (jogo.classificacao.every((utilizador) => utilizador.utilizador !== payload.utilizador)) {
-            jogo.classificacao.push(payload);
-            state.loggedUser.numJogos += 1;
-          }
-          // else{
-          //   jogo.classificacao.find((utilizador) => utilizador.utilizador == payload.utilizador) = payload
-          // }
-        }
-      })
 
-      localStorage.jogos = JSON.stringify(state.jogos);
-      localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    // Jogos
+    // SET_NOVO_JOGO(state, payload) {
+    //   state.jogos.push(payload);
+    //   localStorage.jogos = JSON.stringify(state.jogos);
+    // },
+    // SET_REMOVER_JOGO(state, payload) {
+    //   state.jogos = state.jogos.filter((jogo) => jogo.nome != payload)
+    //   localStorage.jogos = JSON.stringify(state.jogos);
+    // },
+    // SET_NOVA_CLASSIFICACAO(state, payload) {
+    //   state.jogos.map((jogo) => {
+    //     if (jogo.nome == state.jogo) {
+    //       if (jogo.classificacao.every((utilizador) => utilizador.utilizador !== payload.utilizador)) {
+    //         jogo.classificacao.push(payload);
+    //         state.loggedUser.numJogos += 1;
+    //       }
+    //       // else{
+    //       //   jogo.classificacao.find((utilizador) => utilizador.utilizador == payload.utilizador) = payload
+    //       // }
+    //     }
+    //   })
+
+    //   localStorage.jogos = JSON.stringify(state.jogos);
+    //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    // },
+    SET_JOGOS(state, payload) {
+      console.log("STORE MUTATION SET_JOGOS: " + payload.length)
+      state.jogos = payload
     },
-    SET_JOGO_ATUAL(state, payload) {
+    SET_JOGO(state, payload) {
       state.jogo = payload
     },
-    SET_DESAFIO(state) {
-      state.desafios.map((desafio) => {
-        if (desafio.nEtapas == state.loggedUser.numJogos) {
-          state.loggedUser.desafios.push(desafio)
-        }
-      })
-      localStorage.loggedUser = JSON.stringify(state.loggedUser);
-    },
+    // SET_DESAFIO(state) {
+    //   state.desafios.map((desafio) => {
+    //     if (desafio.nEtapas == state.loggedUser.numJogos) {
+    //       state.loggedUser.desafios.push(desafio)
+    //     }
+    //   })
+    //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    // },
 
     // Filmes
     // SET_NOVO_FILME(state, payload) {
@@ -435,11 +446,23 @@ export default new Vuex.Store({
     //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
     // },
 
-    // Desafios
-    SET_NOVO_DESAFIO(state, payload) {
-      state.desafios.push(payload);
-      localStorage.desafios = JSON.stringify(state.desafios);
+    // Categorias
+    SET_CATEGORIAS(state, payload) {
+      console.log("STORE MUTATION SET_CATEGORIAS: " + payload.length)
+      state.categorias = payload
     },
+
+    // Desafios
+    SET_DESAFIOS(state, payload) {
+      console.log("STORE MUTATION SET_DESAFIOS: " + payload.length)
+      state.desafios = payload
+    },
+
+
+    // SET_NOVO_DESAFIO(state, payload) {
+    //   state.desafios.push(payload);
+    //   localStorage.desafios = JSON.stringify(state.desafios);
+    // },
   },
   actions: {
     // utilizadores
@@ -516,6 +539,136 @@ export default new Vuex.Store({
     async updateAvaliacao({ commit }, id, avaliacao) {
       try {
         const response = await FilmeService.updateAvaliacao(id, avaliacao);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    // Categorias
+    async getAllCategorias({ commit }) {
+      try {
+        const jogos = await CategoriaService.fetchAllCategorias();
+        commit('SET_CATEGORIAS', jogos);
+      }
+      catch (error) {
+        commit('SET_CATEGORIAS', []);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async adicionarCategoria({ commit }, categoria) {
+      try {
+        const response = await CategoriaService.adicionarCategoria(categoria);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    // Jogos
+    async getAllJogos({ commit }) {
+      try {
+        const jogos = await JogoService.fetchAllJogos();
+        commit('SET_JOGOS', jogos);
+      }
+      catch (error) {
+        commit('SET_JOGOS', []);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async getJogo({ commit }, id) {
+      try {
+        const jogo = await JogoService.fetchOneJogosByID(id);
+        commit('SET_JOGO', jogo);
+      }
+      catch (error) {
+        commit('SET_JOGO', null);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async novoJogo({ commit }, jogo) {
+      try {
+        const response = await JogoService.adicionarJogo(jogo);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async eliminarJogo({ commit }, id) {
+      try {
+        const response = await JogoService.eliminarJogo(id);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    async getClassificacao({ commit }, id) {
+      try {
+        const jogo = await JogoService.fetchAllClassificacoes(id);
+        commit('SET_JOGO', jogo);
+      }
+      catch (error) {
+        commit('SET_JOGO', null);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async addClassificacao({ commit }, id, jogo) {
+      try {
+        const response = await JogoService.addClassificacao(id, jogo);
+        commit('SET_MESSAGE', response.msg);
+      }
+      catch (error) {
+        commit('SET_MESSAGE', '');
+        throw error;
+      }
+    },
+
+    // Desafios
+    async getAllDesafios({ commit }) {
+      try {
+        const desafios = await DesafioService.fetchAllDesafios();
+        commit('SET_DESAFIOS', desafios);
+      }
+      catch (error) {
+        commit('SET_DESAFIOS', []);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async getDesafio({ commit }, id) {
+      try {
+        const desafio = await DesafioService.fetchOneDesafioByID(id);
+        commit('SET_DESAFIOS', desafio);
+      }
+      catch (error) {
+        commit('SET_DESAFIOS', null);
+        commit("SET_MESSAGE", error);
+        throw error; // Needed to continue propagating the error
+      }
+    },
+
+    async adicionarDesafio({ commit }, desafio) {
+      try {
+        const response = await DesafioService.adicionarDesafio(desafio);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {

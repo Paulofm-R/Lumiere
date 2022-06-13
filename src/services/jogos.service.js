@@ -15,7 +15,7 @@ function jogoHeader() {
 }
 
 export const JogoService = {
-    async fetchOneFilmeByID(id) {
+    async fetchOneJogosByID(id) {
         const response = await fetch(`${API_URL}/jogos/${id}`, {
             method: "GET",
             headers: jogoHeader()
@@ -42,7 +42,7 @@ export const JogoService = {
         }
     },
 
-    async adicionarFilme(jogo) {
+    async adicionarJogo(jogo) {
         const response = await fetch(`${API_URL}/jogos`, {
             method: "POST",
             headers: {
@@ -79,8 +79,8 @@ export const JogoService = {
         }
     },
 
-    async fetchAllClassificacoes() {
-        const response = await fetch(`${API_URL}/jogos/classificacao`, {
+    async fetchAllClassificacoes(id) {
+        const response = await fetch(`${API_URL}/jogos/${id}/classificacao`, {
             method: "GET",
         });
         if (response.ok) {
