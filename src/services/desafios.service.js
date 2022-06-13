@@ -1,25 +1,9 @@
 import API_URL from './config.js'
 
-function authHeader() {
-    // checks Local Storage for user item
-    let utilizador = JSON.parse(localStorage.getItem('utilizadores'));
-
-    // if there is a logged user with accessToken (JWT)
-    if (utilizador && utilizador.accessToken) {
-        // return HTTP authorization header for Node.js Express back-end
-        return {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + utilizador.accessToken
-        };
-    } else  //otherwise, return just header for content type
-        return { 'Content-Type': 'application/json' };
-}
-
 export const DesafioService = {
     async fetchOneDesafioByID(id) {
         const response = await fetch(`${API_URL}/desafios/${id}`, {
             method: "GET",
-            headers: filmeHeader()
         });
         if (response.ok) {
             let data = await response.json();

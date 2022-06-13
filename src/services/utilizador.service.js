@@ -16,6 +16,21 @@ function authHeader() {
 }
 
 export const UtilizadorService = {
+    // sends request to API root
+    async getPublicContent() {
+        const response = await fetch(`${API_URL}`, {
+            method: "GET" // requires NO authorization header
+        });
+        if (response.ok) {
+            let data = await response.json();
+            // console.log("USER SERVICE - fetch WELCOMING MESSAGE")
+            // console.log(data) // data = "Welcome to the TUTORIALS api"
+            return data;
+        }
+        else
+            throw Error(handleResponses(response.status));
+    },
+
     async fetchOneUserByID(id) {
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
             method: "GET",
@@ -43,20 +58,6 @@ export const UtilizadorService = {
             throw Error(handleResponses(response.status));
         }
     },
-    // sends request to API root
-    async getPublicContent() {
-        const response = await fetch(`${API_URL}`, {
-            method: "GET" // requires NO authorization header
-        });
-        if (response.ok) {
-            let data = await response.json();
-            // console.log("USER SERVICE - fetch WELCOMING MESSAGE")
-            // console.log(data) // data = "Welcome to the TUTORIALS api"
-            return data;
-        }
-        else
-            throw Error(handleResponses(response.status));
-    }
 }
 
 export default UtilizadorService;

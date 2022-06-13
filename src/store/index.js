@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-// import { UserService } from '@/services/user.service';
+import { UtilizadorService } from '@/services/utilizador.service';
 // import { AuthService } from '@/services/auth.service';
 import { FilmeService } from '@/services/filme.service';
-import {JogoService} from '@/services/jogos.service';
-import {CategoriaService} from '@/services/categorias.service';
-import {DesafioService} from '@/services/desafios.service';
+import { JogoService } from '@/services/jogos.service';
+import { CategoriaService } from '@/services/categorias.service';
+import { DesafioService } from '@/services/desafios.service';
 
 Vue.use(Vuex)
 
@@ -23,7 +23,7 @@ export default new Vuex.Store({
     // Jogos
     jogos: [],
     jogo: null,
-    tipoJogo: localStorage.tipoJogo ? JSON.parse(localStorage.tipoJogo) : ['Quizz', 'Preencher', 'Lista'],
+    tipoJogo: ['Quizz', 'Preencher', 'Lista'],
 
     // Filmes
     filmes: [],
@@ -231,7 +231,7 @@ export default new Vuex.Store({
     //     spoiler: false,
     //   },],
     // },],
-    
+
     // loggedIn: '',
 
     // desafios: localStorage.desafios ? JSON.parse(localStorage.desafios) : [{
@@ -465,6 +465,11 @@ export default new Vuex.Store({
     // },
   },
   actions: {
+    async getAPIRoot({ commit }) {
+      const result = await UtilizadorService.getPublicContent()
+      commit("SET_MESSAGE", result.message);
+    },
+
     // utilizadores
 
     // filmes
@@ -525,9 +530,9 @@ export default new Vuex.Store({
       }
     },
 
-    async updateComentario({ commit }, filmeID, comentarioID ,comentario) {
+    async updateComentario({ commit }, filmeID, comentarioID, comentario) {
       try {
-        const response = await FilmeService.updateComentario(filmeID, comentarioID ,comentario);
+        const response = await FilmeService.updateComentario(filmeID, comentarioID, comentario);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
