@@ -4,6 +4,7 @@ const cors = require('cors');       // middleware to enable CORS (Cross-Origin R
 
 const app = express();
 const port = process.env.PORT;
+app.listen(port, () => console.log(`App listening on PORT ${port}/`));
 const host = process.env.HOST;
 
 const corsOptions = {
