@@ -6,16 +6,29 @@
                 <div>
                     <b-form-input id="nomeFilme" v-model="form.nome" placeholder="Nome do Filme/Serie"></b-form-input>
                 </div>
-                <div>
-                    <b-button v-if="form.imagem == ''" class="imgFilme" v-b-modal="'ficheirosModalPoster'">Poster do Filme +</b-button>
-                    <img v-else type="image" :src="form.imagem" class="imgFilme" alt="poster do filme" v-b-modal="'ficheirosModalPoster'">
-                    <b-button v-if="form.trailer == ''" class="trailer" v-b-modal="'ficheirosModalTrailer'">Trailer do Filme +</b-button>
-                    <iframe v-else width="560" height="315" :src="form.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="trailer" v-b-modal="'ficheirosModalTrailer'"></iframe>
+                <div id="imgFilme">
+                    <b-button v-if="form.imagem == ''" class="imgFilme" v-b-modal="'ficheirosModalPoster'">Poster do
+                        Filme +</b-button>
+                    <img v-else type="image" :src="form.imagem" class="imgFilme" alt="poster do filme"
+                        v-b-modal="'ficheirosModalPoster'">
                 </div>
-                <br>
+                <div id="trailer">
+                    <b-button v-if="form.trailer == ''" class="trailer" v-b-modal="'ficheirosModalTrailer'">Trailer do
+                        Filme +</b-button>
+                    <div v-else class="trailer">
+                        <b-button id="trocarTrailer" v-b-modal="'ficheirosModalTrailer'"><b-icon icon="arrow-left-right" aria-hidden="true"></b-icon></b-button>
+                        <iframe width="560" height="315" :src="form.trailer" title="YouTube video player"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen v-b-modal="'ficheirosModalTrailer'"></iframe>
+                    </div>
+                </div>
                 <b-col cols="7">
                     <div class="infoFilme">
-                        <p><span>Sinopse: </span><b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5" v-model="form.sinopse"></b-form-textarea></p>
+                        <p><span>Sinopse: </span>
+                            <b-form-textarea id="textareaSinopse" placeholder="Sinopse do Filme/Serie" rows="5"
+                                v-model="form.sinopse"></b-form-textarea>
+                        </p>
 
                         <b-row>
                             <b-col cols="2">
@@ -28,38 +41,57 @@
                                 <p><span>Classificações: </span></p>
                             </b-col>
                             <b-col cols="10" id="inputsInfFilme">
-                                <div><b-form-input id="anoFilme" type="number" min="1895" v-model="form.ano" placeholder="Ano de lançamento"></b-form-input></div>
-                                <div><b-form-input id="realizadorFilme" v-model="form.realizador" placeholder="Realizador (ex:realizador1,realizador2,...)"></b-form-input></div>
-                                <div><b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora"></b-form-input></div>
-                                <div><b-form-input id="elencoFilme" v-model="form.elenco" placeholder="Elenco (ex:ator1,ator2,...)"></b-form-input></div>
                                 <div>
-                                    <span v-for="(categoria, index) in form.categorias" :key="index" class="categoriaFilme">
-                                        <select v-model="form.categorias[index]" name="selCategoriaFilme" id="selCategoriaFilme" @change="novaCategoriaModal">
+                                    <b-form-input id="anoFilme" type="number" min="1895" v-model="form.ano"
+                                        placeholder="Ano de lançamento"></b-form-input>
+                                </div>
+                                <div>
+                                    <b-form-input id="realizadorFilme" v-model="form.realizador"
+                                        placeholder="Realizador (ex:realizador1,realizador2,...)"></b-form-input>
+                                </div>
+                                <div>
+                                    <b-form-input id="produtoraFilme" v-model="form.produtora" placeholder="Produtora">
+                                    </b-form-input>
+                                </div>
+                                <div>
+                                    <b-form-input id="elencoFilme" v-model="form.elenco"
+                                        placeholder="Elenco (ex:ator1,ator2,...)"></b-form-input>
+                                </div>
+                                <div>
+                                    <span v-for="(categoria, index) in form.categorias" :key="index"
+                                        class="categoriaFilme">
+                                        <select v-model="form.categorias[index]" name="selCategoriaFilme"
+                                            id="selCategoriaFilme" @change="novaCategoriaModal">
                                             <option value="" selected disabled>Género Filme</option>
-                                            <option v-for="(categoria, index) in categoriasOrdenadas" :key="index" :value="categoria">{{categoria}}</option>
+                                            <option v-for="(categoria, index) in categoriasOrdenadas" :key="index"
+                                                :value="categoria">{{categoria}}</option>
                                             <option value="Outros">Outros</option>
                                         </select>
-                                        <b-button variant="outline" @click="form.categorias.pop()" v-if="form.categorias.length > 1 && form.categorias.length == index + 1" class="menosCategoria">x</b-button>
+                                        <b-button variant="outline" @click="form.categorias.pop()"
+                                            v-if="form.categorias.length > 1 && form.categorias.length == index + 1"
+                                            class="menosCategoria">x</b-button>
                                     </span>
-                                    <b-button v-if="form.categorias.length < 3" @click="addCategoria" id="addCategoriaId">+</b-button>
+                                    <b-button v-if="form.categorias.length < 3" @click="addCategoria"
+                                        id="addCategoriaId">+</b-button>
                                 </div>
                                 <div>
                                     <select v-model="form.tipo" name="selTipoFilme" id="selTipoFilme">
-                                            <option value="" selected disabled>Tipo Filme</option>
-                                            <option value="Filme">Filme</option>
-                                            <option value="Serie">Serie</option>
-                                        </select>
+                                        <option value="" selected disabled>Tipo Filme</option>
+                                        <option value="Filme">Filme</option>
+                                        <option value="Serie">Serie</option>
+                                    </select>
                                 </div>
                                 <div>
-                                    <select v-model="form.classificacao" name="selClassificacaoFilme" id="selClassificacaoFilme">
-                                            <option value="" selected disabled>Classificação do Filme</option>
-                                            <option value="M/3">M/3</option>
-                                            <option value="M/6">M/6</option>
-                                            <option value="M/12">M/12</option>
-                                            <option value="M/14">M/14</option>
-                                            <option value="M/16">M/16</option>
-                                            <option value="M/18">M/18</option>
-                                        </select>
+                                    <select v-model="form.classificacao" name="selClassificacaoFilme"
+                                        id="selClassificacaoFilme">
+                                        <option value="" selected disabled>Classificação do Filme</option>
+                                        <option value="M/3">M/3</option>
+                                        <option value="M/6">M/6</option>
+                                        <option value="M/12">M/12</option>
+                                        <option value="M/14">M/14</option>
+                                        <option value="M/16">M/16</option>
+                                        <option value="M/18">M/18</option>
+                                    </select>
                                 </div>
                             </b-col>
                         </b-row>
@@ -70,11 +102,8 @@
 
             <!-- Modais -->
             <!--Modal para adicionar nova categoria-->
-             <b-modal ref="novaCategoriaModal" id="novaCategoriaModal" size="sm"
-                header-bg-variant="info"
-                body-bg-variant="light"
-                footer-bg-variant="light" 
-                ok-only>
+            <b-modal ref="novaCategoriaModal" id="novaCategoriaModal" size="sm" header-bg-variant="info"
+                body-bg-variant="light" footer-bg-variant="light" ok-only>
                 <template #modal-header="{close}">
                     <h4 class="modalTitulo">Nova Categoria</h4>
                     <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
@@ -90,13 +119,10 @@
 
             <!--Modal para adicionar ficheiros-->
             <!-- Poster -->
-            <b-modal id="ficheirosModalPoster"
-                header-bg-variant="info"
-                body-bg-variant="light"
-                footer-bg-variant="light" 
-                ok-only>
+            <b-modal id="ficheirosModalPoster" header-bg-variant="info" body-bg-variant="light"
+                footer-bg-variant="light" ok-only>
                 <template #modal-header="{close}">
-                    <b-col cols=11 class="modalTitulo" >
+                    <b-col cols=11 class="modalTitulo">
                         <h4>Poster do Filme</h4>
                     </b-col>
                     <b-col style="text-align: right">
@@ -113,14 +139,10 @@
             </b-modal>
 
             <!-- Trailer -->
-            <b-modal id="ficheirosModalTrailer"
-                ref="ficheirosModalTrailer"
-                header-bg-variant="info"
-                body-bg-variant="light"
-                footer-bg-variant="light" 
-                ok-only>
+            <b-modal id="ficheirosModalTrailer" ref="ficheirosModalTrailer" header-bg-variant="info"
+                body-bg-variant="light" footer-bg-variant="light" ok-only>
                 <template #modal-header="{close}">
-                    <b-col cols=11 class="modalTitulo" >
+                    <b-col cols=11 class="modalTitulo">
                         <h4>Poster do Filme</h4>
                     </b-col>
                     <b-col style="text-align: right">
@@ -129,7 +151,8 @@
                 </template>
                 <template>
                     <label for="urlTrailerFilme">URL do trailer</label>
-                    <b-form-input v-model="trailerURL" id="urlTrailerFilme" type="url" placeholder="Link do Youtube"></b-form-input>
+                    <b-form-input v-model="trailerURL" id="urlTrailerFilme" type="url" placeholder="Link do Youtube">
+                    </b-form-input>
                 </template>
                 <template #modal-footer>
                     <b-button variant="primary" @click="trailerFilme">Guardar</b-button>
@@ -279,29 +302,54 @@ h1{
     width: 250px;
 }
 
-.imgFilme{
+#imgFilme{
     position: relative;
+    left: 1.2vw;
+    top: 21.75vh;
+    z-index: 1;
     width: 140px;
     height: 210px;
-    left: 1.2vw;
-    bottom: -6.55vh;
-    z-index: 1;
+}
+
+.imgFilme{
+    width: 100%;
+    height: 100%;
     background-color: white;
     color: black;
     border: 1px solid black;
 }
 
-img.imgFilme{
+/* img.imgFilme{
     bottom: 12.15vh;
+} */
+
+#trailer{
+    position: relative;
+    left: 1vw;
+    top: -10vw;
+    width: 560px;
+    height: 315px;
 }
 
 .trailer{
-    position: relative;
-    left:-9.2vw;
-    width: 560px;
-    height: 315px;
+    width: 100%;
+    height: 100%;
     background-color: white;
     color: black;
+}
+
+#trocarTrailer{
+    position: absolute;
+    right: -2px;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    background-color: #565e6447;
+    border: 0px;
+}
+
+#trocarTrailer:hover{
+    background-color: #565e64a2;
 }
 
 #anoFilme,

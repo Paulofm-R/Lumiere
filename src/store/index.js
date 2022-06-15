@@ -331,10 +331,10 @@ export default new Vuex.Store({
       state.loggedUser = null;
       localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
-    SET_NEW_PASSWORD(state, payload) {
-      state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
-      localStorage.loggedUser = JSON.stringify(state.loggedUser);
-    },
+    // SET_NEW_PASSWORD(state, payload) {
+    //   state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
+    //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
+    // },
     // SET_GERIR_UTILIZADORES(state, payload){
     //   state.utilizadores = payload;
     //   localStorage.utilizadores = JSON.stringify(state.utilizadores);
