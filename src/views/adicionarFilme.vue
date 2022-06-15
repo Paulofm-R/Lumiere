@@ -196,7 +196,7 @@
         },
 
         methods:{
-            ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME']),
+            ...mapMutations(['SET_FILMES', 'SET_CATEGORIAS', 'SET_FILME']),
 
             ordenarAlfabeticaCategoria(categoriaA, categoriaB){
                 if (categoriaA < categoriaB) return -1;
@@ -217,7 +217,8 @@
             NovaCategoria(){
                 if(this.novaCategoria.length != 0){
                     if(this.isCategoriaAvailable(this.novaCategoria)){
-                        this.SET_NOVA_CATEGORIA(this.novaCategoria)
+                        alert('ola')
+                        this.SET_CATEGORIAS(this.novaCategoria)
                         this.$refs['novaCategoriaModal'].hide()
                     }
                     else{
@@ -270,7 +271,7 @@
                             comentarios: [],
                         };
     
-                        this.SET_NOVO_FILME(novoFilme);
+                        this.SET_FILMES(novoFilme);
                         this.$router.push({ name: "filme", params:{ filmeNome: this.form.nome }});
                     }
                     else{

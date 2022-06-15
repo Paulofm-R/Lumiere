@@ -26,7 +26,22 @@ export default new Vuex.Store({
     tipoJogo: ['Quizz', 'Preencher', 'Lista'],
 
     // Filmes
-    filmes: [],
+    filmes: [{ 
+      nome: 'Ant-Man and the Wasp (2019)',
+      imagem: 'https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg',
+      trailer: 'https://www.youtube.com/embed/UUkn-enk2RU',
+      tipo: 'Filme',
+      categoria: ['Ação', 'Aventura', 'Comédia'],
+      ano: 2019,
+      realizador: ['Peyton Reed'],
+      produtora: 'Marvel Studios',
+      elenco: ['Paul Rudd', 'Evangeline Lilly', 'Michael Peña'],
+      sinopse: 'Enquanto Scott Lang equilibra ser um super-herói e um pai, Hope van Dyne e Dr. Hank Pym apresentam uma nova missão urgente que encontra o Homem-Formiga lutando ao lado da Vespa para descobrir segredos de seu passado.',
+      classificacao: 'M/12',
+      avaliacao: 3.5,
+      nAvaliacoes: 6,
+      comentarios: [],
+    }],
     filme: null,
 
     // Categorias
@@ -288,7 +303,7 @@ export default new Vuex.Store({
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
 
     getCategoria: (state) => state.categorias,
-    isCategoriaAvailable: (state) => (cat) => state.categoria.every((categoria) => categoria !== cat),
+    isCategoriaAvailable: (state) => (cat) => state.categorias.every((categoria) => categoria !== cat),
 
     isFilmeFavoritoValido: (state) => (nome) => state.loggedUser.favoritos.every((filme) => filme.nome !== nome),
     isFilmeListaValido: (state) => (nome) => state.loggedUser.lista.every((filme) => filme.nome !== nome),
