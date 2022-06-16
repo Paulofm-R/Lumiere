@@ -14,6 +14,7 @@ exports.verifyToken = (req, res, next) => {
     const token = bearer[1];
 
     try {
+
         let decoded = jwt.verify(token, config.SECRET);
         req.UtilizadorAutenticadoID = decoded.id; // save user ID and role into request object
         req.UtilizadorAutenticadoRole = decoded.tipo;

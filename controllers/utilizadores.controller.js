@@ -302,11 +302,11 @@ exports.addDesafioConcluido = async (req, res) => {
 // Login
 exports.login = async (req, res) => {
     try {
-        if (!req.body || !req.body.nome || !req.body.palavra_passe) {
+        if (!req.body || !req.body.utilizador || !req.body.palavra_passe) {
             return res.status(400).json({ success: false, msg: "Deve fornecer nome de utilizador e senha." });
         }
         	
-        let utilizador = await Utilizador.findOne({nome: req.body.nome});
+        let utilizador = await Utilizador.findOne({nome: req.body.utilizador});
 
         if (!utilizador) return res.status(404).json({ success: false, msg: "Utilizador não encontrado." });
 

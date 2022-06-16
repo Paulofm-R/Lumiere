@@ -6,11 +6,11 @@ const app = express();
 const port = process.env.PORT;
 const host = process.env.HOST;
 
-const corsOptions = {
-    // origin: "http://localhost:8081"
-};
+// const corsOptions = {
+//     origin: "http://localhost:8081"
+// };
 
-app.use(cors(corsOptions)); //enable CORS requests from http://localhost:8081
+app.use(cors()); //enable CORS requests from http://localhost:8081
 app.use(express.json()); //enable parsing JSON body data
 
 // root route -- /api/
@@ -29,4 +29,4 @@ app.use('/Lumiere/desafios', require('./routes/desafios.routes.js'))
 app.get('*', function (req, res) {
     res.status(404).json({ message: 'WHAT???' });
 })
-app.listen(port, () => console.log(`App listening at http://${host}:${port}/Lumiere`));
+app.listen(port, host, () => console.log(`App listening at http://${host}:${port}/Lumiere`));
