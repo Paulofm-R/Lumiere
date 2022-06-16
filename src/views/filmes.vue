@@ -10,8 +10,8 @@
                 <b-col cols='2'>
                     <select name="selectFiltro" id="selectFiltro" v-model="filtroCategoria">
                         <option value="" selected>Todos</option>
-                        <option v-for="(categoria, index) in categoriasOrdenadasSelect" :key="index" :value="categoria">
-                            {{ categoria }}</option>
+                        <option v-for="(categoria, index) in categoriasOrdenadasSelect" :key="index" :value="categoria.categoria">
+                            {{ categoria.categoria }}</option>
                     </select>
                 </b-col>
             </b-row>
@@ -24,7 +24,7 @@
                 <h2>Melhor Avaliados Filmes</h2>
                 <b-col cols="2" class="catalogoMelhorAvaliados" v-for="(filme, index) in melhorFilmesAvaliadosOrdenados"
                     :key="index">
-                    <div class="card" @click="escolherFilme(filme.nome)">
+                    <div class="card" @click="escolherFilme(filme._id)">
                         <img :src="filme.imagem" alt="Poster">
                         <span>{{ filme.nome }}</span>
                         <span>{{ filme.avaliacao }} <b-icon icon="star-fill"></b-icon></span>
@@ -37,7 +37,7 @@
                 <h2>Melhor Avaliados Series</h2>
                 <b-col cols="2" class="catalogoMelhorAvaliados" v-for="(serie, index) in melhorSeriesAvaliadosOrdenados"
                     :key="index">
-                    <div class="card" @click="escolherFilme(serie.nome)">
+                    <div class="card" @click="escolherFilme(serie._id)">
                         <img :src="serie.imagem" alt="Poster">
                         <span>{{ serie.nome }}</span>
                         <span>{{ serie.avaliacao }} <b-icon icon="star-fill"></b-icon></span>
@@ -48,16 +48,16 @@
 
             <div>
                 <b-row class="filmesCategorias" v-for="(categoria, index) in categoriasOrdenadas" :key="index">
-                    <div v-if="filmesCatalogo(categoria).length > 0">
-                        <h2>{{ categoria }}</h2>
+                    <div v-if="filmesCatalogo(categoria.categoria).length > 0">
+                        <h2>{{ categoria.categoria }}</h2>
                         <div class="carouselFilmes" ref="carousel">
-                            <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria)"
+                            <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria.categoria)"
                                 :key="index">
                                 <b-img :src="filme.imagem" alt="Poster" class="poster"
-                                    @click="escolherFilme(filme.nome)"></b-img>
+                                    @click="escolherFilme(filme._id)"></b-img>
                             </b-col>
                         </div>
-                        <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_esquerda"
+                        <b-button v-if="filmesCatalogo(categoria.categoria).length > 5" class="setas seta_esquerda"
                             @click="andarEsquerda(index)">
                             <b-icon icon="arrow-left-square"></b-icon>
                         </b-button>
@@ -79,25 +79,12 @@ export default {
     name: 'PaginaFilmes',
     data() {
         return {
-            form: {
-                nome: '',
-                ano: 1895,
-                realizador: '',
-                produtora: '',
-                elenco: '',
-                categorias: [''],
-                tipo: '',
-                imagem: '',
-                trailer: '',
-                sinopse: '',
-            },
             txtNomeFilme: '',
             filtroCategoria: '',
-            novaCategoria: '',
 
             message: "",
-            loading: false,
-            filmes: null,
+            filmes: [],
+            categorias: [],
         }
     },
 
@@ -105,7 +92,7 @@ export default {
         ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
 
         melhorFilmesAvaliadosOrdenados() {
-            const filmesOrdenados = this.getFilmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
+            const filmesOrdenados = this.filmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
             // Selecionar os 3 mais avaliados
             let filmesMelhoresAvaliados = []
@@ -124,7 +111,7 @@ export default {
         },
 
         melhorSeriesAvaliadosOrdenados() {
-            const seriesOrdenados = this.getFilmes.filter((serie) => serie.tipo == 'Serie' && (serie.nome.includes(this.txtNomeFilme) || serie.elenco.find((ator) => ator === this.txtNomeFilme)) && (serie.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
+            const seriesOrdenados = this.filmes.filter((serie) => serie.tipo == 'Serie' && (serie.nome.includes(this.txtNomeFilme) || serie.elenco.find((ator) => ator === this.txtNomeFilme)) && (serie.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
 
             // Selecionar os 3 mais avaliados
             let seriesMelhoresAvaliados = []
@@ -143,101 +130,46 @@ export default {
         },
 
         categoriasOrdenadasSelect() {
-            return this.getCategoria.slice(0).sort(this.ordenarAlfabeticaCategoria);
+            return this.categorias.slice(0).sort(this.ordenarAlfabeticaCategoria);
         },
 
         categoriasOrdenadas() {
-            return this.getCategoria.filter((categorias) => categorias == this.filtroCategoria || this.filtroCategoria == '').slice(0).sort(this.ordenarAlfabeticaCategoria);
+            return this.categorias.filter((categorias) => categorias.categoria == this.filtroCategoria || this.filtroCategoria == '').slice(0).sort(this.ordenarAlfabeticaCategoria);
         },
     },
 
     methods: {
         ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME']),
 
-        async handleGetFilmes() {
-            this.loading = true;
+        async getListaFilmes() {
             try {
-                this.filmes = await this.$store.getters.getFilmes;
-                console.log(this.filmes)
+                await this.$store.dispatch("getAllFilmes");
+                this.filmes = this.getFilmes;
             }
             catch (error) {
-                this.message = (error.response && error.response.data) || error.message || error.toString();
-            } finally {
-                this.loading = false;
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
             }
         },
 
-        novaCategoriaModal() {
-            if (this.form.categorias.find((categoria) => categoria == 'Outros')) {
-                this.$refs['novaCategoriaModal'].show()
+        async getListaCategorias() {
+            try {
+                await this.$store.dispatch("getAllCategorias");
+                this.categorias = this.getCategoria;
+            }
+            catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
             }
         },
 
-        NovaCategoria() {
-            if (this.novaCategoria.length != 0) {
-                if (this.isCategoriaAvailable(this.novaCategoria)) {
-                    this.SET_NOVA_CATEGORIA(this.novaCategoria)
-                    this.$refs['novaCategoriaModal'].hide()
-                }
-                else {
-                    alert('Esse categoria já existe')
-                }
-            }
-        },
-
-        adicionarFilme() {
-            let confimarNovoFilme = true
-
-            for (let i in this.form) {
-                if (this.form[i].length === 0) {
-                    confimarNovoFilme = false;
-                    break;
-                }
-            }
-            for (let i of this.form.categorias) {
-                if (i.length === 0 || i == 'Outros') {
-                    confimarNovoFilme = false;
-                    break;
-                }
-            }
-
-            if (confimarNovoFilme) {
-                if (this.isNomeFilmeAvalido(this.form.nome)) {
-                    let realizador = this.form.realizador.split(',');
-                    let elenco = this.form.elenco.split(',');
-                    let trailer = this.form.trailer.replace('watch?v=', 'embed/');
-
-                    let novoFilme = {
-                        nome: this.form.nome,
-                        imagem: this.form.imagem,
-                        trailer: trailer,
-                        tipo: this.form.tipo,
-                        categoria: this.form.categorias,
-                        ano: this.form.ano,
-                        realizador: realizador,
-                        produtora: this.form.produtora,
-                        elenco: elenco,
-                        sinopse: this.form.sinopse,
-                        avaliacao: 0,
-                        nAvaliacoes: 0,
-                        comentarios: [],
-                    };
-
-                    this.SET_NOVO_FILME(novoFilme);
-                    this.escolherFilme(this.form.nome)
-                }
-                else {
-                    alert('Já existe um filme com esse nome')
-                }
-            }
-            else {
-                alert('Informação em falta ou invalida!')
-            }
-        },
-
-        escolherFilme(nome) {
-            this.SET_FILME(nome);
-            this.$router.push({ name: "filme", params: { filmeNome: nome } });
+        escolherFilme(id) {
+            // this.SET_FILME(id);
+            this.$router.push({ name: "filme", params: { filmeID: id } });
         },
 
         compararAvaliacoes(filmeA, filmeB) {
@@ -247,8 +179,8 @@ export default {
         },
 
         ordenarAlfabeticaCategoria(categoriaA, categoriaB) {
-            if (categoriaA < categoriaB) return -1;
-            else if (categoriaA > categoriaB) return 1;
+            if (categoriaA.categoria < categoriaB.categoria) return -1;
+            else if (categoriaA.categoria > categoriaB.categoria) return 1;
             else return 0;
         },
 
@@ -259,7 +191,7 @@ export default {
         },
 
         filmesCatalogo(cat) {
-            return this.getFilmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat) && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme))).sort(this.ordenarAlfabeticaFilmes);
+            return this.filmes.filter((filme) => filme.categoria.find((categoria) => categoria == cat) && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme))).sort(this.ordenarAlfabeticaFilmes);
         },
 
         andarEsquerda(index) {
@@ -270,6 +202,11 @@ export default {
             this.$refs.carousel[index].scrollBy(300, 0)
         },
 
+    },
+
+    mounted() {
+        this.getListaFilmes();
+        this.getListaCategorias();
     },
 }
 </script>

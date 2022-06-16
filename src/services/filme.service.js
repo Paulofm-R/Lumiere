@@ -32,10 +32,11 @@ export const FilmeService = {
     async fetchAllFilmes() {
         const response = await fetch(`${API_URL}/filmes`, {
             method: "GET",
+            headers: filmeHeader()
         });
         if (response.ok) {
             let data = await response.json();
-            return data.filmes;
+            return data.filme;
         }
         else {
             throw Error(handleResponses(response.status));

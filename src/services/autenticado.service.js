@@ -1,7 +1,7 @@
 import API_URL from './config.js'
 
 export const AutenticadoService = {
-    async login(utilizador) { // payload = user (username + password)
+    async login(utilizador) { // payload = utilizador (nome + palavra-passe)
         const response = await fetch(`${API_URL}/utilizadores/login`, {
             method: "POST",
             headers: {
@@ -27,6 +27,7 @@ export const AutenticadoService = {
     },
 
     async register(utilizador) {
+        console.log(utilizador);
         const response = await fetch(`${API_URL}/utilizadores`, {
             method: "POST",
             headers: {
@@ -35,14 +36,8 @@ export const AutenticadoService = {
             body:
                 JSON.stringify({
                     nome: utilizador.nome,
-                    palavra_passe: utilizador.password,
-                    foto:'',
-                    tipo:'utilizador',
-                    favoritos:[],
-                    lista:[],
-                    numJogos:0,
-                    desafios:[],
-                    desafiosConcluidos:[]
+                    palavra_passe: utilizador.palavra_passe,
+                    data_nascimento: utilizador.data_nascimento
                 })
         });
         if (response.ok) {
@@ -53,7 +48,6 @@ export const AutenticadoService = {
         }
     }
 }
-
 
 function handleResponses(code) {
     let message = "";

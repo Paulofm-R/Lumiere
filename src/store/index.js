@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import { UtilizadorService } from '@/services/utilizador.service';
-import { AutenticadoService } from '@/services/autenticado.service';
+import { AutenticadoService } from '../services/autenticado.service';
 import { FilmeService } from '@/services/filme.service';
 import { JogoService } from '@/services/jogos.service';
 import { CategoriaService } from '@/services/categorias.service';
@@ -26,22 +26,7 @@ export default new Vuex.Store({
     tipoJogo: ['Quizz', 'Preencher', 'Lista'],
 
     // Filmes
-    filmes: [{ 
-      nome: 'Ant-Man and the Wasp (2019)',
-      imagem: 'https://m.media-amazon.com/images/M/MV5BYjcyYTk0N2YtMzc4ZC00Y2E0LWFkNDgtNjE1MzZmMGE1YjY1XkEyXkFqcGdeQXVyMTMxODk2OTU@._V1_FMjpg_UX1000_.jpg',
-      trailer: 'https://www.youtube.com/embed/UUkn-enk2RU',
-      tipo: 'Filme',
-      categoria: ['Ação', 'Aventura', 'Comédia'],
-      ano: 2019,
-      realizador: ['Peyton Reed'],
-      produtora: 'Marvel Studios',
-      elenco: ['Paul Rudd', 'Evangeline Lilly', 'Michael Peña'],
-      sinopse: 'Enquanto Scott Lang equilibra ser um super-herói e um pai, Hope van Dyne e Dr. Hank Pym apresentam uma nova missão urgente que encontra o Homem-Formiga lutando ao lado da Vespa para descobrir segredos de seu passado.',
-      classificacao: 'M/12',
-      avaliacao: 3.5,
-      nAvaliacoes: 6,
-      comentarios: [],
-    }],
+    filmes: [],
     filme: null,
 
     // Categorias
@@ -291,6 +276,8 @@ export default new Vuex.Store({
     isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.palavra_passe === palavra_passe),
     isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
     getUtilizadores: (state) => state.utilizadores,
+    getUtilizador: (state) => state.utilizador,
+    getLoggedIn: (state) => state.loggedIn,
     getLoggedUser: (state) => state.loggedUser,
 
     // Jogos
@@ -300,6 +287,7 @@ export default new Vuex.Store({
 
     // Filmes
     getFilmes: (state) => state.filmes,
+    getFilme: (state) => state.filme,
     isNomeFilmeAvalido: (state) => (nome) => state.filmes.every((filme) => filme.nome !== nome),
 
     getCategoria: (state) => state.categorias,
@@ -504,7 +492,7 @@ export default new Vuex.Store({
     async login({ commit }, utilizador) {
       try {
         const loggedUser = await AutenticadoService.login(utilizador);
-        commit('loginSuccess', loggedUser);
+        commit('SET_LOGGED_USER', loggedUser);
       }
       catch (error) {
         commit('loginFailure');
@@ -515,10 +503,10 @@ export default new Vuex.Store({
     async getAllUtilizadores({ commit }) {
       try {
         const utilizadores = await UtilizadorService.fetchAllUtilizadores();
-        commit('SET_Utilizadores', utilizadores);
+        commit('SET_UTILIZADORES', utilizadores);
       }
       catch (error) {
-        commit('SET_Utilizadores', []);
+        commit('SET_UTILIZADORES', []);
         commit("SET_MESSAGE", error);
         throw error; // Needed to continue propagating the error
       }
@@ -527,10 +515,11 @@ export default new Vuex.Store({
     async getUtilizador({ commit }, id) {
       try {
         const utilizador = await UtilizadorService.fetchOneUtilizadorByID(id);
-        commit('SET_Utilizador', utilizador);
+        console.log(utilizador);
+        commit('SET_UTILIZADOR', utilizador);
       }
       catch (error) {
-        commit('SET_Utilizador', null);
+        commit('SET_UTILIZADOR', null);
         commit("SET_MESSAGE", error);
         throw error; // Needed to continue propagating the error
       }
@@ -612,10 +601,10 @@ export default new Vuex.Store({
     async getAllFilmes({ commit }) {
       try {
         const filmes = await FilmeService.fetchAllFilmes();
-        commit('SET_Filmes', filmes);
+        commit('SET_FILMES', filmes);
       }
       catch (error) {
-        commit('SET_Filmes', []);
+        commit('SET_FILMES', []);
         commit("SET_MESSAGE", error);
         throw error; // Needed to continue propagating the error
       }

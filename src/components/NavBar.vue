@@ -87,9 +87,9 @@
         <router-view />
       </b-row>
 
-      <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+      <!-- <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
         {{ message }}
-      </div>
+      </div> -->
     </b-container>
   </div>
 </template>
@@ -128,7 +128,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getMessage", 'isUser', 'isUsernameAvailable', 'getLoggedUser']),
+    ...mapGetters(["getMessage", 'isUser', 'isUsernameAvailable', 'getLoggedUser', 'getLoggedIn']),
   },
 
   methods: {
@@ -138,7 +138,7 @@ export default {
       this.errors = [];
       if (this.utilizador.nome && this.utilizador.palavra_passe) {
         try {
-          await this.$stote.dispatch("login", this.utilizador);
+          await this.$store.dispatch("login", this.utilizador);
           this.$refs['loginModal'].hide()
         }
         catch (error) {
@@ -162,7 +162,7 @@ export default {
       this.message = "";
       this.successful = false;
       this.errors = [];
-
+    
       if (this.novoUtilizador.nome && this.novoUtilizador.palavra_passe && this.novoUtilizador.data_nascimento) {
         if (this.novoUtilizador.palavra_passe == this.cpalavra_passe) {
           //makes request by dispatching an action
@@ -170,6 +170,7 @@ export default {
             await this.$store.dispatch("register", this.novoUtilizador /*formData*/);
             this.message = this.getMessage;
             this.successful = true;
+            this.$refs['registarModal'].hide()
           } catch (error) {
             this.message =
               (error.response && error.response.data) ||
@@ -202,30 +203,30 @@ export default {
     //   }
     // },
 
-    registar() {
-      if (this.nome != '', this.palavra_passe != '', this.data_nascimento != '') {
-        if (this.isUsernameAvailable(this.nome)) {
-          let novoUser = {
-            nome: this.nome,
-            palavra_passe: this.palavra_passe,
-            data_nascimento: this.data_nascimento,
-            foto: './image/User.svg',
-            tipo: 'utilizador',
-          }
-          if (this.palavra_passe == this.cpalavra_passe) {
-            this.SET_NEW_USER(novoUser);
-            this.SET_LOGGED_USER(this.nome);
-            this.loggedUser = novoUser
-            this.$refs['registarModal'].hide()
-          } else {
-            alert('ERROR')
-          }
+    // registar() {
+    //   if (this.nome != '', this.palavra_passe != '', this.data_nascimento != '') {
+    //     if (this.isUsernameAvailable(this.nome)) {
+    //       let novoUser = {
+    //         nome: this.nome,
+    //         palavra_passe: this.palavra_passe,
+    //         data_nascimento: this.data_nascimento,
+    //         foto: './image/User.svg',
+    //         tipo: 'utilizador',
+    //       }
+    //       if (this.palavra_passe == this.cpalavra_passe) {
+    //         this.SET_NEW_USER(novoUser);
+    //         this.SET_LOGGED_USER(this.nome);
+    //         this.loggedUser = novoUser
+    //         this.$refs['registarModal'].hide()
+    //       } else {
+    //         alert('ERROR')
+    //       }
 
-        } else {
-          alert('User Already Exists')
-        }
-      }
-    },
+    //     } else {
+    //       alert('User Already Exists')
+    //     }
+    //   }
+    // },
 
     logout() {
       this.SET_LOGOUT(this.loggedUser)

@@ -2,29 +2,36 @@
     <div>
         <b-container fluid>
             <h2>
-                {{filme.nome}}
-                <b-button v-if="getLoggedUser && getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>Remover</b-button>
+                {{ filme.nome }}
+                <b-button v-if="getLoggedUser && getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>
+                    Remover</b-button>
             </h2>
-            <span id="classificacaoFilme">{{filme.classificacao}}</span>
+            <span id="classificacaoFilme">{{ filme.classificacao }}</span>
             <div id="anexosFilme">
                 <img :src="filme.imagem" id="imgFilme">
-                <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen id="trailer"></iframe>
+                <iframe width="560" height="315" :src="filme.trailer" title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen id="trailer"></iframe>
             </div>
             <b-col cols="6">
                 <div id="filmeAvaliacaoFavoritos">
-                    <a id="rate"><span>{{filme.avaliacao}}</span><b-icon icon="star-fill"></b-icon>/5.0</a>
+                    <a id="rate"><span>{{ filme.avaliacao }}</span>
+                        <b-icon icon="star-fill"></b-icon>/5.0
+                    </a>
                     <b-button @click="avaliarModal()" id="avaliar" variant="info">Avaliar</b-button>
-                    <b-button v-if="getLoggedUser !== null" @click="favoritos()" variant="info" id="favoritos">	&#9829; Adicionar aos favoritos</b-button>
-                    <b-button v-if="getLoggedUser !== null" @click="lista()" variant="info" id="lista">+ A minha lista</b-button>
+                    <b-button v-if="getLoggedUser !== null" @click="favoritos()" variant="info" id="favoritos"> &#9829;
+                        Adicionar aos favoritos</b-button>
+                    <b-button v-if="getLoggedUser !== null" @click="lista()" variant="info" id="lista">+ A minha lista
+                    </b-button>
                 </div>
-                <div class="infoFilme"> 
-                    <p><span>Sinopse: </span>{{filme.sinopse}}</p>
-                    <p><span>Ano: </span>{{filme.ano}}</p>
-                    <p><span>Realizador: </span><a class="infoFilme">{{realizador}}</a></p>
-                    <p><span>Produtora: </span><a class="infoFilme">{{filme.produtora}}</a></p>
-                    <p><span>Elenco: </span><a class="infoFilme">{{elenco}} </a></p>
-                    <p><span>Género: </span><a>{{categoria}} </a></p>
-                </div>    
+                <div class="infoFilme">
+                    <p><span>Sinopse: </span>{{ filme.sinopse }}</p>
+                    <p><span>Ano: </span>{{ filme.ano }}</p>
+                    <p><span>Realizador: </span><a class="infoFilme">{{ realizador }}</a></p>
+                    <p><span>Produtora: </span><a class="infoFilme">{{ filme.produtora }}</a></p>
+                    <p><span>Elenco: </span><a class="infoFilme">{{ elenco }} </a></p>
+                    <p><span>Género: </span><a>{{ categoria }} </a></p>
+                </div>
             </b-col>
             <b-row>
                 <div id="zonaComentarios">
@@ -34,12 +41,14 @@
                         <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
                             <b-col cols="1" class='imagemSpoiler'>
                                 <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
-                                <input v-if="getLoggedUser !== null" @click='spoiler(comentario)' type="image" src="./image/spoiler.svg" class="botaoSpoiler">
+                                <input v-if="getLoggedUser !== null" @click='spoiler(comentario)' type="image"
+                                    src="./image/spoiler.svg" class="botaoSpoiler">
                             </b-col>
                             <b-col class="coment">
-                                <p id="username">{{comentario.utilizador}}</p>
-                                <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false" class="esconderSpoiler">VER SPOILER</b-button>
-                                <p id="comentarioUser">{{comentario.comentario}}</p>
+                                <p id="username">{{ comentario.utilizador }}</p>
+                                <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false"
+                                    class="esconderSpoiler">VER SPOILER</b-button>
+                                <p id="comentarioUser">{{ comentario.comentario }}</p>
                             </b-col>
                         </b-row>
                         <div id="comentarioUserFundo">
@@ -49,269 +58,282 @@
                 </div>
             </b-row>
 
-            <b-modal ref='avaliarModal' id="avaliarModal" centered
-                header-bg-variant="info"
-                header-text-variant="light"
-                body-bg-variant="light"
-                footer-bg-variant="light">
-                <template #modal-header="{close}">
+            <b-modal ref='avaliarModal' id="avaliarModal" centered header-bg-variant="info" header-text-variant="light"
+                body-bg-variant="light" footer-bg-variant="light">
+                <template #modal-header="{ close }">
                     <h4 class='modalTitulo'>AVALIAR</h4>
                     <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
                 <template>
-                  <form @submit.prevent = "avaliar">                   
-                    <div>
-                        <b-form-rating v-model="avaliacao"></b-form-rating>
-                    </div>
-                    <div>
-                        <p>Comentário:</p>
-                        <b-form-textarea id="textarea" v-model="comentario" placeholder="Seu comentario" rows="5"></b-form-textarea>
-                    </div>                
-                  </form>
+                    <form @submit.prevent="avaliar">
+                        <div>
+                            <b-form-rating v-model="avaliacao"></b-form-rating>
+                        </div>
+                        <div>
+                            <p>Comentário:</p>
+                            <b-form-textarea id="textarea" v-model="comentario" placeholder="Seu comentario" rows="5">
+                            </b-form-textarea>
+                        </div>
+                    </form>
                 </template>
                 <template #modal-footer>
                     <b-button id='avaliar' @click='avaliar()'>Avaliar</b-button>
                 </template>
-          </b-modal>
+            </b-modal>
 
-          <!-- Adicionado com sucesso -->
-          <b-modal ref='adicionadoSucesso' id="adicionadoSucesso"
-                header-bg-variant="info"
-                header-text-variant="light"
-                body-bg-variant="light"
-                footer-bg-variant="light">
-                <template #modal-header="{close}">
+            <!-- Adicionado com sucesso -->
+            <b-modal ref='adicionadoSucesso' id="adicionadoSucesso" header-bg-variant="info" header-text-variant="light"
+                body-bg-variant="light" footer-bg-variant="light">
+                <template #modal-header="{ close }">
                     <h4 class='modalTitulo'>Adicionado com sucesso</h4>
                     <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
                 <template>
-                  <p>O filme foi adicionado com sucesso a sua lista</p>
+                    <p>O filme foi adicionado com sucesso a sua lista</p>
                 </template>
-                <template #modal-footer="{close}">
+                <template #modal-footer="{ close }">
                     <b-button @click='close()'>Fechar</b-button>
                 </template>
-          </b-modal>
-            
+            </b-modal>
+
         </b-container>
-        
+
     </div>
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
-    export default {
-        name: 'PaginaFilme',
-        data() {
-            return {
-                filme: {},
-                avaliacao: '',
-                comentario: '',
-            }
-        },
-
-        computed: {
-            ...mapGetters(['getFilmes', 'getLoggedUser', 'getUtilizadores', 'isFilmeFavoritoValido', 'isFilmeListaValido']),
-
-            elenco(){
-                return this.filme.elenco.join(', ');
-            },
-
-            categoria(){
-                return this.filme.categoria.join(', ');
-            },
-            realizador(){
-                return this.filme.realizador.join(', ');
-            },
-
-            comentarios(){
-                return this.filme.comentarios;
-            }
-        },
-
-        
-        created () {
-            this.filme = this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
-        },
-
-        methods:{
-            ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA', 'SET_SPOILER', 'SET_REMOVER_FILME']),
-
-            avaliarModal(){
-                if(this.getLoggedUser != ''){
-                    this.$refs['avaliarModal'].show()
-                }
-                else{
-                    alert('É preciso autenticar primeiro!')
-                }
-            },
-
-            avaliar() {
-                if(this.avaliacao > 0){
-                    this.SET_NOVA_AVALIACAO(this.avaliacao)
-                }
-                if(this.comentario.length > 0){
-                    let novoComentario = {
-                        utilizador: this.getLoggedUser.nome,
-                        comentario: this.comentario,
-                        spoiler: false,
-                    }
-                    this.SET_NOVO_COMENTARIO(novoComentario)
-                }
-                this.$refs['avaliarModal'].hide()
-            },
-            favoritos() {
-                if(this.isFilmeFavoritoValido(this.filme.nome)){
-                    this.SET_NOVO_FAVORITO(this.filme.nome)
-                    this.$refs['adicionadoSucesso'].show()
-                }
-            },
-            lista() {
-                if(this.isFilmeListaValido(this.filme.nome)){
-                    this.SET_NOVA_LISTA(this.filme.nome)
-                    this.$refs['adicionadoSucesso'].show()
-                }
-            },
-
-            utilizadorFoto(nome){
-                let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
-                if(utilizador == undefined){
-                    return './image/User.svg'
-                }
-                else{
-                    return utilizador.foto
-                }
-            },
-
-            spoiler(comentario){
-                comentario.spoiler = comentario.spoiler == false ? true : false;
-                this.SET_SPOILER()
-            },
-
-            removerFilme(){
-                this.SET_REMOVER_FILME(this.filme.nome)
-                this.$router.push({ name: "filmes"});
-            }
+export default {
+    name: 'PaginaFilme',
+    data() {
+        return {
+            filme: null,
+            avaliacao: '',
+            comentario: '',
         }
-    }
+    },
 
-    
+    computed: {
+        ...mapGetters(['getFilmes', 'getFilme', 'getLoggedUser', 'getUtilizadores', 'isFilmeFavoritoValido', 'isFilmeListaValido']),
+
+        elenco() {
+            return this.filme.elenco.join(', ');
+        },
+
+        categoria() {
+            return this.filme.categoria.join(', ');
+        },
+        realizador() {
+            return this.filme.realizador.join(', ');
+        },
+
+        comentarios() {
+            return this.filme.comentarios;
+        }
+    },
+
+    methods: {
+        ...mapMutations(['SET_NOVO_COMENTARIO', 'SET_NOVA_AVALIACAO', 'SET_NOVO_FAVORITO', 'SET_NOVA_LISTA', 'SET_SPOILER', 'SET_REMOVER_FILME']),
+
+        async getFilmeInfo() {
+            try {
+                await this.$store.dispatch("getFilme", this.$route.params.filmeID);
+                this.filme = await this.getFilme.filme;
+
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
+        avaliarModal() {
+            if (this.getLoggedUser != '') {
+                this.$refs['avaliarModal'].show()
+            }
+            else {
+                alert('É preciso autenticar primeiro!')
+            }
+        },
+
+        avaliar() {
+            if (this.avaliacao > 0) {
+                this.SET_NOVA_AVALIACAO(this.avaliacao)
+            }
+            if (this.comentario.length > 0) {
+                let novoComentario = {
+                    utilizador: this.getLoggedUser.nome,
+                    comentario: this.comentario,
+                    spoiler: false,
+                }
+                this.SET_NOVO_COMENTARIO(novoComentario)
+            }
+            this.$refs['avaliarModal'].hide()
+        },
+        favoritos() {
+            if (this.isFilmeFavoritoValido(this.filme.nome)) {
+                this.SET_NOVO_FAVORITO(this.filme.nome)
+                this.$refs['adicionadoSucesso'].show()
+            }
+        },
+        lista() {
+            if (this.isFilmeListaValido(this.filme.nome)) {
+                this.SET_NOVA_LISTA(this.filme.nome)
+                this.$refs['adicionadoSucesso'].show()
+            }
+        },
+
+        utilizadorFoto(nome) {
+            let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
+            if (utilizador == undefined) {
+                return './image/User.svg'
+            }
+            else {
+                return utilizador.foto
+            }
+        },
+
+        spoiler(comentario) {
+            comentario.spoiler = comentario.spoiler == false ? true : false;
+            this.SET_SPOILER()
+        },
+
+        removerFilme() {
+            this.SET_REMOVER_FILME(this.filme.nome)
+            this.$router.push({ name: "filmes" });
+        }
+    },
+
+    mounted() {
+        this.getFilmeInfo();
+    },
+}
+
+
 </script>
 
 <style scoped>
-h2{
-    margin-top:3%;
-    margin-bottom:1.5%;
+h2 {
+    margin-top: 3%;
+    margin-bottom: 1.5%;
 }
 
-#classificacaoFilme{
+#classificacaoFilme {
     font-family: var(--font1);
     font-size: 10pt;
 }
 
-#anexosFilme{
+#anexosFilme {
     height: 325px;
 }
 
-#imgFilme{
+#imgFilme {
     position: relative;
     width: 10%;
     height: 65%;
     top: -13.5vh;
     z-index: 1;
 }
-#trailer{
+
+#trailer {
     position: relative;
-    left:-9.2vw;
+    left: -9.2vw;
 
 }
 
-#filmeAvaliacaoFavoritos{
+#filmeAvaliacaoFavoritos {
     margin-bottom: 8vh;
 }
 
-button{
+button {
     margin-left: 1%;
     margin-right: 0.5%;
     margin-bottom: 0.5%;
 }
-span{
+
+span {
     font-family: var(--font2);
     font-size: 20px;
 }
 
-input{
+input {
     width: 100%;
     height: 20vh;
 }
-#rate{
+
+#rate {
     position: relative;
-    top:-20%
+    top: -20%
 }
-#zonaComentarios{
+
+#zonaComentarios {
     width: 100%;
     height: 100%;
 }
 
-.comentario{
+.comentario {
     margin-top: 5vh;
 }
 
-.imagemUtilizador{
+.imagemUtilizador {
     width: 75px;
     height: 75px;
     border-radius: 50%;
 }
 
-#comentarioUser{
+#comentarioUser {
     font-family: var(--font1);
 }
-#comentarioUserFundo{
+
+#comentarioUserFundo {
     width: 95%;
     height: 15%;
     background-color: var(--cor0)
 }
-#username{
+
+#username {
     font-family: var(--font2);
     font-size: 18px;
-    color:white;
+    color: white;
 }
 
-.infoFilme{
+.infoFilme {
     text-decoration: none;
-    color:white;
+    color: white;
     font-family: var(--font1);
 }
 
-.modalTitulo{
-  margin: auto;
-  font-family: var(--font2);
-  color: white;
+.modalTitulo {
+    margin: auto;
+    font-family: var(--font2);
+    color: white;
 }
 
-.fecharModal{
-  position: absolute;
-  right: 5px;
-  top: 0px;
-  color: white;
+.fecharModal {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    color: white;
 }
 
-.imagemSpoiler{
+.imagemSpoiler {
     position: relative;
 }
 
-.botaoSpoiler{
+.botaoSpoiler {
     position: absolute;
     top: -10px;
     right: 25px;
     width: 30px;
 }
 
-.coment{
+.coment {
     position: relative;
 }
 
-.esconderSpoiler{
+.esconderSpoiler {
     position: absolute;
     left: -10px;
     top: 30px;
@@ -321,18 +343,18 @@ input{
     background-color: var(--cor2)
 }
 
-#removerFilme{
+#removerFilme {
     margin-left: 50px;
     background-color: var(--cor2);
     font-family: var(--font1);
-    width:100px;
+    width: 100px;
 }
 
-#removerFilme:hover{
+#removerFilme:hover {
     opacity: 90%;
 }
 
-#semComentarios{
+#semComentarios {
     font-family: var(--font1);
     text-align: center;
 }

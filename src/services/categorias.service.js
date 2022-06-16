@@ -7,7 +7,7 @@ export const CategoriaService = {
         });
         if (response.ok) {
             let data = await response.json();
-            return data.categorias;
+            return data.categoria;
         }
         else {
             throw Error(handleResponses(response.status));

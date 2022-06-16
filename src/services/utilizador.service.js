@@ -2,7 +2,7 @@ import API_URL from './config.js'
 
 function authHeader() {
     // checks Local Storage for user item
-    let utilizador = JSON.parse(localStorage.getItem('utilizadores'));
+    let utilizador = JSON.parse(localStorage.getItem('utilizador'));
 
     // if there is a logged user with accessToken (JWT)
     if (utilizador && utilizador.accessToken) {
@@ -23,8 +23,6 @@ export const UtilizadorService = {
         });
         if (response.ok) {
             let data = await response.json();
-            // console.log("USER SERVICE - fetch WELCOMING MESSAGE")
-            // console.log(data) // data = "Welcome to the TUTORIALS api"
             return data;
         }
         else
@@ -45,7 +43,7 @@ export const UtilizadorService = {
         }
     },
 
-    async fetchAllUtilizador() {
+    async fetchAllUtilizadores() {
         const response = await fetch(`${API_URL}/utilizadores`, {
             method: "GET",
             headers: authHeader()
