@@ -66,7 +66,7 @@
                                             id="selCategoriaFilme" @change="novaCategoriaModal">
                                             <option value="" selected disabled>Género Filme</option>
                                             <option v-for="(categoria, index) in categoriasOrdenadas" :key="index"
-                                                :value="categoria">{{ categoria }}</option>
+                                                :value="categoria">{{ categoria.categoria }}</option>
                                             <option value="Outros">Outros</option>
                                         </select>
                                         <b-button variant="outline" @click="form.categorias.pop()"
@@ -195,12 +195,13 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
+        ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable', 'getFilme','getMessage']),
 
         categoriasOrdenadas() {
-            console.log(this.categorias);
-            console.log('teste');
-            return this.categorias.slice(0).sort(this.ordenarAlfabeticaCategoria);
+            if (this.categorias !== null){
+                return this.categorias.slice(0).sort(this.ordenarAlfabeticaCategoria);
+            }
+            return ''
         },
     },
 
@@ -248,9 +249,8 @@ export default {
                 };
 
                 try {
-                    let novoFilmeID = await this.$store.dispatch("novoFilme", novoFilme);
-                    console.log(novoFilmeID);
-                    // this.$router.push({ name: "filme", params: { filmeID: this.form.nome } });
+                    await this.$store.dispatch("novoFilme", novoFilme);
+                    this.$router.push({ name: "filme", params: { filmeID: this.getFilme } });
                 } catch (error) {
                     this.message =
                         (error.response && error.response.data) ||
@@ -266,14 +266,26 @@ export default {
             try {
                 await this.$store.dispatch("getAllCategorias");
                 this.categorias = this.getCategoria;
-                console.log(this.categorias);
-                console.log('----');
             }
             catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
                     error.message ||
                     error.toString();
+            }
+        },
+
+        async NovaCategoria() {
+            if (this.novaCategoria.length != 0) {
+                try {
+                    await this.$store.dispatch("adicionarCategoria", this.novaCategoria);
+                    this.getListaCategorias();
+                    this.$refs['novaCategoriaModal'].hide()
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message || error.toString();
+                }
             }
         },
 
@@ -290,19 +302,6 @@ export default {
         novaCategoriaModal() {
             if (this.form.categorias.find((categoria) => categoria == 'Outros')) {
                 this.$refs['novaCategoriaModal'].show()
-            }
-        },
-
-        NovaCategoria() {
-            if (this.novaCategoria.length != 0) {
-                if (this.isCategoriaAvailable(this.novaCategoria)) {
-                    alert('ola')
-                    this.SET_CATEGORIAS(this.novaCategoria)
-                    this.$refs['novaCategoriaModal'].hide()
-                }
-                else {
-                    alert('Esse categoria já existe')
-                }
             }
         },
 

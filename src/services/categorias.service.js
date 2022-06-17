@@ -1,5 +1,20 @@
 import API_URL from './config.js'
 
+function authHeader() {
+    // checks Local Storage for user item
+    let utilizador = JSON.parse(localStorage.getItem('utilizador'));
+
+    // if there is a logged user with accessToken (JWT)
+    if (utilizador && utilizador.accessToken) {
+        // return HTTP authorization header for Node.js Express back-end
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + utilizador.accessToken
+        };
+    } else  //otherwise, return just header for content type
+        return { 'Content-Type': 'application/json' };
+}
+
 export const CategoriaService = {
     async fetchAllCategorias() {
         const response = await fetch(`${API_URL}/categorias`, {
@@ -17,12 +32,10 @@ export const CategoriaService = {
     async adicionarCategoria(categoria) {
         const response = await fetch(`${API_URL}/categorias`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
-                    categoria: categoria.categoria
+                    categoria: categoria
                 })
         });
         if (response.ok) {

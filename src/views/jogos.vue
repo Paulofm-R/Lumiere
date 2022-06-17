@@ -10,7 +10,7 @@
                         <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{ tipo }}</option>
                     </select>
                 </b-col>
-                <b-col v-if="getLoggedUser.tipo == 'admin'" cols="4" id="adminAcoes">
+                <b-col v-if="getLoggedUser.role == 'admin'" cols="4" id="adminAcoes">
                     <button v-if="!acaoAdmin" @click="acaoAdmin = true">Editar</button>
                     <button v-else v-b-modal="'adicionarJogoModal'">Adicionar</button>
                 </b-col>
@@ -18,10 +18,10 @@
             <b-row id="catalogoJogos">
                 <b-col cols="3" class="catalogoJogo" v-for="(jogo, index) in filtroTipoJogo" :key="index">
                     <div class="card jogo" @click='selecionarJogo(jogo._id)'>
-                        <b-button @click="removerJogo(jogo.nome)" v-if="acaoAdmin" class="remover" :class="jogo.nome">X
+                        <b-button @click.stop="removerJogo(jogo._id)" v-if="acaoAdmin" class="remover" :class="jogo.nome">X
                         </b-button>
-                        <b-icon icon="info-circle-fill" scale='1.5' variant="info"
-                            @click.stop="classificacao(jogo._id)" class="classificacao" :class="jogo.nome"></b-icon>
+                        <b-icon icon="info-circle-fill" scale='1.5' variant="info" @click.stop="classificacao(jogo._id)"
+                            class="classificacao" :class="jogo.nome"></b-icon>
                         <img :src="jogo.img">
                         <div class="nomeJogo">
                             <h4>{{ jogo.nome }}</h4>
@@ -62,7 +62,8 @@
                                     <select class="form-control" name="selectTipoJogo" id="selectTipoJogo"
                                         v-model="form.tipo" required>
                                         <option value="" disabled>--Selecione o tipo de jogo--</option>
-                                        <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{ tipo }}
+                                        <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{ tipo
+                                        }}
                                         </option>
                                     </select>
                                 </div>
@@ -71,10 +72,6 @@
                                     <input type="button" class="form-control" name="numQuestao" id="numQuestao"
                                         value="Inserir as questoes" @click="questoesJogo">
                                 </div>
-                                <!-- <div class="form-group">
-                                    <label for="txtAnexos">Anexos</label>
-                                    <input type="url" class="form-control" name="txtAnexos" id="txtAnexos" placeholder="Separadas por virgula">
-                                </div> -->
                             </b-form>
                         </b-col>
 
@@ -214,7 +211,7 @@ export default {
     },
 
     computed: {
-        ...mapGetters(['getJogos', 'getTipoJogo', 'isNomeJogoAvalido', 'getLoggedUser']),
+        ...mapGetters(['getJogos', 'getJogo', 'getTipoJogo', 'isNomeJogoAvalido', 'getLoggedUser']),
 
         filtroTipoJogo() {
             return this.getJogos.filter((jogo) => jogo.tipo == this.filtroTipo || this.filtroTipo == '')
@@ -224,7 +221,7 @@ export default {
     methods: {
         ...mapMutations(['SET_REMOVER_JOGO', 'SET_NOVO_JOGO', 'SET_JOGO']),
 
-        async getListaFilmes() {
+        async getListaJogos() {
             try {
                 await this.$store.dispatch("getAllJogos");
                 this.jogos = this.getJogos;
@@ -238,17 +235,7 @@ export default {
             }
         },
 
-        removerJogo(nome) {
-            if (confirm("Tens acerteza que queres remover este jogo?")) {
-                this.SET_REMOVER_JOGO(nome);
-            }
-        },
-
-        classificacao(id) {
-            this.$router.push({ name: "classificacao", params: { jogoID: id } })
-        },
-
-        adicionaJogo() {
+        async adicionaJogo() {
             let confirmarNovoJogo = true;
 
             for (let i in this.form) {
@@ -259,33 +246,88 @@ export default {
             }
 
             if (confirmarNovoJogo) {
-                if (this.isNomeJogoAvalido(this.form.nome)) {
-                    if (this.form.tipo == 'Preencher') {
-                        for (let i = 0; i < this.form.questoes.length; i++) {
-                            if (this.form.questoes[i].tipoAnexo == "Video") {
-                                this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
-                            }
+                if (this.form.tipo == 'Preencher') {
+                    for (let i = 0; i < this.form.questoes.length; i++) {
+                        if (this.form.questoes[i].tipoAnexo == "Video") {
+                            this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
                         }
                     }
-                    let novoJogo = {
-                        nome: this.form.nome,
-                        img: this.form.imagem,
-                        tipo: this.form.tipo,
-                        perguntas: this.form.questoes,
-                        classificacao: [],
-                    }
+                }
 
-                    this.SET_NOVO_JOGO(novoJogo);
-                    this.$router.push({ name: "jogo", params: { jogoNome: this.form.nome } });
+                let novoJogo = {
+                    nome: this.form.nome,
+                    img: this.form.imagem,
+                    tipo: this.form.tipo,
+                    perguntas: this.form.questoes,
+                    classificacao: [],
                 }
-                else {
-                    this.jogoExiste = true;
+                
+                try {
+                    await this.$store.dispatch("novoJogo", novoJogo);
+                    this.$router.push({ name: "jogo", params: { jogoID: this.getJogo } });
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message || error.toString();
                 }
-            }
-            else {
-                alert('Informação em falta ou invalida!')
             }
         },
+
+        async removerJogo(id) {
+            if (confirm("Tens acerteza que queres remover este jogo?")) {
+                try {
+                    await this.$store.dispatch("eliminarJogo", id);
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message ||
+                        error.toString();
+                }
+            }
+        },
+
+        classificacao(id) {
+            this.$router.push({ name: "classificacao", params: { jogoID: id } })
+        },
+
+        // adicionaJogo() {
+        // let confirmarNovoJogo = true;
+
+        // for (let i in this.form) {
+        //     if (this.form[i].length === 0) {
+        //         confirmarNovoJogo = false;
+        //         break;
+        //     }
+        // }
+
+        //     if (confirmarNovoJogo) {
+        //         if (this.isNomeJogoAvalido(this.form.nome)) {
+        // if (this.form.tipo == 'Preencher') {
+        //     for (let i = 0; i < this.form.questoes.length; i++) {
+        //         if (this.form.questoes[i].tipoAnexo == "Video") {
+        //             this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
+        //         }
+        //     }
+        // }
+        // let novoJogo = {
+        //     nome: this.form.nome,
+        //     img: this.form.imagem,
+        //     tipo: this.form.tipo,
+        //     perguntas: this.form.questoes,
+        //     classificacao: [],
+        // }
+
+        //             this.SET_NOVO_JOGO(novoJogo);
+        //             this.$router.push({ name: "jogo", params: { jogoNome: this.form.nome } });
+        //         }
+        //         else {
+        //             this.jogoExiste = true;
+        //         }
+        //     }
+        //     else {
+        //         alert('Informação em falta ou invalida!')
+        //     }
+        // },
 
         selecionarJogo(id) {
             this.SET_JOGO(id)
@@ -328,7 +370,7 @@ export default {
     },
 
     mounted() {
-        this.getListaFilmes();
+        this.getListaJogos();
     },
 }
 </script>

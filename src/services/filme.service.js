@@ -1,14 +1,15 @@
 import API_URL from './config.js'
 
-function filmeHeader() {
-    // verifica o armazenamento local para o item do Filme
-    let filme = JSON.parse(localStorage.getItem('filme'));
+function authHeader() {
+    // checks Local Storage for user item
+    let utilizador = JSON.parse(localStorage.getItem('utilizador'));
 
     // if there is a logged user with accessToken (JWT)
-    if (filme) {
+    if (utilizador && utilizador.accessToken) {
         // return HTTP authorization header for Node.js Express back-end
         return {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + utilizador.accessToken
         };
     } else  //otherwise, return just header for content type
         return { 'Content-Type': 'application/json' };
@@ -18,7 +19,6 @@ export const FilmeService = {
     async fetchOneFilmeByID(id) {
         const response = await fetch(`${API_URL}/filmes/${id}`, {
             method: "GET",
-            headers: filmeHeader()
         });
         if (response.ok) {
             let data = await response.json();
@@ -32,7 +32,6 @@ export const FilmeService = {
     async fetchAllFilmes() {
         const response = await fetch(`${API_URL}/filmes`, {
             method: "GET",
-            headers: filmeHeader()
         });
         if (response.ok) {
             let data = await response.json();
@@ -46,9 +45,7 @@ export const FilmeService = {
     async adicionarFilme(filme) {
         const response = await fetch(`${API_URL}/filmes`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
                     nome: filme.nome,
@@ -75,9 +72,7 @@ export const FilmeService = {
     async eliminarFilme(id) {
         const response = await fetch(`${API_URL}/filmes/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader(),
         });
         if (response.ok) {
             const data = await response.json();
@@ -88,14 +83,14 @@ export const FilmeService = {
     },
 
     async addComentario(id, comentario) {
+        console.log('----');
+        console.log(comentario);
         const response = await fetch(`${API_URL}/filmes/${id}/comentarios`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
-                    utilizador: comentario.utilizadorID,
+                    utilizadorID: comentario.utilizador,
                     comentario: comentario.comentario
                 })
         });
@@ -107,15 +102,13 @@ export const FilmeService = {
         }
     },
 
-    async updateComentario(filmeID, comentarioID ,comentario) {
+    async updateComentario(filmeID, comentarioID, comentario) {
         const response = await fetch(`${API_URL}/filmes/${filmeID}/comentarios/${comentarioID}`, {
-            method: "PACTH",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            method: "PATCH",
+            headers: authHeader(),
             body:
                 JSON.stringify({
-                    spoiler: comentario.spoiler,
+                    spoiler: comentario,
                 })
         });
         if (response.ok) {
@@ -128,13 +121,11 @@ export const FilmeService = {
 
     async updateAvaliacao(id, avaliacao) {
         const response = await fetch(`${API_URL}/filmes/${id}/avaliacao`, {
-            method: "PACTH",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            method: "PATCH",
+            headers: authHeader(),
             body:
                 JSON.stringify({
-                    avaliacao: avaliacao.avaliacao,
+                    avaliacao: avaliacao,
                 })
         });
         if (response.ok) {
