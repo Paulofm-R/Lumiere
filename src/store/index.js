@@ -17,8 +17,8 @@ export default new Vuex.Store({
     // Utilizadores
     utilizadores: [],
     utilizador: null,
-    loggedIn: false,
-    loggedUser: null,
+    loggedIn: localStorage.utilizador ? true : false,
+    loggedUser: localStorage.utilizador ? JSON.parse(localStorage.utilizador) : null,
 
     // Jogos
     jogos: [],
@@ -282,6 +282,7 @@ export default new Vuex.Store({
 
     // Jogos
     getJogos: (state) => state.jogos,
+    getJogo: (state) => state.jogo,
     isNomeJogoAvalido: (state) => (nome) => state.jogos.every((jogo) => jogo.nome !== nome),
     getTipoJogo: (state) => state.tipoJogo,
 
@@ -515,8 +516,8 @@ export default new Vuex.Store({
     async getUtilizador({ commit }, id) {
       try {
         const utilizador = await UtilizadorService.fetchOneUtilizadorByID(id);
-        console.log(utilizador);
         commit('SET_UTILIZADOR', utilizador);
+        console.log(utilizador);
       }
       catch (error) {
         commit('SET_UTILIZADOR', null);

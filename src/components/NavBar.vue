@@ -11,8 +11,8 @@
           <router-link class="link" :to="{ name: 'sobreNos' }">Sobre Nós </router-link>
           <b-button v-if="getLoggedUser === null" v-b-modal.loginModal id="entrar">ENTRAR</b-button>
           <router-link v-else class="link" :to="{ name: 'perfil' }">
-            <span id="nomeUtilizador">{{ getLoggedUser.nome }}</span>
-            <img :src="getLoggedUser.foto" id="imgPerfil">
+            <span id="nomeUtilizador">{{ loggedUtilizador.nome }}</span>
+            <img :src="loggedUtilizador.foto" id="imgPerfil">
           </router-link>
           <b-button v-if="getLoggedUser !== null" variant="outline-light" @click="logout()">
             <b-icon icon="door-open"></b-icon>
@@ -124,11 +124,13 @@ export default {
       message: "",
       successful: false,
       errors: [],
+
+      loggedUtilizador: null,
     }
   },
 
   computed: {
-    ...mapGetters(["getMessage", 'isUser', 'isUsernameAvailable', 'getLoggedUser', 'getLoggedIn']),
+    ...mapGetters(["getMessage", 'isUser', 'isUsernameAvailable', 'getLoggedUser', 'getLoggedIn', 'getUtilizador']),
   },
 
   methods: {
@@ -140,6 +142,7 @@ export default {
         try {
           await this.$store.dispatch("login", this.utilizador);
           this.$refs['loginModal'].hide()
+          this.getLoggedUserInfo();
         }
         catch (error) {
           this.message =
@@ -194,6 +197,21 @@ export default {
       }
     },
 
+    async getLoggedUserInfo() {
+            try {
+                let utilizador = await this.getLoggedUser
+                await this.$store.dispatch("getUtilizador", utilizador.id);
+                this.loggedUtilizador = await this.getUtilizador;
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            } finally {
+                this.loading = false;
+            }
+        },
+
     // login() {
     //   if (this.isUser(this.nome, this.palavra_passe)) {
     //     this.SET_LOGGED_USER(this.nome);
@@ -242,6 +260,12 @@ export default {
       }
     }
   },
+
+  mounted(){
+      if(this.getLoggedUser !== null){
+        this.getLoggedUserInfo();
+      }
+    }
 }
 </script>
 

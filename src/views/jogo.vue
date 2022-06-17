@@ -64,7 +64,7 @@ import {mapGetters, mapMutations} from "vuex";
         name: 'PaginaJogo',
         data() {
             return {
-                jogo: {},
+                jogo: null,
                 respostasUtilizador: [],
                 respostasUtilizadorLista: '',
                 certas: 0,
@@ -72,11 +72,24 @@ import {mapGetters, mapMutations} from "vuex";
         },
 
         computed: {
-            ...mapGetters(['getLoggedUser', 'getJogos']),
+            ...mapGetters(['getLoggedUser', 'getJogos', 'getJogo']),
         },
 
         methods: {
             ...mapMutations(['SET_NOVA_CLASSIFICACAO', 'SET_DESAFIO']),
+
+            async getJogoInfo() {
+            try {
+                await this.$store.dispatch("getJogo", this.$route.params.jogoID);
+                this.jogo = await this.getJogo.jogo;
+
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
 
             selecionar(alternativa, index){
                 this.respostasUtilizador[index] = alternativa
@@ -125,9 +138,12 @@ import {mapGetters, mapMutations} from "vuex";
             }
         },
 
-        created () {
-            this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
-            this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
+        // created () {
+        //     this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
+        //     this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
+        // },
+        mounted() {
+            this.getJogoInfo();
         },
     }
 </script>

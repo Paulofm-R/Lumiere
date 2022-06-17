@@ -1,14 +1,15 @@
 import API_URL from './config.js'
 
-function jogoHeader() {
-    // verifica o armazenamento local para o item do Jogo
-    let jogo = JSON.parse(localStorage.getItem('jogo'));
+function authHeader() {
+    // checks Local Storage for user item
+    let utilizador = JSON.parse(localStorage.getItem('utilizador'));
 
     // if there is a logged user with accessToken (JWT)
-    if (jogo) {
+    if (utilizador && utilizador.accessToken) {
         // return HTTP authorization header for Node.js Express back-end
         return {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + utilizador.accessToken
         };
     } else  //otherwise, return just header for content type
         return { 'Content-Type': 'application/json' };
@@ -18,7 +19,7 @@ export const JogoService = {
     async fetchOneJogosByID(id) {
         const response = await fetch(`${API_URL}/jogos/${id}`, {
             method: "GET",
-            headers: jogoHeader()
+            headers: authHeader()
         });
         if (response.ok) {
             let data = await response.json();
@@ -32,10 +33,11 @@ export const JogoService = {
     async fetchAllJogos() {
         const response = await fetch(`${API_URL}/jogos`, {
             method: "GET",
+            headers: authHeader()
         });
         if (response.ok) {
             let data = await response.json();
-            return data.jogos;
+            return data.jogo;
         }
         else {
             throw Error(handleResponses(response.status));
@@ -82,10 +84,11 @@ export const JogoService = {
     async fetchAllClassificacoes(id) {
         const response = await fetch(`${API_URL}/jogos/${id}/classificacao`, {
             method: "GET",
+            headers: authHeader()
         });
         if (response.ok) {
             let data = await response.json();
-            return data.jogos.classificacao;
+            return data.jogo;
         }
         else {
             throw Error(handleResponses(response.status));
