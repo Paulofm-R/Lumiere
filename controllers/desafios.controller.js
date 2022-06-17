@@ -41,7 +41,6 @@ exports.findAll = async (req, res) => {
         let data = await Desafio
             .find()
             .exec();
-        console.log(data);
         res.status(200).json({ success: true, desafio: data });
     }
     catch (err) {

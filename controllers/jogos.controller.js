@@ -44,7 +44,6 @@ exports.findAll = async (req, res) => {
 
     // build REGEX to filter tutorials titles with a sub-string - i will do a case insensitive match 
     let condition = tipo ? { tipo: new RegExp(tipo, 'i') } : {};
-
     try {
         let data = await Jogo
             .find(condition)

@@ -25,7 +25,6 @@ exports.create = async (req, res) => {
 
     try {
         await utilizador.save(); // save Utilizador in the database
-        console.log(utilizador)
         res.status(201).json({ success: true, msg: "Novo Utilizador criado.", URL: `/utilizadores/${utilizador._id}` });
     }
     catch (err) {
