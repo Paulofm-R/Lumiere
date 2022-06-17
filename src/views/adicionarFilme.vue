@@ -16,7 +16,9 @@
                     <b-button v-if="form.trailer == ''" class="trailer" v-b-modal="'ficheirosModalTrailer'">Trailer do
                         Filme +</b-button>
                     <div v-else class="trailer">
-                        <b-button id="trocarTrailer" v-b-modal="'ficheirosModalTrailer'"><b-icon icon="arrow-left-right" aria-hidden="true"></b-icon></b-button>
+                        <b-button id="trocarTrailer" v-b-modal="'ficheirosModalTrailer'">
+                            <b-icon icon="arrow-left-right" aria-hidden="true"></b-icon>
+                        </b-button>
                         <iframe width="560" height="315" :src="form.trailer" title="YouTube video player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -64,7 +66,7 @@
                                             id="selCategoriaFilme" @change="novaCategoriaModal">
                                             <option value="" selected disabled>Género Filme</option>
                                             <option v-for="(categoria, index) in categoriasOrdenadas" :key="index"
-                                                :value="categoria">{{categoria}}</option>
+                                                :value="categoria">{{ categoria }}</option>
                                             <option value="Outros">Outros</option>
                                         </select>
                                         <b-button variant="outline" @click="form.categorias.pop()"
@@ -104,7 +106,7 @@
             <!--Modal para adicionar nova categoria-->
             <b-modal ref="novaCategoriaModal" id="novaCategoriaModal" size="sm" header-bg-variant="info"
                 body-bg-variant="light" footer-bg-variant="light" ok-only>
-                <template #modal-header="{close}">
+                <template #modal-header="{ close }">
                     <h4 class="modalTitulo">Nova Categoria</h4>
                     <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
                 </template>
@@ -121,7 +123,7 @@
             <!-- Poster -->
             <b-modal id="ficheirosModalPoster" header-bg-variant="info" body-bg-variant="light"
                 footer-bg-variant="light" ok-only>
-                <template #modal-header="{close}">
+                <template #modal-header="{ close }">
                     <b-col cols=11 class="modalTitulo">
                         <h4>Poster do Filme</h4>
                     </b-col>
@@ -133,7 +135,7 @@
                     <label for="urlImagemFilme">URL da imagem</label>
                     <b-form-input v-model="form.imagem" id="urlImagemFilme" type="url" class="mb-2"></b-form-input>
                 </template>
-                <template #modal-footer="{close}">
+                <template #modal-footer="{ close }">
                     <b-button variant="primary" @click="close">Guardar</b-button>
                 </template>
             </b-modal>
@@ -141,7 +143,7 @@
             <!-- Trailer -->
             <b-modal id="ficheirosModalTrailer" ref="ficheirosModalTrailer" header-bg-variant="info"
                 body-bg-variant="light" footer-bg-variant="light" ok-only>
-                <template #modal-header="{close}">
+                <template #modal-header="{ close }">
                     <b-col cols=11 class="modalTitulo">
                         <h4>Poster do Filme</h4>
                     </b-col>
@@ -163,147 +165,228 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 
-    export default {
-        name: 'AdicionarFilme',
-        data() {
-            return {
-                form: {
-                    nome: '',
-                    ano: 1895,
-                    realizador: '',
-                    produtora: '',
-                    elenco: '',
-                    categorias: [''],
-                    tipo: '',
-                    imagem: '',
-                    trailer: '',
-                    sinopse: '',
-                    classificacao: '',
-                },
-                trailerURL: '',
-                novaCategoria: '',
+export default {
+    name: 'AdicionarFilme',
+    data() {
+        return {
+            form: {
+                nome: '',
+                ano: 1895,
+                realizador: '',
+                produtora: '',
+                elenco: '',
+                categorias: [''],
+                tipo: '',
+                imagem: '',
+                trailer: '',
+                sinopse: '',
+                classificacao: '',
+            },
+
+            trailerURL: '',
+            novaCategoria: '',
+
+            categorias: null,
+            message: null,
+            erros: null,
+        }
+    },
+
+    computed: {
+        ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
+
+        categoriasOrdenadas() {
+            console.log(this.categorias);
+            console.log('teste');
+            return this.categorias.slice(0).sort(this.ordenarAlfabeticaCategoria);
+        },
+    },
+
+    methods: {
+        ...mapMutations(['SET_FILMES', 'SET_CATEGORIAS', 'SET_FILME']),
+
+        async adicionarFilme() {
+            this.message = "";
+            this.errors = [];
+            let confimarNovoFilme = true
+
+            for (let i in this.form) {
+                if (this.form[i].length === 0) {
+                    confimarNovoFilme = false;
+                    break;
+                }
+            }
+            for (let i of this.form.categorias) {
+                if (i.length === 0 || i == 'Outros') {
+                    confimarNovoFilme = false;
+                    break;
+                }
+            }
+
+            if (confimarNovoFilme) {
+                let realizador = this.form.realizador.split(',');
+                let elenco = this.form.elenco.split(',');
+                let trailer = this.form.trailer.replace('watch?v=', 'embed/');
+
+                let novoFilme = {
+                    nome: this.form.nome,
+                    imagem: this.form.imagem,
+                    trailer: trailer,
+                    tipo: this.form.tipo,
+                    categoria: this.form.categorias,
+                    ano: this.form.ano,
+                    realizador: realizador,
+                    produtora: this.form.produtora,
+                    elenco: elenco,
+                    sinopse: this.form.sinopse,
+                    classificacao: this.form.classificacao,
+                    avaliacao: 0,
+                    nAvaliacoes: 0,
+                    comentarios: [],
+                };
+
+                try {
+                    let novoFilmeID = await this.$store.dispatch("novoFilme", novoFilme);
+                    console.log(novoFilmeID);
+                    // this.$router.push({ name: "filme", params: { filmeID: this.form.nome } });
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message || error.toString();
+                }
+            }
+            else {
+                this.errors.push("Dados em falta ou invalidos, volta a confimar!");
             }
         },
 
-        computed: {
-            ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
-
-            categoriasOrdenadas(){
-                return this.getCategoria.slice(0).sort(this.ordenarAlfabeticaCategoria);
-            },
+        async getListaCategorias() {
+            try {
+                await this.$store.dispatch("getAllCategorias");
+                this.categorias = this.getCategoria;
+                console.log(this.categorias);
+                console.log('----');
+            }
+            catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
         },
 
-        methods:{
-            ...mapMutations(['SET_FILMES', 'SET_CATEGORIAS', 'SET_FILME']),
+        ordenarAlfabeticaCategoria(categoriaA, categoriaB) {
+            if (categoriaA.categoria < categoriaB.categoria) return -1;
+            else if (categoriaA.categoria > categoriaB.categoria) return 1;
+            else return 0;
+        },
 
-            ordenarAlfabeticaCategoria(categoriaA, categoriaB){
-                if (categoriaA < categoriaB) return -1;
-                else if (categoriaA > categoriaB) return 1;
-                else return 0;
-            },
+        addCategoria() {
+            this.form.categorias.push('')
+        },
 
-            addCategoria(){
-                this.form.categorias.push('')
-            },
+        novaCategoriaModal() {
+            if (this.form.categorias.find((categoria) => categoria == 'Outros')) {
+                this.$refs['novaCategoriaModal'].show()
+            }
+        },
 
-            novaCategoriaModal(){
-                if(this.form.categorias.find((categoria) => categoria == 'Outros')){
-                    this.$refs['novaCategoriaModal'].show()
+        NovaCategoria() {
+            if (this.novaCategoria.length != 0) {
+                if (this.isCategoriaAvailable(this.novaCategoria)) {
+                    alert('ola')
+                    this.SET_CATEGORIAS(this.novaCategoria)
+                    this.$refs['novaCategoriaModal'].hide()
                 }
-            },
-
-            NovaCategoria(){
-                if(this.novaCategoria.length != 0){
-                    if(this.isCategoriaAvailable(this.novaCategoria)){
-                        alert('ola')
-                        this.SET_CATEGORIAS(this.novaCategoria)
-                        this.$refs['novaCategoriaModal'].hide()
-                    }
-                    else{
-                        alert('Esse categoria já existe')
-                    }
+                else {
+                    alert('Esse categoria já existe')
                 }
-            },
+            }
+        },
 
-            trailerFilme(){
-                this.form.trailer = this.trailerURL.replace('watch?v=', 'embed/');
-                this.$refs['ficheirosModalTrailer'].hide()
-            },
+        trailerFilme() {
+            this.form.trailer = this.trailerURL.replace('watch?v=', 'embed/');
+            this.$refs['ficheirosModalTrailer'].hide()
+        },
 
-            adicionarFilme(){
-                let confimarNovoFilme = true
+        // adicionarFilme() {
+        //     let confimarNovoFilme = true
 
-                for (let i in this.form) {
-                    if(this.form[i].length === 0){
-                        confimarNovoFilme = false;
-                        break;
-                    }
-                }
-                for (let i of this.form.categorias){
-                    if(i.length === 0 || i == 'Outros'){
-                        confimarNovoFilme = false;
-                        break;
-                    }
-                }
+        // for (let i in this.form) {
+        //     if (this.form[i].length === 0) {
+        //         confimarNovoFilme = false;
+        //         break;
+        //     }
+        // }
+        // for (let i of this.form.categorias) {
+        //     if (i.length === 0 || i == 'Outros') {
+        //         confimarNovoFilme = false;
+        //         break;
+        //     }
+        // }
 
-                if(confimarNovoFilme){
-                    if(this.isNomeFilmeAvalido(this.form.nome)){
-                        let realizador = this.form.realizador.split(',');
-                        let elenco = this.form.elenco.split(',');
-                        let trailer = this.form.trailer.replace('watch?v=', 'embed/');
-    
-                        let novoFilme = {
-                            nome: this.form.nome,
-                            imagem: this.form.imagem,
-                            trailer: trailer,
-                            tipo: this.form.tipo,
-                            categoria: this.form.categorias,
-                            ano: this.form.ano,
-                            realizador: realizador,
-                            produtora: this.form.produtora,
-                            elenco: elenco,
-                            sinopse: this.form.sinopse,
-                            classificacao: this.form.classificacao,
-                            avaliacao: 0,
-                            nAvaliacoes: 0,
-                            comentarios: [],
-                        };
-    
-                        this.SET_FILMES(novoFilme);
-                        this.$router.push({ name: "filme", params:{ filmeNome: this.form.nome }});
-                    }
-                    else{
-                        alert('Já existe um filme com esse nome')
-                    }
-                }
-                else{
-                    alert('Informação em falta ou invalida!')
-                }
-            },
-        }
-    }
+        //     if (confimarNovoFilme) {
+        //         if (this.isNomeFilmeAvalido(this.form.nome)) {
+        // let realizador = this.form.realizador.split(',');
+        // let elenco = this.form.elenco.split(',');
+        // let trailer = this.form.trailer.replace('watch?v=', 'embed/');
 
-    
+        // let novoFilme = {
+        //     nome: this.form.nome,
+        //     imagem: this.form.imagem,
+        //     trailer: trailer,
+        //     tipo: this.form.tipo,
+        //     categoria: this.form.categorias,
+        //     ano: this.form.ano,
+        //     realizador: realizador,
+        //     produtora: this.form.produtora,
+        //     elenco: elenco,
+        //     sinopse: this.form.sinopse,
+        //     classificacao: this.form.classificacao,
+        //     avaliacao: 0,
+        //     nAvaliacoes: 0,
+        //     comentarios: [],
+        // };
+
+        //             this.SET_FILMES(novoFilme);
+        //             this.$router.push({ name: "filme", params: { filmeNome: this.form.nome } });
+        //         }
+        //         else {
+        //             alert('Já existe um filme com esse nome')
+        //         }
+        //     }
+        //     else {
+        //         alert('Informação em falta ou invalida!')
+        //     }
+        // },
+    },
+
+    mounted() {
+        this.getListaCategorias();
+    },
+}
+
+
 </script>
 
 <style scoped>
-h1{
+h1 {
     margin-top: 20px;
     margin-bottom: 5vh;
     text-align: center;
     font-family: var(--font2);
 }
 
-#nomeFilme{
-    margin-top:3%;
-    margin-bottom:2%;
+#nomeFilme {
+    margin-top: 3%;
+    margin-bottom: 2%;
     height: 45px;
     width: 250px;
 }
 
-#imgFilme{
+#imgFilme {
     position: relative;
     left: 1.2vw;
     top: 21.75vh;
@@ -312,7 +395,7 @@ h1{
     height: 210px;
 }
 
-.imgFilme{
+.imgFilme {
     width: 100%;
     height: 100%;
     background-color: white;
@@ -324,7 +407,7 @@ h1{
     bottom: 12.15vh;
 } */
 
-#trailer{
+#trailer {
     position: relative;
     left: 1vw;
     top: -10vw;
@@ -332,14 +415,14 @@ h1{
     height: 315px;
 }
 
-.trailer{
+.trailer {
     width: 100%;
     height: 100%;
     background-color: white;
     color: black;
 }
 
-#trocarTrailer{
+#trocarTrailer {
     position: absolute;
     right: -2px;
     width: 35px;
@@ -349,7 +432,7 @@ h1{
     border: 0px;
 }
 
-#trocarTrailer:hover{
+#trocarTrailer:hover {
     background-color: #565e64a2;
 }
 
@@ -367,17 +450,17 @@ h1{
     font-size: 13pt;
 }
 
-#selCategoriaFilme{
+#selCategoriaFilme {
     width: 200px !important;
 }
 
-.categoriaFilme{
+.categoriaFilme {
     position: relative;
     padding: 0;
-    padding-right:12px;
+    padding-right: 12px;
 }
 
-.categoriaFilme > .menosCategoria{
+.categoriaFilme>.menosCategoria {
     position: absolute;
     top: -18px;
     right: 2.5px;
@@ -388,46 +471,46 @@ h1{
     font-family: var(--font2);
 }
 
-#addCategoriaId{
+#addCategoriaId {
     position: relative;
     top: -3px;
 }
 
-#inputsInfFilme>div{
+#inputsInfFilme>div {
     margin-bottom: 5px;
 }
 
-button{
+button {
     margin-left: 1%;
     margin-right: 0.5%;
     margin-bottom: 0.5%;
 }
 
-span{
+span {
     font-family: var(--font2);
     font-size: 20px;
 }
 
-.infoFilme{
+.infoFilme {
     text-decoration: none;
-    color:white;
+    color: white;
     font-family: var(--font1);
 }
 
-.modalTitulo{
-  margin: auto;
-  font-family: var(--font2);
-  color: white;
+.modalTitulo {
+    margin: auto;
+    font-family: var(--font2);
+    color: white;
 }
 
-.fecharModal{
-  position: absolute;
-  right: 5px;
-  top: 0px;
-  color: white;
+.fecharModal {
+    position: absolute;
+    right: 5px;
+    top: 0px;
+    color: white;
 }
 
-#btnAdicionarFilme{
+#btnAdicionarFilme {
     margin-top: 25px;
     font-family: var(--font2);
     color: black;

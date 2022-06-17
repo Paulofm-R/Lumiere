@@ -10,13 +10,14 @@
                 <b-col cols='2'>
                     <select name="selectFiltro" id="selectFiltro" v-model="filtroCategoria">
                         <option value="" selected>Todos</option>
-                        <option v-for="(categoria, index) in categoriasOrdenadasSelect" :key="index" :value="categoria.categoria">
+                        <option v-for="(categoria, index) in categoriasOrdenadasSelect" :key="index"
+                            :value="categoria.categoria">
                             {{ categoria.categoria }}</option>
                     </select>
                 </b-col>
             </b-row>
 
-            <b-row v-if="getLoggedUser && getLoggedUser.tipo == 'admin'" id="adicionar">
+            <b-row v-if="loggedUtilizador && loggedUtilizador.tipo == 'admin'" id="adicionar">
                 <b-button id="botaoAdicionar" @click="$router.push({ name: 'adicionarFilme' })">ADICIONAR</b-button>
             </b-row>
 
@@ -51,8 +52,8 @@
                     <div v-if="filmesCatalogo(categoria.categoria).length > 0">
                         <h2>{{ categoria.categoria }}</h2>
                         <div class="carouselFilmes" ref="carousel">
-                            <b-col cols="2" class="filme card" v-for="(filme, index) in filmesCatalogo(categoria.categoria)"
-                                :key="index">
+                            <b-col cols="2" class="filme card"
+                                v-for="(filme, index) in filmesCatalogo(categoria.categoria)" :key="index">
                                 <b-img :src="filme.imagem" alt="Poster" class="poster"
                                     @click="escolherFilme(filme._id)"></b-img>
                             </b-col>
@@ -85,11 +86,13 @@ export default {
             message: "",
             filmes: [],
             categorias: [],
+
+            loggedUtilizador: null
         }
     },
 
     computed: {
-        ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido', 'isCategoriaAvailable']),
+        ...mapGetters(['getFilmes', 'getCategoria', 'getLoggedUser', 'isNomeFilmeAvalido', 'isCategoriaAvailable', 'getUtilizador']),
 
         melhorFilmesAvaliadosOrdenados() {
             const filmesOrdenados = this.filmes.filter((filme) => filme.tipo == 'Filme' && (filme.nome.includes(this.txtNomeFilme) || filme.elenco.find((ator) => ator === this.txtNomeFilme)) && (filme.categoria.find((categoria) => categoria == this.filtroCategoria) || this.filtroCategoria == '')).slice(0).sort(this.compararAvaliacoes);
@@ -140,6 +143,22 @@ export default {
 
     methods: {
         ...mapMutations(['SET_NOVO_FILME', 'SET_NOVA_CATEGORIA', 'SET_FILME']),
+
+        async getLoggedUserInfo() {
+            try {
+                let utilizador = await this.getLoggedUser
+                console.log(utilizador.id);
+                await this.$store.dispatch("getUtilizador", utilizador.id);
+                this.loggedUtilizador = await this.getUtilizador;
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            } finally {
+                this.loading = false;
+            }
+        },
 
         async getListaFilmes() {
             try {
@@ -207,6 +226,9 @@ export default {
     mounted() {
         this.getListaFilmes();
         this.getListaCategorias();
+        if (this.getLoggedUser !== null) {
+            this.getLoggedUserInfo();
+        }
     },
 }
 </script>
