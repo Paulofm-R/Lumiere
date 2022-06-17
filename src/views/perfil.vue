@@ -40,17 +40,17 @@
                 <div id="divDesafios">
                     <b-button id="adicionarDesafio" v-if="loggedUtilizador.tipo == 'admin'" v-b-modal.adicionarDesafio>
                         ADICIONAR</b-button>
-                    <div class='desafio' v-for="(desafio, index) in desafios" :key='index'>
+                    <div class='desafio' v-for="(desafio, index) in desafiosUtilizador" :key='index'>
                         <span>{{ desafio.nome }}</span>
-                        <b-progress :value="progressoDesafio" :max="desafio.nEtapas" show-value animated></b-progress>
+                        <b-progress :value="progressoDesafio" :max="desafiosUtilizador.nEtapas" show-value animated></b-progress>
                     </div>
                 </div>
             </b-col>
             <b-col cols="6">
                 <div id="divBadges">
                     <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="badge.imagem" alt="" width="35px"></div>
-                        <span>{{ badge.nome }}</span>
+                        <div><img :src="desafiosUtilizador.imagem" alt="" width="35px"></div>
+                        <span>{{ desafiosUtilizador.nome }}</span>
                     </div>
                 </div>
             </b-col>
@@ -212,6 +212,8 @@ export default {
             nomeUtilizador: '',
 
             loggedUtilizador: null,
+
+            desafiosUtilizador: null
         }
     },
 
@@ -219,7 +221,7 @@ export default {
         ...mapGetters(['getLoggedUser', 'getUtilizador', 'getUtilizadores', 'getDesafios', 'isDesafioAvailable']),
 
         desafios() {
-            let desafios = this.getDesafios.filter((desafio) => desafio.nEtapas > this.loggedUtilizador.numJogos).slice(0).sort(this.ordenarDesfios);
+            let desafios = this.desafiosUtilizador.filter((desafio) => desafio.nEtapas > this.loggedUtilizador.numJogos).slice(0).sort(this.ordenarDesfios);
             desafios = desafios.slice(0, 5);
             return desafios;
         },
@@ -237,7 +239,7 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL']),
+        ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL', 'SET_DESAFIOS','']),
 
         async getLoggedUserInfo() {
             try {
@@ -281,27 +283,73 @@ export default {
             }
         },
 
+        async getDesafiosLista() {
+            try {
+                await this.$store.dispatch("getAllDesafios");
+                this.desafiosUtilizador = this.getDesafios;
+            }
+            catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
+        async adicionarDesafio() {
+            this.message = "";
+            this.errors = [];
+            let confimarNovoDesafio = true
+
+            for (let i in this.formDesafio) {
+                if (this.formDesafio[i].length === 0) {
+                    confimarNovoDesafio = false;
+                    break;
+                }
+            }
+
+            if (confimarNovoDesafio) {
+                let novoDesafio = {
+                    nome: this.formDesafios.nome,
+                    nEtapas: 0,
+                    anexo: '',
+                };
+
+                try {
+                    await this.$store.dispatch("Desafio", novoDesafio);
+                    // this.$router.push({ name: "filme", params: { filmeID: this.form.nome } });
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message || error.toString();
+                }
+            }
+            else {
+                this.errors.push("Dados em falta ou invalidos, volta a confimar!");
+            }
+        },
+
         ordenarDesfios(desafioA, desafioB) {
             if (desafioA.nEtapas < desafioB.nEtapas) return -1;
             else if (desafioA.nEtapas > desafioB.nEtapas) return 1;
             else return 0;
         },
 
-        adicionarDesafio() {
-            if (this.formDesafios.nome != '' && this.formDesafios.nEtapas > 0 && this.formDesafios.anexo != '') {
-                if (this.isDesafioAvailable(this.formDesafios.nome)) {
-                    let novoDesafio = {
-                        nome: this.formDesafios.nome,
-                        nEtapas: this.formDesafios.nEtapas,
-                        imagem: this.formDesafios.anexo,
-                    };
+        // adicionarDesafio() {
+        //     if (this.formDesafios.nome != '' && this.formDesafios.nEtapas > 0 && this.formDesafios.anexo != '') {
+        //         if (this.isDesafioAvailable(this.formDesafios.nome)) {
+        //             let novoDesafio = {
+        //                 nome: this.formDesafios.nome,
+        //                 nEtapas: this.formDesafios.nEtapas,
+        //                 imagem: this.formDesafios.anexo,
+        //             };
 
-                    this.SET_NOVO_DESAFIO(novoDesafio);
-                    this.$refs['adicionarDesafio'].hide()
+        //             this.SET_NOVO_DESAFIO(novoDesafio);
+        //             this.$refs['adicionarDesafio'].hide()
 
-                }
-            }
-        },
+        //         }
+        //     }
+        // },
 
         escolherFilme(nome) {
             this.SET_FILME_ATUAL(nome);
@@ -312,6 +360,7 @@ export default {
 
     mounted(){
         this.getLoggedUserInfo();
+        this.getDesafiosLista()
     }
 };
 
