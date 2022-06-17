@@ -16,7 +16,7 @@
                 <tr v-for="(utilizador, index) in classificacao" :key="index">
                     <td class="posicao">{{ index + 1 }}</td>
                     <td class="nome"><img :src="utilizadores(utilizador.utilizador).foto" class='img'>
-                        {{ utilizadores(utilizador.utilizador).nome }}</td>
+                        {{ utilizador.utilizador }}</td>
                     <td class="pontuacao">{{ utilizador.pontuacao }}pts</td>
                 </tr>
             </tbody>
@@ -79,11 +79,11 @@ export default {
             else return 0;
         },
 
-        async utilizadores(id) {
+        async utilizadores() {
             try {
-                await this.$store.dispatch("getUtilizador", id);
-                console.log(utilizador);
-                return utilizador;
+                // await this.$store.dispatch("getUtilizador", id);
+                // console.log(utilizador);
+                // return utilizador;
             }
             catch (error) {
                 this.message =
