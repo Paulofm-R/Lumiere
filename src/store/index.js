@@ -272,6 +272,8 @@ export default new Vuex.Store({
   },
 
   getters: {
+    getMessage: (state) => state.message,
+
     // Utilizador
     isUser: (state) => (nome, palavra_passe) => state.utilizadores.some((user) => user.nome === nome && user.palavra_passe === palavra_passe),
     isUsernameAvailable: (state) => (nome) => state.utilizadores.every((user) => user.nome !== nome),
@@ -344,12 +346,12 @@ export default new Vuex.Store({
     //   localStorage.utilizadores = JSON.stringify(state.utilizadores);
     // },
     SET_UTILIZADORES(state, payload) {
-      console.log("STORE MUTATION SET_UTILIZADORES: " + payload.length)
+      // console.log("STORE MUTATION SET_UTILIZADORES: " + payload.length)
       state.utilizadores = payload
     },
     SET_UTILIZADOR(state, payload) {
-      console.log("STORE MUTATION SET_UTILIZADOR: ")
-      console.log(payload.utilizador)
+      // console.log("STORE MUTATION SET_UTILIZADOR: ")
+      // console.log(payload.utilizador)
       state.utilizador = payload.utilizador
     },
 
@@ -379,7 +381,7 @@ export default new Vuex.Store({
     //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
     // },
     SET_JOGOS(state, payload) {
-      console.log("STORE MUTATION SET_JOGOS: " + payload.length)
+      // console.log("STORE MUTATION SET_JOGOS: " + payload.length)
       state.jogos = payload
     },
     SET_JOGO(state, payload) {
@@ -408,7 +410,7 @@ export default new Vuex.Store({
     //   localStorage.categoria = JSON.stringify(state.categoria);
     // },
     SET_FILMES(state, payload) {
-      console.log("STORE MUTATION SET_FILMES: " + payload.length)
+      // console.log("STORE MUTATION SET_FILMES: " + payload.length)
       state.filmes = payload
     },
     SET_FILME(state, payload) {
@@ -456,13 +458,13 @@ export default new Vuex.Store({
 
     // Categorias
     SET_CATEGORIAS(state, payload) {
-      console.log("STORE MUTATION SET_CATEGORIAS: " + payload.length)
+      // console.log("STORE MUTATION SET_CATEGORIAS: " + payload.length)
       state.categorias = payload
     },
 
     // Desafios
     SET_DESAFIOS(state, payload) {
-      console.log("STORE MUTATION SET_DESAFIOS: " + payload.length)
+      // console.log("STORE MUTATION SET_DESAFIOS: " + payload.length)
       state.desafios = payload
     },
 
@@ -517,7 +519,6 @@ export default new Vuex.Store({
       try {
         const utilizador = await UtilizadorService.fetchOneUtilizadorByID(id);
         commit('SET_UTILIZADOR', utilizador);
-        console.log(utilizador);
       }
       catch (error) {
         commit('SET_UTILIZADOR', null);
@@ -627,6 +628,7 @@ export default new Vuex.Store({
       try {
         const response = await FilmeService.adicionarFilme(filme);
         commit('SET_MESSAGE', response.msg);
+        commit('SET_FILME', response.id)
       }
       catch (error) {
         commit('SET_MESSAGE', '');
@@ -645,9 +647,9 @@ export default new Vuex.Store({
       }
     },
 
-    async addComentario({ commit }, id, comentario) {
+    async addComentario({ commit }, payload) {
       try {
-        const response = await FilmeService.addComentario(id, comentario);
+        const response = await FilmeService.addComentario(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -656,9 +658,9 @@ export default new Vuex.Store({
       }
     },
 
-    async updateComentario({ commit }, filmeID, comentarioID, comentario) {
+    async updateComentario({ commit }, payload) {
       try {
-        const response = await FilmeService.updateComentario(filmeID, comentarioID, comentario);
+        const response = await FilmeService.updateComentario(payload[0], payload[1], payload[2]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -667,9 +669,9 @@ export default new Vuex.Store({
       }
     },
 
-    async updateAvaliacao({ commit }, id, avaliacao) {
+    async updateAvaliacao({ commit }, payload) {
       try {
-        const response = await FilmeService.updateAvaliacao(id, avaliacao);
+        const response = await FilmeService.updateAvaliacao(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -693,6 +695,7 @@ export default new Vuex.Store({
 
     async adicionarCategoria({ commit }, categoria) {
       try {
+        console.log(categoria);
         const response = await CategoriaService.adicionarCategoria(categoria);
         commit('SET_MESSAGE', response.msg);
       }
@@ -731,6 +734,7 @@ export default new Vuex.Store({
       try {
         const response = await JogoService.adicionarJogo(jogo);
         commit('SET_MESSAGE', response.msg);
+        commit('SET_JOGO', response.id);
       }
       catch (error) {
         commit('SET_MESSAGE', '');
@@ -761,9 +765,9 @@ export default new Vuex.Store({
       }
     },
 
-    async addClassificacao({ commit }, id, jogo) {
+    async addClassificacao({ commit }, payload) {
       try {
-        const response = await JogoService.addClassificacao(id, jogo);
+        const response = await JogoService.addClassificacao(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {

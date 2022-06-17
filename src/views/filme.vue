@@ -3,7 +3,7 @@
         <b-container fluid>
             <h2>
                 {{ filme.nome }}
-                <b-button v-if="getLoggedUser && getLoggedUser.tipo == 'admin'" id="removerFilme" @click='removerFilme'>
+                <b-button v-if="getLoggedUser && getLoggedUser.role == 'admin'" id="removerFilme" @click='removerFilme'>
                     Remover</b-button>
             </h2>
             <span id="classificacaoFilme">{{ filme.classificacao }}</span>
@@ -111,11 +111,12 @@ export default {
             filme: null,
             avaliacao: '',
             comentario: '',
+            loggedUtilizador: null
         }
     },
 
     computed: {
-        ...mapGetters(['getFilmes', 'getFilme', 'getLoggedUser', 'getUtilizadores', 'isFilmeFavoritoValido', 'isFilmeListaValido']),
+        ...mapGetters(['getFilmes', 'getFilme', 'getLoggedUser', 'getUtilizadores', 'getUtilizador', 'isFilmeFavoritoValido', 'isFilmeListaValido']),
 
         elenco() {
             return this.filme.elenco.join(', ');
@@ -149,6 +150,58 @@ export default {
             }
         },
 
+        async avaliar() {
+            if (this.avaliacao > 0) {
+                await this.$store.dispatch("updateAvaliacao", [this.filme._id, this.avaliacao]);
+            }
+            if (this.comentario.length > 0) {
+                let novoComentario = {
+                    utilizador: this.loggedUtilizador._id,
+                    comentario: this.comentario,
+                }
+                await this.$store.dispatch("addComentario", [this.filme._id, novoComentario]);
+            }
+            this.$refs['avaliarModal'].hide()
+        },
+
+        async getLoggedUserInfo() {
+            try {
+                let utilizador = await this.getLoggedUser
+                await this.$store.dispatch("getUtilizador", utilizador.id);
+                this.loggedUtilizador = await this.getUtilizador;
+                console.log(this.loggedUtilizador);
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
+        async spoiler(comentario) {
+            try {
+                comentario.spoiler = comentario.spoiler == false ? true : false;
+                await this.$store.dispatch("updateComentario", [this.filme._id, comentario.id, comentario.spoiler]);
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
+        async removerFilme() {
+            try {
+                await this.$store.dispatch("eliminarFilme", this.filme._id);
+                this.$router.push({ name: "filmes" });
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
         avaliarModal() {
             if (this.getLoggedUser != '') {
                 this.$refs['avaliarModal'].show()
@@ -158,20 +211,6 @@ export default {
             }
         },
 
-        avaliar() {
-            if (this.avaliacao > 0) {
-                this.SET_NOVA_AVALIACAO(this.avaliacao)
-            }
-            if (this.comentario.length > 0) {
-                let novoComentario = {
-                    utilizador: this.getLoggedUser.nome,
-                    comentario: this.comentario,
-                    spoiler: false,
-                }
-                this.SET_NOVO_COMENTARIO(novoComentario)
-            }
-            this.$refs['avaliarModal'].hide()
-        },
         favoritos() {
             if (this.isFilmeFavoritoValido(this.filme.nome)) {
                 this.SET_NOVO_FAVORITO(this.filme.nome)
@@ -194,20 +233,11 @@ export default {
                 return utilizador.foto
             }
         },
-
-        spoiler(comentario) {
-            comentario.spoiler = comentario.spoiler == false ? true : false;
-            this.SET_SPOILER()
-        },
-
-        removerFilme() {
-            this.SET_REMOVER_FILME(this.filme.nome)
-            this.$router.push({ name: "filmes" });
-        }
     },
 
     mounted() {
         this.getFilmeInfo();
+        this.getLoggedUserInfo();
     },
 }
 

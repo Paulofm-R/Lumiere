@@ -47,9 +47,7 @@ export const JogoService = {
     async adicionarJogo(jogo) {
         const response = await fetch(`${API_URL}/jogos`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
                     nome: jogo.nome,
@@ -69,9 +67,7 @@ export const JogoService = {
     async eliminarJogo(id) {
         const response = await fetch(`${API_URL}/jogos/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader(),
         });
         if (response.ok) {
             const data = await response.json();
@@ -109,6 +105,7 @@ export const JogoService = {
         });
         if (response.ok) {
             const data = await response.json();
+            console.log(data);
             return data;
         } else {
             throw Error(handleResponses(response.status));
