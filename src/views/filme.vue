@@ -40,12 +40,12 @@
                     <div v-if="comentarios.length > 0">
                         <b-row class="comentario" v-for="(comentario, index) in comentarios" :key="index">
                             <b-col cols="1" class='imagemSpoiler'>
-                                <img :src="utilizadorFoto(comentario.utilizador)" class="imagemUtilizador">
+                                <img :src="utilizadoresFoto[index]" class="imagemUtilizador">
                                 <input v-if="getLoggedUser !== null" @click='spoiler(comentario)' type="image"
                                     src="./image/spoiler.svg" class="botaoSpoiler">
                             </b-col>
                             <b-col class="coment">
-                                <p id="username">{{ comentario.utilizador }}</p>
+                                <p id="username">{{ utilizadoresNome[index] }}</p>
                                 <b-button v-if="comentario.spoiler == true" @click="comentario.spoiler = false"
                                     class="esconderSpoiler">VER SPOILER</b-button>
                                 <p id="comentarioUser">{{ comentario.comentario }}</p>
@@ -111,7 +111,10 @@ export default {
             filme: null,
             avaliacao: '',
             comentario: '',
-            loggedUtilizador: null
+            loggedUtilizador: null,
+
+            utilizadoresFoto: [],
+            utilizadoresNome: [],
         }
     },
 
@@ -130,6 +133,9 @@ export default {
         },
 
         comentarios() {
+            for(const comentario of this.filme.comentarios){
+                this.utilizadoresComentarios(comentario.utilizador)
+            }
             return this.filme.comentarios;
         }
     },
@@ -211,26 +217,31 @@ export default {
             }
         },
 
-        favoritos() {
+        async favoritos() {
             if (this.isFilmeFavoritoValido(this.filme.nome)) {
-                this.SET_NOVO_FAVORITO(this.filme.nome)
-                this.$refs['adicionadoSucesso'].show()
-            }
-        },
-        lista() {
-            if (this.isFilmeListaValido(this.filme.nome)) {
-                this.SET_NOVA_LISTA(this.filme.nome)
+                await this.$store.dispatch("addFavoritos", [this.loggedUtilizador._id, this.filme._id]);
                 this.$refs['adicionadoSucesso'].show()
             }
         },
 
-        utilizadorFoto(nome) {
-            let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome)
-            if (utilizador == undefined) {
-                return './image/User.svg'
+        async lista() {
+            if (this.isFilmeListaValido(this.filme.nome)) {
+                await this.$store.dispatch("addLista", [this.loggedUtilizador._id, this.filme._id]);
+                this.$refs['adicionadoSucesso'].show()
             }
-            else {
-                return utilizador.foto
+        },
+
+        async utilizadoresComentarios(id) {
+            try {
+                await this.$store.dispatch("getUtilizador", id);
+                let utilizador = await this.getUtilizador;
+                this.utilizadoresFoto.push(utilizador.foto);
+                this.utilizadoresNome.push(utilizador.nome);
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
             }
         },
     },
@@ -240,8 +251,6 @@ export default {
         this.getLoggedUserInfo();
     },
 }
-
-
 </script>
 
 <style scoped>

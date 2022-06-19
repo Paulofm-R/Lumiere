@@ -42,7 +42,7 @@
                         ADICIONAR</b-button>
                     <div class='desafio' v-for="(desafio, index) in desafiosUtilizador" :key='index'>
                         <span>{{ desafio.nome }}</span>
-                        <b-progress :value="progressoDesafio" :max="desafiosUtilizador.nEtapas" show-value animated></b-progress>
+                        <b-progress :value="progressoDesafio" :max="desafio.nEtapas" show-value animated></b-progress>
                     </div>
                 </div>
             </b-col>
@@ -94,8 +94,9 @@
             </template>
             <template>
                 <div v-if="loggedUtilizador.favoritos.length > 0">
-                    <img v-for="(favorito, index) in loggedUtilizador.favoritos" :key="index" :src="favorito.imagem" alt=""
-                        width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                    <img v-for="(favorito, index) in loggedUtilizador.favoritos" :key="index"
+                        :src="filmeImagem(favorito)" alt="" width="150" class="imagemLista"
+                        @click='escolherFilme(favorito)'>
                 </div>
                 <div v-else class="textoModal">
                     <p>Ainda não tens nenhum filme na tua lista de favoritos</p>
@@ -116,9 +117,9 @@
                 <b-button @click="close" variant="info" class='fecharModal'>x</b-button>
             </template>
             <template>
-                <div v-if="loggedUtilizador.favoritos.length > 0">
-                    <img v-for="(favorito, index) in loggedUtilizador.lista" :key="index" :src="favorito.imagem" alt=""
-                        width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                <div v-if="loggedUtilizador.lista.length > 0">
+                    <img v-for="(favorito, index) in loggedUtilizador.lista" :key="index" :src="filmeImagem(favorito)"
+                        alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
                 </div>
                 <div v-else class="textoModal">
                     <p>Ainda não tens nenhum filme na tua lista de filmes</p>
@@ -146,12 +147,12 @@
                     <b-row class="utilizadores" v-if="utilizador.nome != loggedUtilizador.nome">
                         <b-col class="nomeUtilizadores">{{ utilizador.nome }}</b-col>
                         <b-col>
-                            <b-button class='botaoEditarUtilizador tipoUtilizadores'
-                                @click="mudarTipo(utilizador.nome)">{{ utilizador.tipo }}</b-button>
+                            <b-button class='botaoEditarUtilizador tipoUtilizadores' @click="mudarTipo(utilizador._id)">
+                                {{ utilizador.tipo }}</b-button>
                         </b-col>
                         <b-col>
                             <b-button class='botaoEditarUtilizador removerUtilizadores'
-                                @click="removerUtilizador(utilizador.nome)">Remover</b-button>
+                                @click="removerUtilizador(utilizador._id)">Remover</b-button>
                         </b-col>
                     </b-row>
                 </div>
@@ -212,13 +213,13 @@ export default {
             nomeUtilizador: '',
 
             loggedUtilizador: null,
-
+            utilizadoresLista: null,
             desafiosUtilizador: null
         }
     },
 
     computed: {
-        ...mapGetters(['getLoggedUser', 'getUtilizador', 'getUtilizadores', 'getDesafios', 'isDesafioAvailable']),
+        ...mapGetters(['getLoggedUser', 'getUtilizador', 'getUtilizadores', 'getDesafios', 'isDesafioAvailable', 'getFilmes']),
 
         desafios() {
             let desafios = this.desafiosUtilizador.filter((desafio) => desafio.nEtapas > this.loggedUtilizador.numJogos).slice(0).sort(this.ordenarDesfios);
@@ -227,7 +228,7 @@ export default {
         },
 
         progressoDesafio() {
-            return this.loggedUtilizador.numJogos
+            return this.loggedUtilizador.desafios.length
         },
 
         badges() {
@@ -235,11 +236,11 @@ export default {
         },
 
         utilizadores() {
-            return this.getUtilizadores.filter((utilizador) => (utilizador.nome.includes(this.nomeUtilizador) || this.nomeUtilizador == '') && utilizador.nome != this.loggedUtilizador.nome).slice(0);
+            return this.utilizadoresLista.filter((utilizador) => (utilizador.nome.includes(this.nomeUtilizador) || this.nomeUtilizador == '') && utilizador.nome != this.loggedUtilizador.nome).slice(0);
         }
     },
     methods: {
-        ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL', 'SET_DESAFIOS','']),
+        ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL', 'SET_DESAFIOS', '']),
 
         async getLoggedUserInfo() {
             try {
@@ -252,34 +253,34 @@ export default {
                     (error.response && error.response.data) ||
                     error.message ||
                     error.toString();
-            } finally {
-                this.loading = false;
             }
         },
 
-        editarPerfil() {
-            if (this.form.novaPalavraPasse != '') {
-                this.loggedUtilizador.palavra_passe = this.form.novaPalavraPasse;
-                localStorage.loggedUser = JSON.stringify(this.getLoggloggedUtilizadoreloggedUtilizadordUser)
+        async getAllUtilizadores() {
+            try {
+                await this.$store.dispatch("getAllUtilizadores");
+                this.utilizadoresLista = this.getUtilizadores;
+                console.log(this.utilizadoresLista);
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
             }
-
-            if (this.form.imagemNova != '') {
-                this.loggedUtilizador.foto = this.form.imagemNova
-                localStorage.loggedUser = JSON.stringify(this.loggedUtilizador)
-            }
-
-            this.$refs['editarPerfilModal'].hide()
         },
 
-        mudarTipo(nome) {
-            let utilizador = this.getUtilizadores.find((utilizador) => utilizador.nome == nome);
-            utilizador.tipo = utilizador.tipo == 'admin' ? 'utilizador' : 'admin';
-            this.SET_UTILIZADORES(this.getUtilizadores);
-        },
-
-        removerUtilizador(nome) {
+        async removerUtilizador(id) {
             if (confirm("Tens acerteza que queres eliminar esta utilizador?")) {
-                this.SET_UTILIZADORES(this.getUtilizadores.filter((utilizador) => utilizador.nome != nome));
+                try {
+                    await this.$store.dispatch("eliminarUtilizador", id);
+                    this.getAllUtilizadores();
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message ||
+                        error.toString();
+                }
+
             }
         },
 
@@ -329,6 +330,58 @@ export default {
             }
         },
 
+        async editarPerfil() {
+            if (this.form.novaPalavraPasse != '') {
+                try {
+                    this.loggedUtilizador.palavra_passe = this.form.novaPalavraPasse;
+                    await this.$store.dispatch("updateUtilizador", [this.loggedUtilizador._id, this.loggedUtilizador]);
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message ||
+                        error.toString();
+                }
+            }
+            if (this.form.imagemNova != '') {
+                try {
+                    this.loggedUtilizador.foto = this.form.imagemNova
+                    await this.$store.dispatch("updateUtilizador", [this.loggedUtilizador._id, this.loggedUtilizador]);
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message ||
+                        error.toString();
+                }
+            }
+
+            this.$refs['editarPerfilModal'].hide()
+        },
+
+        async mudarTipo(id) {
+            let utilizador = this.utilizadoresLista.find((utilizador) => utilizador._id == id);
+            utilizador.tipo = utilizador.tipo == 'admin' ? 'utilizador' : 'admin';
+            try {
+                await this.$store.dispatch("updateUtilizador", [id, utilizador]);
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
+        async getListaFilmes() {
+            try {
+                await this.$store.dispatch("getAllFilmes");
+            }
+            catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
+        },
+
         ordenarDesfios(desafioA, desafioB) {
             if (desafioA.nEtapas < desafioB.nEtapas) return -1;
             else if (desafioA.nEtapas > desafioB.nEtapas) return 1;
@@ -351,16 +404,22 @@ export default {
         //     }
         // },
 
-        escolherFilme(nome) {
-            this.SET_FILME_ATUAL(nome);
-            this.$router.push({ name: "filme", params: { filmeNome: nome } });
+        filmeImagem(id) {
+            return this.getFilmes.find((filme) => filme._id == id).imagem
+        },
+
+        escolherFilme(id) {
+            // this.SET_FILME_ATUAL(nome);
+            this.$router.push({ name: "filme", params: { filmeID: id } });
         },
 
     },
 
-    mounted(){
+    mounted() {
         this.getLoggedUserInfo();
         this.getDesafiosLista()
+        this.getAllUtilizadores();
+        this.getListaFilmes();
     }
 };
 

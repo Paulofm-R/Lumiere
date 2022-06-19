@@ -80,11 +80,13 @@ export default {
             respostasUtilizador: [],
             respostasUtilizadorLista: '',
             certas: 0,
+
+            loggedUtilizador: null,
         }
     },
 
     computed: {
-        ...mapGetters(['getLoggedUser', 'getJogos', 'getJogo']),
+        ...mapGetters(['getLoggedUser', 'getJogos', 'getJogo', 'getDesafios', 'getUtilizador']),
     },
 
     methods: {
@@ -125,22 +127,42 @@ export default {
             const pontuacao = this.certas * 25;
 
             const novaClassificacao = {
-                utilizador: this.getLoggedUser.nome,
+                utilizadorID: this.getLoggedUser.id,
                 pontuacao: pontuacao,
             }
 
+            console.log(id);
+            console.log(quantPerguntas);
+
             try {
                 await this.$store.dispatch("addClassificacao", [this.jogo._id, novaClassificacao]);
+                await this.$store.dispatch("addDesafio", [this.getLoggedUser.id, this.jogo._id]);
+                await this.$store.dispatch("getAllDesafios");
+
+                await this.$store.dispatch("addDesafioConcluido", [this.loggedUtilizador, this.getDesafios]);
                 // this.$router.push({ name: "classificacao", params: { jogoID: id, certas: this.certas, numPerguntas: quantPerguntas } });
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
                     error.message || error.toString();
             }
-            this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
-            this.SET_DESAFIO();
+            // this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
+            // this.SET_DESAFIO();
 
             // this.$router.push({ name: "classificacao", params: { jogoID: id, certas: this.certas, numPerguntas: quantPerguntas } });
+        },
+
+        async getLoggedUserInfo() {
+            try {
+                let utilizador = await this.getLoggedUser
+                await this.$store.dispatch("getUtilizador", utilizador.id);
+                this.loggedUtilizador = await this.getUtilizador;
+            } catch (error) {
+                this.message =
+                    (error.response && error.response.data) ||
+                    error.message ||
+                    error.toString();
+            }
         },
 
 
@@ -159,12 +181,9 @@ export default {
         }
     },
 
-    // created () {
-    //     this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
-    //     this.getFilmes.find((filme) => filme.nome == this.$route.params.filmeNome);
-    // },
     mounted() {
         this.getJogoInfo();
+        this.getLoggedUserInfo()
     },
 }
 </script>

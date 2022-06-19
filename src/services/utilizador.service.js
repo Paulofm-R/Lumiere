@@ -50,7 +50,7 @@ export const UtilizadorService = {
         });
         if (response.ok) {
             let data = await response.json();
-            return data.utilizadores;
+            return data.utilizador;
         }
         else {
             throw Error(handleResponses(response.status));
@@ -60,9 +60,7 @@ export const UtilizadorService = {
     async eliminarUtilizador(id) {
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
             method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader()
         });
         if (response.ok) {
             const data = await response.json();
@@ -73,11 +71,10 @@ export const UtilizadorService = {
     },
 
     async updateUtilizador(id, utilizador) {
+        console.log(utilizador);
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
-            method: "PACTH",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            method: "PATCH",
+            headers: authHeader(),
             body:
                 JSON.stringify({
                     foto: utilizador.foto,
@@ -96,9 +93,7 @@ export const UtilizadorService = {
     async addFavoritos(id, filmeID) {
         const response = await fetch(`${API_URL}/utilizadores/${id}/favoritos/${filmeID}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader(),
         });
         if (response.ok) {
             const data = await response.json();
@@ -111,9 +106,7 @@ export const UtilizadorService = {
     async addLista(id, filmeID) {
         const response = await fetch(`${API_URL}/utilizadores/${id}/lista/${filmeID}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader(),
         });
         if (response.ok) {
             const data = await response.json();
@@ -124,11 +117,9 @@ export const UtilizadorService = {
     },
 
     async addDesafio(id, jogoID) {
-        const response = await fetch(`${API_URL}/utilizadores/${id}/desafios/${jogoID}`, {
+        const response = await fetch(`${API_URL}/utilizadores/${id}/desafio/${jogoID}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader()
         });
         if (response.ok) {
             const data = await response.json();
@@ -139,6 +130,8 @@ export const UtilizadorService = {
     },
 
     async addDesafioConcluido(id, desafioID) {
+        console.log(id);
+        console.log(desafioID);
         const response = await fetch(`${API_URL}/utilizadores/${id}/desafioConcluido/${desafioID}`, {
             method: "POST",
             headers: {

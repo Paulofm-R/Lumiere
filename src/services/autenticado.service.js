@@ -23,6 +23,7 @@ export const AutenticadoService = {
     },
 
     async logout() {
+        console.log('Item removido :)');
         localStorage.removeItem('utilizador');
     },
 

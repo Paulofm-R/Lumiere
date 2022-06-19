@@ -15,8 +15,8 @@
             <tbody>
                 <tr v-for="(utilizador, index) in classificacao" :key="index">
                     <td class="posicao">{{ index + 1 }}</td>
-                    <td class="nome"><img :src="utilizadores(utilizador.utilizador).foto" class='img'>
-                        {{ utilizador.utilizador }}</td>
+                    <td class="nome"><img :src="utilizadoresFoto[index]" class='img'>
+                        {{ utilizadoresNome[index] }}</td>
                     <td class="pontuacao">{{ utilizador.pontuacao }}pts</td>
                 </tr>
             </tbody>
@@ -38,21 +38,26 @@ export default {
         return {
             jogo: {},
             certas: 0,
+
+            utilizadoresFoto: [],
+            utilizadoresNome: [],
         }
     },
 
     created() {
-        // this.jogo = JSON.parse(localStorage.getItem('jogos')).find((jogo) => jogo.nome == this.$route.params.jogoNome);
         this.jogo = this.getJogos.find((jogo) => jogo.nome == this.$route.params.jogoNome);
         this.certas = this.$route.params.certas;
         this.numPerguntas = this.$route.params.numPerguntas;
     },
 
     computed: {
-        ...mapGetters(['getUtilizadores', 'getJogos', 'getJogo']),
+        ...mapGetters(['getUtilizador', 'getJogos', 'getJogo']),
 
         classificacao() {
             let top5 = this.jogo.classificacao.slice(0).sort(this.ordenarClassificacao);
+            for(const classificacao of top5.slice(0, 5)) {
+                this.utilizadoresClassificacao(classificacao.utilizador)
+            }
             return top5.slice(0, 5);
         }
     },
@@ -64,7 +69,6 @@ export default {
             try {
                 await this.$store.dispatch("getClassificacao", this.$route.params.jogoID);
                 this.jogo = await this.getJogo;
-                console.log(this.jogo);
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
@@ -79,13 +83,13 @@ export default {
             else return 0;
         },
 
-        async utilizadores() {
+        async utilizadoresClassificacao(id) {
             try {
-                // await this.$store.dispatch("getUtilizador", id);
-                // console.log(utilizador);
-                // return utilizador;
-            }
-            catch (error) {
+                await this.$store.dispatch("getUtilizador", id);
+                let utilizador = await this.getUtilizador;
+                this.utilizadoresFoto.push(utilizador.foto);
+                this.utilizadoresNome.push(utilizador.nome);
+            } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
                     error.message ||
@@ -94,8 +98,7 @@ export default {
         },
 
         jogar() {
-            this.SET_JOGO_ATUAL(this.jogo.nome)
-            this.$router.push({ name: "jogo", params: { jogoNome: this.jogo.nome } });
+            this.$router.push({ name: "jogo", params: { jogoID: this.jogo._id } });
         }
     },
 

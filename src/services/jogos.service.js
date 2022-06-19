@@ -92,15 +92,13 @@ export const JogoService = {
     },
 
     async addClassificacao(id, jogo) {
-        const response = await fetch(`${API_URL}/filmes/${id}/classificacao`, {
+        const response = await fetch(`${API_URL}/jogos/${id}/classificacao`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
-                    utilizador: jogo.utilizadorID,
-                    classificacao: jogo.classificacao
+                    utilizadorID: jogo.utilizadorID,
+                    pontuacao: jogo.pontuacao
                 })
         });
         if (response.ok) {

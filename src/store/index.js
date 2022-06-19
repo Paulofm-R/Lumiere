@@ -296,8 +296,8 @@ export default new Vuex.Store({
     getCategoria: (state) => state.categorias,
     isCategoriaAvailable: (state) => (cat) => state.categorias.every((categoria) => categoria !== cat),
 
-    isFilmeFavoritoValido: (state) => (nome) => state.loggedUser.favoritos.every((filme) => filme.nome !== nome),
-    isFilmeListaValido: (state) => (nome) => state.loggedUser.lista.every((filme) => filme.nome !== nome),
+    isFilmeFavoritoValido: (state) => (nome) => state.utilizador.favoritos.every((filme) => filme.nome !== nome),
+    isFilmeListaValido: (state) => (nome) => state.utilizador.lista.every((filme) => filme.nome !== nome),
 
     //Desafios
     getDesafios: (state) => state.desafios,
@@ -335,7 +335,6 @@ export default new Vuex.Store({
       // localStorage.removeItem('loggedUser');
       state.loggedIn = false;
       state.loggedUser = null;
-      localStorage.utilizadores = JSON.stringify(state.utilizadores);
     },
     // SET_NEW_PASSWORD(state, payload) {
     //   state.loggedUser = state.utilizadores.find((user) => user.palavra_passe === payload);
@@ -388,11 +387,11 @@ export default new Vuex.Store({
       state.jogo = payload
     },
     // SET_DESAFIO(state) {
-    //   state.desafios.map((desafio) => {
-    //     if (desafio.nEtapas == state.loggedUser.numJogos) {
-    //       state.loggedUser.desafios.push(desafio)
-    //     }
-    //   })
+      // state.desafios.map((desafio) => {
+      //   if (desafio.nEtapas == state.loggedUser.numJogos) {
+      //     state.loggedUser.desafios.push(desafio)
+      //   }
+      // })
     //   localStorage.loggedUser = JSON.stringify(state.loggedUser);
     // },
 
@@ -506,6 +505,7 @@ export default new Vuex.Store({
     async getAllUtilizadores({ commit }) {
       try {
         const utilizadores = await UtilizadorService.fetchAllUtilizadores();
+        console.log(utilizadores);
         commit('SET_UTILIZADORES', utilizadores);
       }
       catch (error) {
@@ -530,7 +530,7 @@ export default new Vuex.Store({
     logout({ commit }) {
       AutenticadoService.logout();
       // commit mutation logout
-      commit('logout');
+      commit('SET_LOGOUT');
     },
 
     async eliminarUtilizador({ commit }, id) {
@@ -544,9 +544,9 @@ export default new Vuex.Store({
       }
     },
 
-    async updateUtilizador({ commit }, id, utilizador) {
+    async updateUtilizador({ commit }, payload) {
       try {
-        const response = await UtilizadorService.updateUtilizador( id, utilizador);
+        const response = await UtilizadorService.updateUtilizador(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -555,9 +555,9 @@ export default new Vuex.Store({
       }
     },
 
-    async addFavoritos({ commit }, id, filmeID) {
+    async addFavoritos({ commit }, payload) {
       try {
-        const response = await UtilizadorService.addFavoritos(id, filmeID);
+        const response = await UtilizadorService.addFavoritos(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -566,9 +566,9 @@ export default new Vuex.Store({
       }
     },
 
-    async addLista({ commit }, id, filmeID) {
+    async addLista({ commit }, payload) {
       try {
-        const response = await UtilizadorService.addLista(id, filmeID);
+        const response = await UtilizadorService.addLista(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -577,9 +577,9 @@ export default new Vuex.Store({
       }
     },
 
-    async addDesafio({ commit }, id, jogoID) {
+    async addDesafio({ commit }, payload) {
       try {
-        const response = await UtilizadorService.addDesafio(id, jogoID);
+        const response = await UtilizadorService.addDesafio(payload[0], payload[1]);
         commit('SET_MESSAGE', response.msg);
       }
       catch (error) {
@@ -588,14 +588,26 @@ export default new Vuex.Store({
       }
     },
 
-    async addDesafioConcluido({ commit }, id, desafioID) {
-      try {
-        const response = await UtilizadorService.addDesafioConcluido(id, desafioID);
-        commit('SET_MESSAGE', response.msg);
-      }
-      catch (error) {
-        commit('SET_MESSAGE', '');
-        throw error;
+    async addDesafioConcluido({ commit }, payload) {
+      let desafioConcluido = false
+      let des
+      payload[1].map((desafio) => {
+        if (desafio.nEtapas == payload[0].desafios.length + 1) {
+          desafioConcluido = true;
+          des = desafio
+        }
+      })
+      if(desafioConcluido){
+        try {
+          console.log(payload[0]._id);
+          console.log(des._id);
+          const response = await UtilizadorService.addDesafioConcluido(payload[0]._id, des._id);
+          commit('SET_MESSAGE', response.msg);
+        }
+        catch (error) {
+          commit('SET_MESSAGE', '');
+          throw error;
+        }
       }
     },
 

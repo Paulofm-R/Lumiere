@@ -246,8 +246,8 @@ export default {
     //   }
     // },
 
-    logout() {
-      this.SET_LOGOUT(this.loggedUser)
+    async logout() {
+      await this.$store.dispatch("logout");
       this.$router.push({ name: "paginaInicial" })
     }
   },
