@@ -40,7 +40,7 @@
                 <div id="divDesafios">
                     <b-button id="adicionarDesafio" v-if="loggedUtilizador.tipo == 'admin'" v-b-modal.adicionarDesafio>
                         ADICIONAR</b-button>
-                    <div class='desafio' v-for="(desafio, index) in desafiosUtilizador" :key='index'>
+                    <div class='desafio' v-for="(desafio, index) in desafios" :key='index'>
                         <span>{{ desafio.nome }}</span>
                         <b-progress :value="progressoDesafio" :max="desafio.nEtapas" show-value animated></b-progress>
                     </div>
@@ -49,8 +49,8 @@
             <b-col cols="6">
                 <div id="divBadges">
                     <div class='badge' v-for="(badge, index) in badges" :key='index'>
-                        <div><img :src="desafiosUtilizador.imagem" alt="" width="35px"></div>
-                        <span>{{ desafiosUtilizador.nome }}</span>
+                        <div><img :src="badge.imagem" alt="" width="35px"></div>
+                        <span>{{ badge.nome }}</span>
                     </div>
                 </div>
             </b-col>
@@ -118,8 +118,8 @@
             </template>
             <template>
                 <div v-if="loggedUtilizador.lista.length > 0">
-                    <img v-for="(favorito, index) in loggedUtilizador.lista" :key="index" :src="filmeImagem(favorito)"
-                        alt="" width="150" class="imagemLista" @click='escolherFilme(favorito.nome)'>
+                    <img v-for="(lista, index) in loggedUtilizador.lista" :key="index" :src="filmeImagem(lista)" alt=""
+                        width="150" class="imagemLista" @click='escolherFilme(lista)'>
                 </div>
                 <div v-else class="textoModal">
                     <p>Ainda não tens nenhum filme na tua lista de filmes</p>
@@ -186,6 +186,15 @@
                         </b-form-group>
                     </div>
                 </form>
+                <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+                    {{ message }}
+                </div>
+                <p v-if="errors.length">
+                    <b>Por favor corrija os seguintes erros:</b>
+                <ul>
+                    <li v-for="(error, index)  in errors" :key="index">{{ error }}</li>
+                </ul>
+                </p>
             </template>
             <template #modal-footer>
                 <b-button @click="adicionarDesafio()">Adicionar</b-button>
@@ -195,7 +204,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'PaginaPerfil',
@@ -214,7 +223,11 @@ export default {
 
             loggedUtilizador: null,
             utilizadoresLista: null,
-            desafiosUtilizador: null
+            desafiosLista: null,
+            desafiosConcluidosLista: [],
+
+            errors: [],
+            message: "",
         }
     },
 
@@ -222,7 +235,7 @@ export default {
         ...mapGetters(['getLoggedUser', 'getUtilizador', 'getUtilizadores', 'getDesafios', 'isDesafioAvailable', 'getFilmes']),
 
         desafios() {
-            let desafios = this.desafiosUtilizador.filter((desafio) => desafio.nEtapas > this.loggedUtilizador.numJogos).slice(0).sort(this.ordenarDesfios);
+            let desafios = this.desafiosLista.filter((desafio) => desafio.nEtapas > this.loggedUtilizador.desafios.length).slice(0).sort(this.ordenarDesfios);
             desafios = desafios.slice(0, 5);
             return desafios;
         },
@@ -232,7 +245,8 @@ export default {
         },
 
         badges() {
-            return this.loggedUtilizador.desafios
+            let desafios = this.desafiosLista.filter((desafio) => desafio._id == this.loggedUtilizador.desafiosConcluidos).slice(0).sort(this.ordenarDesfios);
+            return desafios
         },
 
         utilizadores() {
@@ -240,14 +254,11 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(['SET_UTILIZADORES', 'SET_NOVO_DESAFIO', 'SET_FILME_ATUAL', 'SET_DESAFIOS', '']),
-
         async getLoggedUserInfo() {
             try {
                 let utilizador = await this.getLoggedUser
                 await this.$store.dispatch("getUtilizador", utilizador.id);
                 this.loggedUtilizador = await this.getUtilizador;
-                console.log(this.loggedUtilizador);
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
@@ -260,7 +271,6 @@ export default {
             try {
                 await this.$store.dispatch("getAllUtilizadores");
                 this.utilizadoresLista = this.getUtilizadores;
-                console.log(this.utilizadoresLista);
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
@@ -287,7 +297,7 @@ export default {
         async getDesafiosLista() {
             try {
                 await this.$store.dispatch("getAllDesafios");
-                this.desafiosUtilizador = this.getDesafios;
+                this.desafiosLista = this.getDesafios;
             }
             catch (error) {
                 this.message =
@@ -303,26 +313,31 @@ export default {
             let confimarNovoDesafio = true
 
             for (let i in this.formDesafio) {
-                if (this.formDesafio[i].length === 0) {
+                if (this.formDesafio[i].length == 0) {
                     confimarNovoDesafio = false;
                     break;
                 }
             }
-
+            console.log(confimarNovoDesafio);
             if (confimarNovoDesafio) {
-                let novoDesafio = {
-                    nome: this.formDesafios.nome,
-                    nEtapas: 0,
-                    anexo: '',
-                };
+                if (this.isDesafioAvailable(this.formDesafios.nome)) {
+                    let novoDesafio = {
+                        nome: this.formDesafios.nome,
+                        nEtapas: this.formDesafios.nEtapas,
+                        anexo: this.formDesafios.anexo,
+                    };
 
-                try {
-                    await this.$store.dispatch("Desafio", novoDesafio);
-                    // this.$router.push({ name: "filme", params: { filmeID: this.form.nome } });
-                } catch (error) {
-                    this.message =
-                        (error.response && error.response.data) ||
-                        error.message || error.toString();
+                    try {
+                        await this.$store.dispatch("adicionarDesafio", novoDesafio);
+                        this.getDesafiosLista();
+                    } catch (error) {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message || error.toString();
+                    }
+                }
+                else {
+                    this.errors.push("Já tem um desafio com esse nome!");
                 }
             }
             else {
@@ -409,7 +424,6 @@ export default {
         },
 
         escolherFilme(id) {
-            // this.SET_FILME_ATUAL(nome);
             this.$router.push({ name: "filme", params: { filmeID: id } });
         },
 
@@ -417,12 +431,11 @@ export default {
 
     mounted() {
         this.getLoggedUserInfo();
-        this.getDesafiosLista()
+        this.getDesafiosLista();
         this.getAllUtilizadores();
         this.getListaFilmes();
     }
 };
-
 </script>
 
 <style scoped>

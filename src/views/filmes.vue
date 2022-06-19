@@ -62,7 +62,7 @@
                             @click="andarEsquerda(index)">
                             <b-icon icon="arrow-left-square"></b-icon>
                         </b-button>
-                        <b-button v-if="filmesCatalogo(categoria).length > 5" class="setas seta_direita"
+                        <b-button v-if="filmesCatalogo(categoria.categoria).length > 5" class="setas seta_direita"
                             @click="andarDireita(index)">
                             <b-icon icon="arrow-right-square"></b-icon>
                         </b-button>
@@ -147,7 +147,6 @@ export default {
         async getLoggedUserInfo() {
             try {
                 let utilizador = await this.getLoggedUser
-                console.log(utilizador.id);
                 await this.$store.dispatch("getUtilizador", utilizador.id);
                 this.loggedUtilizador = await this.getUtilizador;
             } catch (error) {
@@ -218,6 +217,7 @@ export default {
         },
 
         andarDireita(index) {
+            console.log(index);
             this.$refs.carousel[index].scrollBy(300, 0)
         },
 

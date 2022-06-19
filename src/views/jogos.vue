@@ -18,7 +18,8 @@
             <b-row id="catalogoJogos">
                 <b-col cols="3" class="catalogoJogo" v-for="(jogo, index) in filtroTipoJogo" :key="index">
                     <div class="card jogo" @click='selecionarJogo(jogo._id)'>
-                        <b-button @click.stop="removerJogo(jogo._id)" v-if="acaoAdmin" class="remover" :class="jogo.nome">X
+                        <b-button @click.stop="removerJogo(jogo._id)" v-if="acaoAdmin" class="remover"
+                            :class="jogo.nome">X
                         </b-button>
                         <b-icon icon="info-circle-fill" scale='1.5' variant="info" @click.stop="classificacao(jogo._id)"
                             class="classificacao" :class="jogo.nome"></b-icon>
@@ -63,7 +64,7 @@
                                         v-model="form.tipo" required>
                                         <option value="" disabled>--Selecione o tipo de jogo--</option>
                                         <option v-for="(tipo, index) in getTipoJogo" :key="index" :value="tipo">{{ tipo
-                                        }}
+                                            }}
                                         </option>
                                     </select>
                                 </div>
@@ -74,7 +75,15 @@
                                 </div>
                             </b-form>
                         </b-col>
-
+                        <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+                            {{ message }}
+                        </div>
+                        <p v-if="errors.length">
+                            <b>Por favor corrija os seguintes erros:</b>
+                        <ul>
+                            <li v-for="(error, index)  in errors" :key="index">{{ error }}</li>
+                        </ul>
+                        </p>
                     </b-row>
                     <b-row class="justify-content-md-center" id="rowJogoExiste">
                         <b-col cols="5">
@@ -176,6 +185,30 @@
                         </div>
                     </b-form>
 
+                    <b-form v-else-if="form.tipo == 'Lista'" class="lista">
+                        <!-- <div class="mb-3" v-for="(questao, index) in form.questoes" :key="index">
+                            <b-form-group :label="`${index + 1}ª Pergunta:`" label-for="pergunta">
+                                <b-form-input class="pergunta" placeholder="Pergunta" v-model="questao.pergunta"
+                                    required></b-form-input>
+                            </b-form-group>
+                            <b-row>
+                                <b-col>
+                                    <b-form-group label="Anexo:" label-for="anexo">
+                                        <b-form-input class="anexo" placeholder="Anexo" type="url"
+                                            v-model="questao.anexo" required></b-form-input>
+                                    </b-form-group>
+                                </b-col>
+                            </b-row>
+                            <b-form-group label="Resposta:" label-for="pergunta">
+                                <b-form-input class="resposta" placeholder="Resposta" v-model="questao.resposta"
+                                    required></b-form-input>
+                            </b-form-group>
+                            <hr v-if="index + 1 < form.questoes.length">
+                            Colocar uma linha cada vez que tenha uma questão a seguir
+                        </div> -->
+                        <h3 style="text-align: center;">EM MANUTENÇÃO<br>(BREVEMENTE DISPONIVEL)</h3>
+                    </b-form>
+
                     <h5 v-else>SELECIONE UM TIPO DE QUESTÃO PRIMEIRO!</h5>
                 </template>
                 <template #modal-footer="{ close }">
@@ -188,7 +221,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: "PaginaJogos",
@@ -207,6 +240,10 @@ export default {
             filtroTipo: '',
 
             jogos: null,
+
+            message: null,
+            successful: false,
+            errors: [],
         }
     },
 
@@ -219,13 +256,10 @@ export default {
     },
 
     methods: {
-        ...mapMutations(['SET_REMOVER_JOGO', 'SET_NOVO_JOGO', 'SET_JOGO']),
-
         async getListaJogos() {
             try {
                 await this.$store.dispatch("getAllJogos");
                 this.jogos = this.getJogos;
-                console.log(this.jogos);
             }
             catch (error) {
                 this.message =
@@ -236,6 +270,7 @@ export default {
         },
 
         async adicionaJogo() {
+            this.errors = [];
             let confirmarNovoJogo = true;
 
             for (let i in this.form) {
@@ -246,30 +281,37 @@ export default {
             }
 
             if (confirmarNovoJogo) {
-                if (this.form.tipo == 'Preencher') {
-                    for (let i = 0; i < this.form.questoes.length; i++) {
-                        if (this.form.questoes[i].tipoAnexo == "Video") {
-                            this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
+                if (this.isNomeJogoAvalido(this.form.nome)) {
+                    if (this.form.tipo == 'Preencher') {
+                        for (let i = 0; i < this.form.questoes.length; i++) {
+                            if (this.form.questoes[i].tipoAnexo == "Video") {
+                                this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
+                            }
                         }
                     }
+
+                    let novoJogo = {
+                        nome: this.form.nome,
+                        img: this.form.imagem,
+                        tipo: this.form.tipo,
+                        perguntas: this.form.questoes,
+                        classificacao: [],
+                    }
+
+                    try {
+                        await this.$store.dispatch("novoJogo", novoJogo);
+                        this.$router.push({ name: "jogo", params: { jogoID: this.getJogo } });
+                        this.getListaJogos();
+                    } catch (error) {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message || error.toString();
+                    }
+                }
+                else {
+                    this.errors.push("Já tem um jogo com esse nome")
                 }
 
-                let novoJogo = {
-                    nome: this.form.nome,
-                    img: this.form.imagem,
-                    tipo: this.form.tipo,
-                    perguntas: this.form.questoes,
-                    classificacao: [],
-                }
-                
-                try {
-                    await this.$store.dispatch("novoJogo", novoJogo);
-                    this.$router.push({ name: "jogo", params: { jogoID: this.getJogo } });
-                } catch (error) {
-                    this.message =
-                        (error.response && error.response.data) ||
-                        error.message || error.toString();
-                }
             }
         },
 
@@ -277,6 +319,7 @@ export default {
             if (confirm("Tens acerteza que queres remover este jogo?")) {
                 try {
                     await this.$store.dispatch("eliminarJogo", id);
+                    this.getListaJogos();
                 } catch (error) {
                     this.message =
                         (error.response && error.response.data) ||
@@ -290,47 +333,8 @@ export default {
             this.$router.push({ name: "classificacao", params: { jogoID: id } })
         },
 
-        // adicionaJogo() {
-        // let confirmarNovoJogo = true;
-
-        // for (let i in this.form) {
-        //     if (this.form[i].length === 0) {
-        //         confirmarNovoJogo = false;
-        //         break;
-        //     }
-        // }
-
-        //     if (confirmarNovoJogo) {
-        //         if (this.isNomeJogoAvalido(this.form.nome)) {
-        // if (this.form.tipo == 'Preencher') {
-        //     for (let i = 0; i < this.form.questoes.length; i++) {
-        //         if (this.form.questoes[i].tipoAnexo == "Video") {
-        //             this.form.questoes[i].anexo = this.form.questoes[i].anexo.replace('watch?v=', 'embed/');
-        //         }
-        //     }
-        // }
-        // let novoJogo = {
-        //     nome: this.form.nome,
-        //     img: this.form.imagem,
-        //     tipo: this.form.tipo,
-        //     perguntas: this.form.questoes,
-        //     classificacao: [],
-        // }
-
-        //             this.SET_NOVO_JOGO(novoJogo);
-        //             this.$router.push({ name: "jogo", params: { jogoNome: this.form.nome } });
-        //         }
-        //         else {
-        //             this.jogoExiste = true;
-        //         }
-        //     }
-        //     else {
-        //         alert('Informação em falta ou invalida!')
-        //     }
-        // },
 
         selecionarJogo(id) {
-            this.SET_JOGO(id)
             this.$router.push({ name: "jogo", params: { jogoID: id } });
         },
 

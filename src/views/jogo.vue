@@ -131,25 +131,18 @@ export default {
                 pontuacao: pontuacao,
             }
 
-            console.log(id);
-            console.log(quantPerguntas);
-
             try {
                 await this.$store.dispatch("addClassificacao", [this.jogo._id, novaClassificacao]);
                 await this.$store.dispatch("addDesafio", [this.getLoggedUser.id, this.jogo._id]);
                 await this.$store.dispatch("getAllDesafios");
 
                 await this.$store.dispatch("addDesafioConcluido", [this.loggedUtilizador, this.getDesafios]);
-                // this.$router.push({ name: "classificacao", params: { jogoID: id, certas: this.certas, numPerguntas: quantPerguntas } });
+                this.$router.push({ name: "classificacao", params: { jogoID: id, certas: this.certas, numPerguntas: quantPerguntas } });
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
                     error.message || error.toString();
             }
-            // this.SET_NOVA_CLASSIFICACAO(novaClassificacao);
-            // this.SET_DESAFIO();
-
-            // this.$router.push({ name: "classificacao", params: { jogoID: id, certas: this.certas, numPerguntas: quantPerguntas } });
         },
 
         async getLoggedUserInfo() {

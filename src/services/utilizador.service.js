@@ -71,7 +71,6 @@ export const UtilizadorService = {
     },
 
     async updateUtilizador(id, utilizador) {
-        console.log(utilizador);
         const response = await fetch(`${API_URL}/utilizadores/${id}`, {
             method: "PATCH",
             headers: authHeader(),
@@ -130,8 +129,6 @@ export const UtilizadorService = {
     },
 
     async addDesafioConcluido(id, desafioID) {
-        console.log(id);
-        console.log(desafioID);
         const response = await fetch(`${API_URL}/utilizadores/${id}/desafioConcluido/${desafioID}`, {
             method: "POST",
             headers: {

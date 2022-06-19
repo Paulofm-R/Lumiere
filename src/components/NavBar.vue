@@ -40,6 +40,15 @@
                 </div>
                 <p id="txtRegisto">Não tens conta?<a style="color: #4BC3B5" v-b-modal.registarModal>Regista-te!</a></p>
               </form>
+              <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+                {{ message }}
+              </div>
+              <p v-if="errors.length">
+                <b>Por favor corrija os seguintes erros:</b>
+              <ul>
+                <li v-for="(error, index)  in errors" :key="index">{{ error }}</li>
+              </ul>
+              </p>
             </div>
           </template>
           <template #modal-footer>
@@ -79,6 +88,15 @@
                 </b-col>
               </b-row>
             </form>
+            <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+              {{ message }}
+            </div>
+            <p v-if="errors.length">
+              <b>Por favor corrija os seguintes erros:</b>
+            <ul>
+              <li v-for="(error, index)  in errors" :key="index">{{ error }}</li>
+            </ul>
+            </p>
           </template>
           <template #modal-footer>
             <b-button class="modalFooter" id='registar' @click='handleRegister()'>Registar</b-button>
@@ -86,16 +104,12 @@
         </b-modal>
         <router-view />
       </b-row>
-
-      <!-- <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
-        {{ message }}
-      </div> -->
     </b-container>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters } from 'vuex';
 
 class Login {
   constructor(nome, palavra_passe) {
@@ -121,7 +135,7 @@ export default {
 
       utilizador: new Login("", "", ""),
       novoUtilizador: new Registro(null, null, null, null),
-      message: "",
+      message: null,
       successful: false,
       errors: [],
 
@@ -134,8 +148,6 @@ export default {
   },
 
   methods: {
-    ...mapMutations(['SET_LOGGED_USER', 'SET_LOGOUT']),
-
     async handleLogin() {
       this.errors = [];
       if (this.utilizador.nome && this.utilizador.palavra_passe) {
@@ -165,7 +177,7 @@ export default {
       this.message = "";
       this.successful = false;
       this.errors = [];
-    
+
       if (this.novoUtilizador.nome && this.novoUtilizador.palavra_passe && this.novoUtilizador.data_nascimento) {
         if (this.novoUtilizador.palavra_passe == this.cpalavra_passe) {
           //makes request by dispatching an action
@@ -174,6 +186,10 @@ export default {
             this.message = this.getMessage;
             this.successful = true;
             this.$refs['registarModal'].hide()
+
+            this.utilizador.nome = this.novoUtilizador.nome;
+            this.utilizador.palavra_passe = this.novoUtilizador.palavra_passe;
+            this.handleLogin()
           } catch (error) {
             this.message =
               (error.response && error.response.data) ||
@@ -183,7 +199,7 @@ export default {
         else {
           this.errors.push("A palavra passe não foi confirmada corretamente")
         }
-      } 
+      }
       else {
         if (!this.novoUtilizador.nome) {
           this.errors.push("É preciso um nome de utilizador");
@@ -198,53 +214,19 @@ export default {
     },
 
     async getLoggedUserInfo() {
-            try {
-                let utilizador = await this.getLoggedUser
-                await this.$store.dispatch("getUtilizador", utilizador.id);
-                this.loggedUtilizador = await this.getUtilizador;
-            } catch (error) {
-                this.message =
-                    (error.response && error.response.data) ||
-                    error.message ||
-                    error.toString();
-            } finally {
-                this.loading = false;
-            }
-        },
-
-    // login() {
-    //   if (this.isUser(this.nome, this.palavra_passe)) {
-    //     this.SET_LOGGED_USER(this.nome);
-    //     this.$refs['loginModal'].hide()
-    //   } else {
-    //     alert('User Not Found')
-    //   }
-    // },
-
-    // registar() {
-    //   if (this.nome != '', this.palavra_passe != '', this.data_nascimento != '') {
-    //     if (this.isUsernameAvailable(this.nome)) {
-    //       let novoUser = {
-    //         nome: this.nome,
-    //         palavra_passe: this.palavra_passe,
-    //         data_nascimento: this.data_nascimento,
-    //         foto: './image/User.svg',
-    //         tipo: 'utilizador',
-    //       }
-    //       if (this.palavra_passe == this.cpalavra_passe) {
-    //         this.SET_NEW_USER(novoUser);
-    //         this.SET_LOGGED_USER(this.nome);
-    //         this.loggedUser = novoUser
-    //         this.$refs['registarModal'].hide()
-    //       } else {
-    //         alert('ERROR')
-    //       }
-
-    //     } else {
-    //       alert('User Already Exists')
-    //     }
-    //   }
-    // },
+      try {
+        let utilizador = await this.getLoggedUser
+        await this.$store.dispatch("getUtilizador", utilizador.id);
+        this.loggedUtilizador = await this.getUtilizador;
+      } catch (error) {
+        this.message =
+          (error.response && error.response.data) ||
+          error.message ||
+          error.toString();
+      } finally {
+        this.loading = false;
+      }
+    },
 
     async logout() {
       await this.$store.dispatch("logout");
@@ -261,11 +243,11 @@ export default {
     }
   },
 
-  mounted(){
-      if(this.getLoggedUser !== null){
-        this.getLoggedUserInfo();
-      }
+  mounted() {
+    if (this.getLoggedUser !== null) {
+      this.getLoggedUserInfo();
     }
+  }
 }
 </script>
 

@@ -23,12 +23,10 @@ export const AutenticadoService = {
     },
 
     async logout() {
-        console.log('Item removido :)');
         localStorage.removeItem('utilizador');
     },
 
     async register(utilizador) {
-        console.log(utilizador);
         const response = await fetch(`${API_URL}/utilizadores`, {
             method: "POST",
             headers: {

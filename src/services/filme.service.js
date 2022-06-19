@@ -83,8 +83,6 @@ export const FilmeService = {
     },
 
     async addComentario(id, comentario) {
-        console.log('----');
-        console.log(comentario);
         const response = await fetch(`${API_URL}/filmes/${id}/comentarios`, {
             method: "POST",
             headers: authHeader(),

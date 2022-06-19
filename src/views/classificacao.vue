@@ -41,6 +41,8 @@ export default {
 
             utilizadoresFoto: [],
             utilizadoresNome: [],
+
+            message: ""
         }
     },
 

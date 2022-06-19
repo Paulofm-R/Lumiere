@@ -159,6 +159,7 @@ export default {
         async avaliar() {
             if (this.avaliacao > 0) {
                 await this.$store.dispatch("updateAvaliacao", [this.filme._id, this.avaliacao]);
+                this.getFilmeInfo();
             }
             if (this.comentario.length > 0) {
                 let novoComentario = {
@@ -166,6 +167,7 @@ export default {
                     comentario: this.comentario,
                 }
                 await this.$store.dispatch("addComentario", [this.filme._id, novoComentario]);
+                this.getFilmeInfo();
             }
             this.$refs['avaliarModal'].hide()
         },
@@ -175,7 +177,6 @@ export default {
                 let utilizador = await this.getLoggedUser
                 await this.$store.dispatch("getUtilizador", utilizador.id);
                 this.loggedUtilizador = await this.getUtilizador;
-                console.log(this.loggedUtilizador);
             } catch (error) {
                 this.message =
                     (error.response && error.response.data) ||
@@ -197,14 +198,16 @@ export default {
         },
 
         async removerFilme() {
-            try {
-                await this.$store.dispatch("eliminarFilme", this.filme._id);
-                this.$router.push({ name: "filmes" });
-            } catch (error) {
-                this.message =
-                    (error.response && error.response.data) ||
-                    error.message ||
-                    error.toString();
+            if (confirm("Tens acerteza que queres remover este filme?")) {
+                try {
+                    await this.$store.dispatch("eliminarFilme", this.filme._id);
+                    this.$router.push({ name: "filmes" });
+                } catch (error) {
+                    this.message =
+                        (error.response && error.response.data) ||
+                        error.message ||
+                        error.toString();
+                }
             }
         },
 

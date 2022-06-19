@@ -66,7 +66,7 @@
                                             id="selCategoriaFilme" @change="novaCategoriaModal">
                                             <option value="" selected disabled>Género Filme</option>
                                             <option v-for="(categoria, index) in categoriasOrdenadas" :key="index"
-                                                :value="categoria">{{ categoria.categoria }}</option>
+                                                :value="categoria.categoria">{{ categoria.categoria }}</option>
                                             <option value="Outros">Outros</option>
                                         </select>
                                         <b-button variant="outline" @click="form.categorias.pop()"
@@ -113,6 +113,15 @@
                 <template>
                     <label for="novaCategoria">Nova Categoria</label>
                     <b-form-input v-model="novaCategoria" id="novaCategoria" type="text"></b-form-input>
+                    <br>
+                    <div v-if="message" class="alert" :class="successful ? 'alert-success' : 'alert-danger'">
+                        {{ message }}
+                    </div>
+                    <p v-if="erros.length">
+                    <ul>
+                        <li v-for="(error, index)  in erros" :key="index">{{ error }}</li>
+                    </ul>
+                    </p>
                 </template>
                 <template #modal-footer>
                     <b-button variant="primary" @click="NovaCategoria">Guardar</b-button>
@@ -165,7 +174,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
     name: 'AdicionarFilme',
@@ -190,15 +199,15 @@ export default {
 
             categorias: null,
             message: null,
-            erros: null,
+            erros: [],
         }
     },
 
     computed: {
-        ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable', 'getFilme','getMessage']),
+        ...mapGetters(['getCategoria', 'isNomeFilmeAvalido', 'isCategoriaAvailable', 'getFilme', 'getMessage', 'getFilmes']),
 
         categoriasOrdenadas() {
-            if (this.categorias !== null){
+            if (this.categorias !== null) {
                 return this.categorias.slice(0).sort(this.ordenarAlfabeticaCategoria);
             }
             return ''
@@ -206,11 +215,8 @@ export default {
     },
 
     methods: {
-        ...mapMutations(['SET_FILMES', 'SET_CATEGORIAS', 'SET_FILME']),
-
         async adicionarFilme() {
             this.message = "";
-            this.errors = [];
             let confimarNovoFilme = true
 
             for (let i in this.form) {
@@ -227,38 +233,43 @@ export default {
             }
 
             if (confimarNovoFilme) {
-                let realizador = this.form.realizador.split(',');
-                let elenco = this.form.elenco.split(',');
-                let trailer = this.form.trailer.replace('watch?v=', 'embed/');
+                if (this.isNomeFilmeAvalido(this.form.nome)) {
+                    let realizador = this.form.realizador.split(',');
+                    let elenco = this.form.elenco.split(',');
+                    let trailer = this.form.trailer.replace('watch?v=', 'embed/');
 
-                let novoFilme = {
-                    nome: this.form.nome,
-                    imagem: this.form.imagem,
-                    trailer: trailer,
-                    tipo: this.form.tipo,
-                    categoria: this.form.categorias,
-                    ano: this.form.ano,
-                    realizador: realizador,
-                    produtora: this.form.produtora,
-                    elenco: elenco,
-                    sinopse: this.form.sinopse,
-                    classificacao: this.form.classificacao,
-                    avaliacao: 0,
-                    nAvaliacoes: 0,
-                    comentarios: [],
-                };
+                    let novoFilme = {
+                        nome: this.form.nome,
+                        imagem: this.form.imagem,
+                        trailer: trailer,
+                        tipo: this.form.tipo,
+                        categoria: this.form.categorias,
+                        ano: this.form.ano,
+                        realizador: realizador,
+                        produtora: this.form.produtora,
+                        elenco: elenco,
+                        sinopse: this.form.sinopse,
+                        classificacao: this.form.classificacao,
+                        avaliacao: 0,
+                        nAvaliacoes: 0,
+                        comentarios: [],
+                    };
 
-                try {
-                    await this.$store.dispatch("novoFilme", novoFilme);
-                    this.$router.push({ name: "filme", params: { filmeID: this.getFilme } });
-                } catch (error) {
-                    this.message =
-                        (error.response && error.response.data) ||
-                        error.message || error.toString();
+                    try {
+                        await this.$store.dispatch("novoFilme", novoFilme);
+                        this.$router.push({ name: "filme", params: { filmeID: this.getFilme } });
+                    } catch (error) {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message || error.toString();
+                    }
+                }
+                else{
+                    alert('Já existe um filme com esse nome')
                 }
             }
             else {
-                this.errors.push("Dados em falta ou invalidos, volta a confimar!");
+                alert("Dados em falta ou invalidos, volta a confimar!");
             }
         },
 
@@ -277,14 +288,22 @@ export default {
 
         async NovaCategoria() {
             if (this.novaCategoria.length != 0) {
-                try {
-                    await this.$store.dispatch("adicionarCategoria", this.novaCategoria);
-                    this.getListaCategorias();
-                    this.$refs['novaCategoriaModal'].hide()
-                } catch (error) {
-                    this.message =
-                        (error.response && error.response.data) ||
-                        error.message || error.toString();
+                this.message = '';
+                this.erros = [];
+
+                if (this.isCategoriaAvailable(this.novaCategoria)) {
+                    try {
+                        await this.$store.dispatch("adicionarCategoria", this.novaCategoria);
+                        this.getListaCategorias();
+                        this.$refs['novaCategoriaModal'].hide()
+                    } catch (error) {
+                        this.message =
+                            (error.response && error.response.data) ||
+                            error.message || error.toString();
+                    }
+                }
+                else {
+                    this.erros.push("Já existe essa categoria na nossa base de dados");
                 }
             }
         },
@@ -309,57 +328,6 @@ export default {
             this.form.trailer = this.trailerURL.replace('watch?v=', 'embed/');
             this.$refs['ficheirosModalTrailer'].hide()
         },
-
-        // adicionarFilme() {
-        //     let confimarNovoFilme = true
-
-        // for (let i in this.form) {
-        //     if (this.form[i].length === 0) {
-        //         confimarNovoFilme = false;
-        //         break;
-        //     }
-        // }
-        // for (let i of this.form.categorias) {
-        //     if (i.length === 0 || i == 'Outros') {
-        //         confimarNovoFilme = false;
-        //         break;
-        //     }
-        // }
-
-        //     if (confimarNovoFilme) {
-        //         if (this.isNomeFilmeAvalido(this.form.nome)) {
-        // let realizador = this.form.realizador.split(',');
-        // let elenco = this.form.elenco.split(',');
-        // let trailer = this.form.trailer.replace('watch?v=', 'embed/');
-
-        // let novoFilme = {
-        //     nome: this.form.nome,
-        //     imagem: this.form.imagem,
-        //     trailer: trailer,
-        //     tipo: this.form.tipo,
-        //     categoria: this.form.categorias,
-        //     ano: this.form.ano,
-        //     realizador: realizador,
-        //     produtora: this.form.produtora,
-        //     elenco: elenco,
-        //     sinopse: this.form.sinopse,
-        //     classificacao: this.form.classificacao,
-        //     avaliacao: 0,
-        //     nAvaliacoes: 0,
-        //     comentarios: [],
-        // };
-
-        //             this.SET_FILMES(novoFilme);
-        //             this.$router.push({ name: "filme", params: { filmeNome: this.form.nome } });
-        //         }
-        //         else {
-        //             alert('Já existe um filme com esse nome')
-        //         }
-        //     }
-        //     else {
-        //         alert('Informação em falta ou invalida!')
-        //     }
-        // },
     },
 
     mounted() {

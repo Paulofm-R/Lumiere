@@ -48,14 +48,12 @@ export const DesafioService = {
     async adicionarDesafio(desafio) {
         const response = await fetch(`${API_URL}/desafios`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: authHeader(),
             body:
                 JSON.stringify({
                     nome: desafio.nome,
                     nEtapas: desafio.nEtapas,
-                    imagem: desafio.imagem
+                    imagem: desafio.anexo
                 })
         });
         if (response.ok) {
