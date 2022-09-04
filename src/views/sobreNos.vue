@@ -13,7 +13,7 @@
         <br>
         <p id="txtFinal">Assim, esperamos que te divirtas neste espaço criado pensado em ti, pequeno cinéfilo, e que este ambiente te enalteça o que sentes pelo cinema. Diverte-te,</p>
         <br>
-        <p id="assinatura">Paulo, Sofia & Inês</p>
+        <p id="assinatura">Paulo, Sofia</p>
         
     </div>
 </template>
